@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>DOC Insumos — Portal Analítico</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
@@ -37,12 +37,34 @@
     --shadow-card:          0 4px 16px rgba(25,28,29,0.04);
     --radius:               12px;
     --radius-sm:            8px;
-    --font:                 'Manrope', sans-serif;
+    --font:                 'Inter', sans-serif;
     --sidebar-w:            240px;
     --header-h:             64px;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  /* ── UTILS ── */
+  .flex-align-center { display: flex; align-items: center; }
+  .flex-wrap { flex-wrap: wrap; }
+  .gap-12 { gap: 12px; }
+  .gap-7 { gap: 7px; }
+  .p-0 { padding: 0 !important; }
+  .w-full { width: 100%; }
+  .u-name { font-size: .72rem; font-weight: 700; color: var(--on-surface); }
+  .u-city { font-size: .62rem; color: var(--outline); margin-top: 1px; }
+  .btn-logout { 
+    margin-top: 8px; width: 100%; background: transparent; 
+    border: 1px solid var(--outline-variant); color: var(--outline); 
+    font-family: var(--font); font-size: .72rem; padding: 7px; 
+    border-radius: var(--radius-sm); cursor: pointer; transition: all .12s; 
+  }
+  .btn-logout:hover { background: var(--surface-container); color: var(--on-surface); }
+
+  * { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    letter-spacing: -0.02em;
+  }
 
   html, body { height: 100%; overflow: hidden; }
 
@@ -85,9 +107,9 @@
   }
   .sidebar-logo-text h1 {
     font-size: .95rem;
-    font-weight: 800;
+    font-weight: 900;
     color: var(--primary-container);
-    letter-spacing: -.02em;
+    letter-spacing: -.05em;
     line-height: 1;
   }
   .sidebar-logo-text p {
@@ -131,7 +153,11 @@
     padding: 10px 14px 8px;
     font-size: .6rem; font-weight: 700; letter-spacing: .1em;
     text-transform: uppercase; color: var(--outline);
-    cursor: pointer; user-select: none;
+    cursor: pointer; 
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
     border-radius: var(--radius);
     transition: background .12s;
     border: none; background: transparent; width: 100%;
@@ -180,8 +206,7 @@
     right: 0;
     height: var(--header-h);
     background: rgba(255,255,255,.82);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
     z-index: 40;
     display: flex;
     align-items: center;
@@ -686,6 +711,9 @@
     font-weight: 500;
     color: var(--on-surface);
     transition: background .1s;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
   }
   .ms-option:hover { background: var(--surface-low); }
@@ -919,6 +947,7 @@
     position: fixed;
     inset: 0;
     background: rgba(25,28,29,.45);
+    -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);
     z-index: 300;
     align-items: center;
@@ -1141,7 +1170,11 @@
   display: flex; align-items: center; gap: 10px;
   padding: 7px 10px; border-radius: 6px; cursor: pointer;
   font-size: .78rem; font-weight: 500; color: var(--on-surface);
-  transition: background .1s; user-select: none;
+  transition: background .1s; 
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 .ms-option:hover { background: var(--surface-low); }
 .ms-option input[type="checkbox"] { accent-color: var(--primary-container); width: 14px; height: 14px; flex-shrink: 0; cursor: pointer; }
@@ -1243,9 +1276,9 @@
 
   </nav>
   <div class="sidebar-footer">
-    <div style="font-size:.72rem;font-weight:700;color:var(--on-surface)" id="sb-user">—</div>
-    <div style="font-size:.62rem;color:var(--outline);margin-top:1px" id="sb-city">—</div>
-    <button onclick="logout()" style="margin-top:8px;width:100%;background:transparent;border:1px solid var(--outline-variant);color:var(--outline);font-family:var(--font);font-size:.72rem;padding:7px;border-radius:var(--radius-sm);cursor:pointer;transition:all .12s">Sair</button>
+    <div class="u-name" id="sb-user">—</div>
+    <div class="u-city" id="sb-city">—</div>
+    <button onclick="logout()" class="btn-logout">Sair</button>
   </div>
 </aside>
 
@@ -1253,16 +1286,16 @@
 
 <!-- ── GLASS HEADER ── -->
 <header class="glass-header">
-  <div style="display:flex;align-items:center;gap:12px">
+  <div class="flex-align-center gap-12">
     <button class="toggle-btn" onclick="toggleSidebar()" title="Mostrar/ocultar menu">
       <span class="material-symbols-outlined">menu</span>
     </button>
     <div class="header-title" id="header-title">Dashboard</div>
   </div>
-  <div class="header-right" style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+  <div class="header-right flex-align-center gap-7 flex-wrap">
     <div class="topbar-period">
-      <span>DE</span><input type="date" id="f-ini">
-      <span>ATÉ</span><input type="date" id="f-fim">
+      <span>DE</span><input type="date" id="f-ini" title="Data Inicial" aria-label="Data Inicial">
+      <span>ATÉ</span><input type="date" id="f-fim" title="Data Final" aria-label="Data Final">
     </div>
     <button class="period-btn" onclick="setPeriodo(7)">7d</button>
     <button class="period-btn" onclick="setPeriodo(30)">30d</button>
@@ -1289,8 +1322,8 @@
         </label>
       </div>
     </div>
-    <button class="btn btn-primary" onclick="renderAtivo()" style="padding:7px 14px;font-size:.75rem">Aplicar</button>
-    <button onclick="limparFiltrosGlobais()" class="period-btn" style="font-size:.72rem;padding:5px 10px">✕</button>
+    <button class="btn btn-primary" onclick="renderAtivo()" title="Aplicar Filtros" aria-label="Aplicar Filtros" style="padding:7px 14px;font-size:.75rem">Aplicar</button>
+    <button onclick="limparFiltrosGlobais()" class="period-btn" title="Limpar Filtros" aria-label="Limpar Filtros" style="font-size:.72rem;padding:5px 10px">✕</button>
     <span class="header-pill">DOC Insumos v1.0</span>
   </div>
 </header>
@@ -1299,7 +1332,7 @@
 <main class="main-canvas">
 
   <!-- ══ DASHBOARD ══ -->
-  <div id="panel-dashboard" class="panel active" style="padding:0">
+  <div id="panel-dashboard" class="panel active p-0">
 
     <div class="analise-metrics">
       <div class="analise-metric" id="kpi-resmas-card">

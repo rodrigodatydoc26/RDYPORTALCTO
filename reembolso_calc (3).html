@@ -1,678 +1,364 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadora de Reembolsos</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#0e0f14;--surface:#161820;--surface2:#1e2030;--border:#2a2d3e;--accent:#6ee7b7;--accent2:#f59e0b;--accent3:#60a5fa;--danger:#f87171;--text:#e2e8f0;--muted:#64748b;--mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;display:flex;flex-direction:column}
-header{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;gap:.75rem}
-.logo{width:32px;height:32px;background:var(--accent);border-radius:8px;display:grid;place-items:center;flex-shrink:0}
-header h1{font-size:1.05rem;font-weight:800;letter-spacing:-.02em}
-#row-status{color:var(--muted);font-size:.75rem;margin-left:auto;font-family:var(--mono)}
-.tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem}
-.tab{padding:.7rem 1.4rem;cursor:pointer;font-family:var(--mono);font-size:.75rem;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;letter-spacing:.05em;text-transform:uppercase}
-.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-.tab:hover:not(.active){color:var(--text)}
-.panel{display:none;flex:1;flex-direction:column}
-.panel.active{display:flex}
-.toolbar{display:flex;gap:.6rem;align-items:center;padding:.85rem 2rem;background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:.35rem;padding:.45rem .9rem;border-radius:6px;border:none;cursor:pointer;font-family:var(--mono);font-size:.72rem;font-weight:700;letter-spacing:.04em;transition:all .15s;white-space:nowrap}
-.btn-primary{background:var(--accent);color:#0e0f14}
-.btn-primary:hover{filter:brightness(1.1)}
-.btn-ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
-.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
-.btn-danger{background:transparent;color:var(--danger);border:1px solid var(--danger)}
-.btn-danger:hover{background:var(--danger);color:#fff}
-#file-input{display:none}
-.row-count{font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-left:auto}
-.paste-area{padding:.75rem 2rem 1rem;display:none}
-.paste-area p{font-family:var(--mono);font-size:.72rem;color:var(--muted);margin-bottom:.4rem}
-textarea{width:100%;height:120px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:.6rem;font-family:var(--mono);font-size:.7rem;resize:vertical;outline:none}
-.table-wrap{flex:1;overflow:auto;padding:0 1.5rem 1.5rem}
-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:.7rem;margin-top:.75rem}
-thead th{background:var(--surface2);color:var(--muted);padding:.55rem .7rem;text-align:left;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.62rem;position:sticky;top:0;z-index:2;border-bottom:1px solid var(--border);white-space:nowrap}
-tbody tr{border-bottom:1px solid #191b27;transition:background .1s}
-tbody tr:hover{background:var(--surface2)}
-td{padding:.45rem .7rem;color:var(--text);white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis}
-td.num{text-align:right;color:var(--accent);font-weight:700}
-td.muted{color:var(--muted)}
-.badge{display:inline-block;padding:.12rem .45rem;border-radius:99px;font-size:.62rem;font-weight:700}
-.badge-km{background:#1e3a5f;color:var(--accent3)}
-.badge-av{background:#3f2a0d;color:var(--accent2)}
-.empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem;color:var(--muted);padding:3rem}
-.empty svg{width:44px;height:44px;opacity:.25}
-.empty p{font-family:var(--mono);font-size:.78rem;text-align:center;line-height:1.7}
-.calc-layout{display:grid;grid-template-columns:280px 1fr;flex:1;overflow:hidden}
-.sidebar{background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;padding:1.25rem;display:flex;flex-direction:column;gap:1.1rem}
-.fg h3{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.45rem}
-.fg select,.fg input[type=text]{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:.45rem .65rem;font-family:var(--mono);font-size:.72rem;outline:none;transition:border-color .2s}
-.fg select:focus,.fg input[type=text]:focus{border-color:var(--accent)}
-.extras-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.9rem}
-.extras-box h3{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.7rem}
-.extra-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem;gap:.5rem}
-.extra-row:last-child{margin-bottom:0}
-.extra-label{font-family:var(--mono);font-size:.68rem;color:var(--text);flex:1;line-height:1.3}
-.extra-input{width:88px;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--accent2);padding:.32rem .45rem;font-family:var(--mono);font-size:.72rem;font-weight:700;text-align:right;outline:none;transition:border-color .2s}
-.extra-input:focus{border-color:var(--accent2)}
-.calc-main{overflow:auto;padding:1.25rem 1.75rem;display:flex;flex-direction:column;gap:1.1rem}
-.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem}
-.kpi{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem;position:relative;overflow:hidden}
-.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
-.kpi.total::before{background:var(--accent)}
-.kpi.variavel::before{background:var(--accent3)}
-.kpi.casa::before{background:var(--accent2)}
-.kpi.grand::before{background:#a78bfa}
-.kpi-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem}
-.kpi-value{font-family:var(--mono);font-size:1.35rem;font-weight:700;letter-spacing:-.03em}
-.kpi.total .kpi-value{color:var(--accent)}
-.kpi.variavel .kpi-value{color:var(--accent3)}
-.kpi.casa .kpi-value{color:var(--accent2)}
-.kpi.grand .kpi-value{color:#a78bfa}
-.kpi-sub{font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-top:.18rem}
-.extras-summary{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem}
-.extras-summary h2{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.65rem}
-.ext-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem}
-.ext-item{background:var(--surface2);border-radius:6px;padding:.55rem .7rem}
-.ext-item .el{font-family:var(--mono);font-size:.6rem;color:var(--muted);margin-bottom:.18rem}
-.ext-item .ev{font-family:var(--mono);font-size:.9rem;font-weight:700;color:var(--accent2)}
-.result-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
-.result-box .rh{padding:.8rem 1rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem}
-.tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;background:var(--surface2);color:var(--muted);font-size:.6rem}
-.result-box table{margin:0}
-.result-box thead th{position:static;background:var(--surface)}
-.no-data{flex:1;display:flex;align-items:center;justify-content:center;padding:3rem;color:var(--muted);font-family:var(--mono);font-size:.78rem;text-align:center}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Reembolsos — RDY Supply</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --bg: #000000;
+      --surface: #0f0f0f;
+      --surface-light: #181818;
+      --border: #222222;
+      --primary: #ffcc00; 
+      --success: #2e7d32;
+      --text: #ffffff;
+      --text-dim: #888888;
+      --radius: 20px;
+      --font: 'Inter', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+    header { height: 64px; padding: 0 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .header-title { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.03em; }
+    .header-date { font-size: 0.75rem; color: var(--text-dim); font-weight: 500; }
+
+    .app-container { display: grid; grid-template-columns: 320px 1fr; flex: 1; overflow: hidden; padding: 24px; gap: 24px; }
+
+    .sidebar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; display: flex; flex-direction: column; gap: 28px; }
+    .section-title { font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+    
+    .filter-group { display: flex; flex-direction: column; gap: 10px; }
+    .filter-group label { font-size: 0.65rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.1em; }
+    
+    select, input { background: #080808; border: 1px solid var(--border); border-radius: 12px; color: var(--text); padding: 14px; font-family: var(--font); font-size: 0.9rem; outline: none; transition: all 0.2s; }
+    select:focus, input:focus { border-color: var(--primary); background: #111; }
+
+    .row-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .btn { width: 100%; padding: 16px; border-radius: 24px; border: none; font-weight: 900; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.2s; }
+    .btn-import { background: var(--primary); color: #000; box-shadow: 0 4px 20px rgba(255,204,0,0.15); }
+    .btn-import:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(255,204,0,0.25); }
+    .btn-report { background: var(--success); color: #fff; box-shadow: 0 4px 20px rgba(46,125,50,0.15); }
+    .btn-report:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(46,125,50,0.25); }
+    .btn-clear { background: transparent; color: var(--text-dim); border: 1px solid var(--border); font-size: 0.75rem; padding: 12px; margin-top: 8px; }
+    .btn-clear:hover { color: #fff; border-color: #555; }
+
+    .content { display: flex; flex-direction: column; gap: 24px; overflow: hidden; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; transition: border-color 0.3s; }
+    .kpi-card:hover { border-color: #333; }
+    .kpi-label { font-size: 0.6rem; font-weight: 800; color: var(--text-dim); text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.05em; }
+    .kpi-value { font-family: var(--mono); font-size: 2rem; font-weight: 700; }
+    .kpi-card.total .kpi-value { color: var(--primary); }
+
+    .table-container { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); flex: 1; overflow: hidden; display: flex; flex-direction: column; position: relative; }
+    .table-scroll { flex: 1; overflow: auto; padding: 32px; }
+    
+    table { width: 100%; border-collapse: collapse; }
+    thead th { text-align: left; font-size: 0.7rem; font-weight: 900; color: var(--text-dim); text-transform: uppercase; padding-bottom: 24px; letter-spacing: 0.12em; position: sticky; top: 0; background: var(--surface); z-index: 10; }
+    tbody tr { border-bottom: 1px solid rgba(255,255,255,0.02); transition: background 0.1s; }
+    tbody tr:hover { background: rgba(255,255,255,0.01); }
+    tbody td { padding: 20px 0; font-size: 0.9rem; font-weight: 500; }
+    .td-num { font-family: var(--mono); font-weight: 700; }
+    .td-total { color: var(--primary); }
+    .td-os { color: #4ade80; font-weight: 800; }
+
+    .empty-state { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--text-dim); font-size: 0.95rem; font-weight: 500; pointer-events: none; }
+
+    #file-input { display: none; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #333; }
+  </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-      <path d="M2 9l4 4 7-8" stroke="#0e0f14" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
+  <div class="header-left">
+    <span class="material-symbols-outlined" style="cursor:pointer">menu</span>
+    <h1 class="header-title">Calculadora de Reembolsos</h1>
   </div>
-  <h1>Reembolsos — Calculadora</h1>
-  <span id="row-status">Nenhum dado carregado</span>
+  <div class="header-date" id="header-date">-- de ---, --:--</div>
 </header>
 
-<div class="tabs">
-  <div class="tab active" onclick="switchTab('base')">📋 Base (dados brutos)</div>
-  <div class="tab" onclick="switchTab('calc')">📊 Cálculo</div>
-</div>
-
-<!-- BASE -->
-<div id="panel-base" class="panel active">
-  <div class="toolbar">
-    <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">⬆ Importar XLSX / CSV</button>
-    <input type="file" id="file-input" accept=".xlsx,.xls,.csv" onchange="handleFile(event)">
-    <button class="btn btn-ghost" onclick="togglePaste()">📋 Colar Dados</button>
-    <button class="btn btn-ghost" onclick="loadSample()">🔬 Demo</button>
-    <button class="btn btn-danger" onclick="clearData()">✕ Limpar</button>
-    <span class="row-count" id="base-count"></span>
-  </div>
-  <div class="paste-area" id="paste-area">
-    <p>Cole os dados abaixo (com cabeçalho, separados por tab ou vírgula).</p>
-    <textarea id="paste-input" placeholder="Data&#9;Funcionário&#9;Email&#9;..."></textarea>
-    <div style="display:flex;gap:.5rem;margin-top:.4rem">
-      <button class="btn btn-primary" onclick="processPaste()">✓ Processar</button>
-      <button class="btn btn-ghost" onclick="togglePaste()">Cancelar</button>
-    </div>
-  </div>
-  <div id="base-empty" class="empty">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7h18M3 12h18M3 17h12"/></svg>
-    <p>Nenhum dado carregado.<br>Importe um arquivo XLSX, cole dados<br>ou clique em <strong style="color:var(--accent)">Demo</strong> para testar.</p>
-  </div>
-  <div class="table-wrap" id="base-table-wrap" style="display:none">
-    <table><thead id="base-thead"></thead><tbody id="base-tbody"></tbody></table>
-  </div>
-</div>
-
-<!-- CALC -->
-<div id="panel-calc" class="panel">
-  <div class="calc-layout">
-    <div class="sidebar">
-      <div class="fg"><h3>Funcionário</h3><select id="f-func" onchange="renderCalc()"><option value="">(Todos)</option></select></div>
-      <div class="fg"><h3>Tipo</h3><select id="f-tipo" onchange="renderCalc()"><option value="">(Todos)</option><option value="KM">KM</option><option value="Avulso">Avulso</option></select></div>
-      <div class="fg"><h3>Coeficiente</h3><select id="f-coef" onchange="renderCalc()"><option value="">(Todos)</option><option value="1">Reembolsável (=1)</option><option value="0">Não reemb. (=0)</option></select></div>
-      <div class="fg"><h3>Ponto Inicial</h3><input type="text" id="f-pi" placeholder="filtrar..." oninput="renderCalc()"></div>
-      <div class="fg"><h3>Ponto Final</h3><input type="text" id="f-pf" placeholder="filtrar..." oninput="renderCalc()"></div>
-
-      <div class="extras-box">
-        <h3>Extras (R$)</h3>
-        <div class="extra-row">
-          <span class="extra-label">🛣 Pedágios</span>
-          <input type="number" class="extra-input" id="ex-pedagio" value="0" min="0" step="0.01" oninput="renderCalc()">
-        </div>
-        <div class="extra-row">
-          <span class="extra-label">🅿 Estac. / Zona Azul</span>
-          <input type="number" class="extra-input" id="ex-estac" value="0" min="0" step="0.01" oninput="renderCalc()">
-        </div>
-        <div class="extra-row">
-          <span class="extra-label">🚇 Metrô / Ônibus</span>
-          <input type="number" class="extra-input" id="ex-metro" value="0" min="0" step="0.01" oninput="renderCalc()">
-        </div>
-      </div>
-
-      <button class="btn btn-ghost" style="width:100%" onclick="resetFilters()">↺ Limpar filtros e extras</button>
-      <button class="btn btn-primary" style="width:100%;margin-top:.2rem" onclick="exportXLSX()">⬇ Baixar XLSX</button>
+<div class="app-container">
+  <aside class="sidebar">
+    <div class="section-title">
+      <span class="material-symbols-outlined">filter_alt</span>
+      Filtros
     </div>
 
-    <div class="calc-main">
-      <div id="calc-no-data" class="no-data">
-        Carregue dados na aba <strong style="color:var(--accent);margin:0 .3rem">Base</strong> para ver os cálculos.
+    <div class="filter-group">
+      <label for="f-func">Funcionário</label>
+      <select id="f-func" title="Selecionar Funcionário" onchange="renderCalc()">
+        <option value="">(Todos)</option>
+      </select>
+    </div>
+
+    <div class="row-filters">
+      <div class="filter-group">
+        <label for="f-tipo">Tipo</label>
+        <select id="f-tipo" title="Selecionar Tipo" onchange="renderCalc()">
+          <option value="">(Todos)</option>
+          <option value="KM">KM</option>
+          <option value="Avulso">Avulso</option>
+        </select>
       </div>
-      <div id="calc-content" style="display:none;flex-direction:column;gap:1.1rem">
-
-        <div class="kpi-row">
-          <div class="kpi total">
-            <div class="kpi-label">Custo Total (KM)</div>
-            <div class="kpi-value" id="kv-total">R$ 0,00</div>
-            <div class="kpi-sub" id="ks-total">Coef=1, todos os trechos</div>
-          </div>
-          <div class="kpi variavel">
-            <div class="kpi-label">Custo Variável</div>
-            <div class="kpi-value" id="kv-var">R$ 0,00</div>
-            <div class="kpi-sub">Sem "Casa do Usuário"</div>
-          </div>
-          <div class="kpi casa">
-            <div class="kpi-label">Custo Casa</div>
-            <div class="kpi-value" id="kv-casa">R$ 0,00</div>
-            <div class="kpi-sub">Com "Casa do Usuário"</div>
-          </div>
-        </div>
-
-        <div class="extras-summary">
-          <h2>Extras inseridos</h2>
-          <div class="ext-grid">
-            <div class="ext-item"><div class="el">🛣 Pedágios</div><div class="ev" id="ev-pedagio">R$ 0,00</div></div>
-            <div class="ext-item"><div class="el">🅿 Estac. / Zona Azul</div><div class="ev" id="ev-estac">R$ 0,00</div></div>
-            <div class="ext-item"><div class="el">🚇 Metrô / Ônibus</div><div class="ev" id="ev-metro">R$ 0,00</div></div>
-          </div>
-        </div>
-
-        <div class="kpi-row" style="grid-template-columns:1fr">
-          <div class="kpi grand">
-            <div class="kpi-label">Total Geral (KM + Extras)</div>
-            <div class="kpi-value" id="kv-grand">R$ 0,00</div>
-            <div class="kpi-sub">Custo Total + Pedágios + Estac. + Metrô/Ônibus</div>
-          </div>
-        </div>
-
-        <div class="result-box">
-          <div class="rh">
-            Resumo por Funcionário <span class="tag" id="calc-tag"></span>
-            <span style="margin-left:auto;font-size:.58rem;color:var(--muted)">valores com Coef=1 | extras distribuídos proporcionalmente</span>
-          </div>
-          <div style="overflow:auto">
-          <table>
-            <thead>
-              <tr>
-                <th>Funcionário</th>
-                <th style="text-align:right">Custo Total</th>
-                <th style="text-align:right">Custo Variável</th>
-                <th style="text-align:right">Custo Casa</th>
-                <th style="text-align:right">Pedágios</th>
-                <th style="text-align:right">Estac./Z.Azul</th>
-                <th style="text-align:right">Metrô/Ônibus</th>
-                <th style="text-align:right">Total Geral</th>
-                <th style="text-align:right">OS Atendidas</th>
-                <th style="text-align:right">Trechos</th>
-              </tr>
-            </thead>
-            <tbody id="calc-tbody"></tbody>
-          </table>
-          </div>
-        </div>
-
+      <div class="filter-group">
+        <label for="f-coef">Coef.</label>
+        <select id="f-coef" title="Selecionar Coeficiente" onchange="renderCalc()">
+          <option value="">(Todos)</option>
+          <option value="1">Reemb. (=1)</option>
+          <option value="0">Não reemb. (=0)</option>
+        </select>
       </div>
     </div>
-  </div>
+
+    <div class="filter-group">
+      <label>Extras Manuais (R$)</label>
+      <div class="flex-column gap-7">
+        <input type="number" id="ex-pedagio" placeholder="Pedágios..." value="0" step="0.01" oninput="renderCalc()">
+        <input type="number" id="ex-estac" placeholder="Estac. / Outros..." value="0" step="0.01" oninput="renderCalc()">
+      </div>
+    </div>
+
+    <div style="margin-top:auto; display:flex; flex-direction:column; gap:16px;">
+      <button class="btn btn-import" onclick="document.getElementById('file-input').click()">
+        <span class="material-symbols-outlined">upload_file</span>
+        IMPORTAR XLSX
+      </button>
+      <input type="file" id="file-input" accept=".xlsx,.xls,.csv" onchange="handleFile(event)">
+      
+      <button class="btn btn-report" onclick="exportXLSX()">
+        <span class="material-symbols-outlined">description</span>
+        GERAR RELATÓRIO
+      </button>
+
+      <button class="btn btn-clear" onclick="resetFilters()">
+        LIMPAR FILTROS
+      </button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="kpi-grid">
+      <div class="kpi-card total">
+        <div class="kpi-label">Total Reembolso</div>
+        <div class="kpi-value" id="kv-grand">R$ 0,00</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Custo KM (VAR)</div>
+        <div class="kpi-value" id="kv-var">R$ 0,00</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Custo Fixo (CASA)</div>
+        <div class="kpi-value" id="kv-casa">R$ 0,00</div>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Funcionário</th>
+              <th style="text-align:right">Custo KM</th>
+              <th style="text-align:right">Fixo</th>
+              <th style="text-align:right">Pedágios</th>
+              <th style="text-align:right">Estac.</th>
+              <th style="text-align:right">Total</th>
+              <th style="text-align:right">OS</th>
+            </tr>
+          </thead>
+          <tbody id="calc-tbody"></tbody>
+        </table>
+      </div>
+      <div id="empty-state" class="empty-state">
+        Aguardando importação de dados...
+      </div>
+    </div>
+  </main>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-// ── STATE ────────────────────────────────────────────────────────────────────
-let rawData = [], headers = [];
-const COL = {};
-const COL_MAP = {
-  func:      ['funcionário','funcionario'],
-  valor:     ['valor'],
-  coef:      ['coeficiente'],
-  tipo:      ['tipo (km'],
-  pi:        ['ponto inicial'],
-  pf:        ['ponto final'],
-  data:      ['data'],
-  email:     ['email'],
-  cargo:     ['cargo'],
-  km:        ['km/tipo'],
-  statusAv:  ['status (avulso)'],
-  endIni:    ['endereço inicial'],
-  endFin:    ['endereço final'],
-  osIni:     ['os inicial'],
-  osFin:     ['os final'],
-  osPIni:    ['os personalizada inicial'],
-  osPFin:    ['os personalizada final'],
-  lancado:   ['lançado em'],
-  tipoR:     ['tipo (reembolsável)'],
-  local:     ['local'],
-  visita:    ['visita'],
-  coment:    ['comentário'],
-  ident:     ['identificador'],
-  cvIni:     ['comentário visita (inicial)'],
-  cvFin:     ['comentário visita (final)'],
-  ivIni:     ['instrução da visita (inicial)'],
-  ivFin:     ['instrução da visita (final)'],
-  cnpjIni:   ['cnpj do local (inicial)'],
-  cnpjFin:   ['cnpj do local (final)'],
-};
-
-function detectColumns(hdrs) {
-  Object.keys(COL_MAP).forEach(k => COL[k] = null);
-  hdrs.forEach((h, i) => {
-    const lc = String(h||'').toLowerCase().trim();
-    Object.entries(COL_MAP).forEach(([key, patterns]) => {
-      if (COL[key] === null && patterns.some(p => lc.startsWith(p) || lc === p)) COL[key] = i;
-    });
-  });
-}
-
-// ── TABS ─────────────────────────────────────────────────────────────────────
-function switchTab(name) {
-  ['base','calc'].forEach((t,i) => {
-    document.querySelectorAll('.tab')[i].classList.toggle('active', t===name);
-    document.getElementById('panel-'+t).classList.toggle('active', t===name);
-  });
-  if (name==='calc') renderCalc();
-}
-
-// ── FILE ─────────────────────────────────────────────────────────────────────
-function handleFile(e) {
-  const file = e.target.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    try {
-      const wb = XLSX.read(ev.target.result, {type:'binary', cellDates:true});
-      const sn = wb.SheetNames.includes('reembolsos') ? 'reembolsos' : wb.SheetNames[0];
-      loadArray(XLSX.utils.sheet_to_json(wb.Sheets[sn], {header:1, defval:null}));
-    } catch(err) { alert('Erro: ' + err.message); }
+  let rawData = [], headers = [];
+  const COL = {};
+  const COL_MAP = {
+    func:    ['funcionário','funcionario'],
+    valor:   ['valor'],
+    coef:    ['coeficiente'],
+    tipo:    ['tipo (km'],
+    pi:      ['ponto inicial'],
+    pf:      ['ponto final'],
+    osPFin:  ['os personalizada final'],
+    cargo:   ['cargo']
   };
-  reader.readAsBinaryString(file);
-  e.target.value = '';
-}
 
-function togglePaste() {
-  const el = document.getElementById('paste-area');
-  el.style.display = el.style.display==='block' ? 'none' : 'block';
-}
-function processPaste() {
-  const text = document.getElementById('paste-input').value.trim(); if (!text) return;
-  const sep = text.includes('\t') ? '\t' : ',';
-  loadArray(text.split('\n').map(r => r.split(sep).map(c => c.trim())));
-  document.getElementById('paste-area').style.display = 'none';
-}
+  function updateTime() {
+    const now = new Date();
+    const opts = { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' };
+    document.getElementById('header-date').textContent = now.toLocaleDateString('pt-BR', opts).replace('.','');
+  }
+  setInterval(updateTime, 1000); updateTime();
 
-function loadSample() {
-  const H = ['Data','Funcionário','Email','Cargo','Km/Tipo(Avulso)','Valor','Coeficiente','Tipo (KM ou Avulso)','Status (Avulso)','Ponto inicial','Ponto Final','Endereço Inicial','Endereço Final','OS Inicial','OS Final','OS Personalizada Inicial','OS Personalizada Final','Lançado em','Tipo (reembolsável)','Local','Visita','Comentário','Identificador','Comentário Visita (inicial)','Comentário Visita (final)','Instrução da Visita (Inicial)','Instrução da Visita (Final)','CNPJ do Local (Inicial)','CNPJ do Local (Final)'];
-  const D = [
-    ['16/03/2026','Ana Costa','ana@empresa.com','Técnico',22.995,22.995,1,'KM','','Casa do Usuário','Cliente A','Rua A, 100','Rua B, 200','-','333903','-','-','','Reembolsável','','','','ID1','','','','','',''],
-    ['16/03/2026','Ana Costa','ana@empresa.com','Técnico',8.418,8.418,1,'KM','','Cliente A','Cliente B','Rua B, 200','Rua C, 300','333903','334982','-','37019','','Reembolsável','','','','ID1','','','','','',''],
-    ['16/03/2026','Ana Costa','ana@empresa.com','Técnico',15.0,15.0,1,'KM','','Cliente B','Casa do Usuário','Rua C, 300','Rua A, 100','334982','-','37019','-','','Reembolsável','','','','ID1','','','','','',''],
-    ['16/03/2026','Bruno Lima','bruno@empresa.com','Suporte',5.5,0,0,'KM','','Casa do Usuário','Escritório','Rua D','Rua E','-','334856','-','36935','','Reembolsável','','','','ID2','','','','','',''],
-    ['16/03/2026','Bruno Lima','bruno@empresa.com','Suporte',3.2,3.2,1,'KM','','Escritório','Cliente C','Rua E','Rua F','334856','334855','36935','36934','','Reembolsável','','','','ID2','','','','','',''],
-    ['16/03/2026','Bruno Lima','bruno@empresa.com','Suporte',null,0,1,'KM','','Cliente C','Cliente C','Rua F','Rua F','334855','334857','36934','37042','','Reembolsável','','','','ID2','','','','','',''],
-    ['16/03/2026','Bruno Lima','bruno@empresa.com','Suporte',6.1,6.1,1,'KM','','Cliente C','Casa do Usuário','Rua F','Rua D','334857','-','37042','-','','Reembolsável','','','','ID2','','','','','',''],
-    ['17/03/2026','Carlos Silva','carlos@empresa.com','Técnico',null,45.0,null,'Avulso','aceito','—','—','','','-','-','-','-','','Reembolsável','','','','ID3','','','','','',''],
-    ['17/03/2026','Ana Costa','ana@empresa.com','Técnico',30.0,30.0,1,'KM','','Cliente D','Cliente E','Rua G','Rua H','334761','334762','36760','36761','','Reembolsável','','','','ID4','','','','','',''],
-  ];
-  loadArray([H, ...D]);
-}
-
-function loadArray(arr) {
-  if (!arr || arr.length < 2) { alert('Arquivo vazio ou inválido.'); return; }
-  headers = arr[0].map(h => String(h??'').trim());
-  detectColumns(headers);
-  rawData = arr.slice(1).map(row => {
-    const obj = {}; headers.forEach((h,i) => { obj[h] = row[i]??null; }); return obj;
-  }).filter(r => headers.some(h => r[h]!==null && r[h]!==''));
-  renderBase(); updateFuncFilter();
-  document.getElementById('row-status').textContent = rawData.length.toLocaleString('pt-BR') + ' registros';
-}
-
-// ── BASE RENDER ───────────────────────────────────────────────────────────────
-const SHOW = ['data','funcionário','cargo','km/tipo','valor','coeficiente','tipo (km','ponto inicial','ponto final'];
-function renderBase() {
-  const visIdx = [];
-  headers.forEach((h,i) => { if (SHOW.some(s => h.toLowerCase().startsWith(s)||h.toLowerCase()===s)) visIdx.push(i); });
-  const vi = visIdx.slice(0,10);
-  document.getElementById('base-thead').innerHTML = '<tr>'+vi.map(i=>`<th>${headers[i]}</th>`).join('')+'</tr>';
-  document.getElementById('base-tbody').innerHTML = rawData.slice(0,3000).map(row =>
-    '<tr>'+vi.map(i=>{
-      const h=headers[i],v=row[h];
-      if (h.toLowerCase().startsWith('tipo (km')) return `<td><span class="badge ${v==='KM'?'badge-km':'badge-av'}">${v??''}</span></td>`;
-      if (h.toLowerCase()==='coeficiente') return `<td class="${v==0?'muted':''}">${v??''}</td>`;
-      if (h.toLowerCase()==='valor'||h.toLowerCase().startsWith('km/tipo')) {
-        const n=parseFloat(v); return `<td class="num">${isNaN(n)?(v??'—'):n.toFixed(3)}</td>`;
-      }
-      const s=v instanceof Date?v.toLocaleDateString('pt-BR'):String(v??'');
-      return `<td title="${s}">${s}</td>`;
-    }).join('')+'</tr>'
-  ).join('');
-  document.getElementById('base-empty').style.display='none';
-  document.getElementById('base-table-wrap').style.display='block';
-  document.getElementById('base-count').textContent =
-    rawData.length>3000?`Mostrando 3.000 de ${rawData.length.toLocaleString('pt-BR')} linhas`:`${rawData.length.toLocaleString('pt-BR')} linhas`;
-}
-
-function clearData() {
-  rawData=[]; headers=[];
-  document.getElementById('base-empty').style.display='flex';
-  document.getElementById('base-table-wrap').style.display='none';
-  document.getElementById('base-count').textContent='';
-  document.getElementById('row-status').textContent='Nenhum dado carregado';
-  document.getElementById('f-func').innerHTML='<option value="">(Todos)</option>';
-  renderCalc();
-}
-
-// ── CALC ──────────────────────────────────────────────────────────────────────
-function updateFuncFilter() {
-  const sel=document.getElementById('f-func'), prev=sel.value;
-  const funcs=COL.func!==null?[...new Set(rawData.map(r=>r[headers[COL.func]]).filter(Boolean))].sort():[];
-  sel.innerHTML='<option value="">(Todos)</option>'+funcs.map(f=>`<option${f===prev?' selected':''}>${f}</option>`).join('');
-}
-
-function gv(row,col){return col===null?null:row[headers[col]];}
-function pn(v){if(v===null||v===undefined||v==='')return 0;const n=parseFloat(v);return isNaN(n)?0:n;}
-function fmt(v){return 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:3});}
-
-function getFiltered() {
-  const fFunc=document.getElementById('f-func').value;
-  const fTipo=document.getElementById('f-tipo').value;
-  const fCoef=document.getElementById('f-coef').value;
-  const fPi=document.getElementById('f-pi').value.toLowerCase();
-  const fPf=document.getElementById('f-pf').value.toLowerCase();
-  return rawData.filter(row=>{
-    if(fFunc && gv(row,COL.func)!==fFunc) return false;
-    if(fTipo && gv(row,COL.tipo)!==fTipo) return false;
-    if(fCoef!==''){const c=gv(row,COL.coef);if(String(c)!==fCoef&&parseFloat(c)!==parseFloat(fCoef))return false;}
-    if(fPi && !String(gv(row,COL.pi)??'').toLowerCase().includes(fPi)) return false;
-    if(fPf && !String(gv(row,COL.pf)??'').toLowerCase().includes(fPf)) return false;
-    return true;
-  });
-}
-
-function calcStats(data) {
-  const byFunc={};
-  data.forEach(row=>{
-    const func=String(gv(row,COL.func)??'(sem nome)');
-    if(!byFunc[func]) byFunc[func]={total:0,variavel:0,casa:0,count:0};
-    byFunc[func].count++;
-    if(pn(gv(row,COL.coef))!==1) return;
-    const val=pn(gv(row,COL.valor));
-    const isCasa=String(gv(row,COL.pi)??'').includes('Casa do Usuário')||String(gv(row,COL.pf)??'').includes('Casa do Usuário');
-    byFunc[func].total+=val;
-    if(isCasa) byFunc[func].casa+=val; else byFunc[func].variavel+=val;
-  });
-  return byFunc;
-}
-
-function renderCalc() {
-  const noData=document.getElementById('calc-no-data');
-  const content=document.getElementById('calc-content');
-  if(rawData.length===0){noData.style.display='flex';content.style.display='none';return;}
-  noData.style.display='none'; content.style.display='flex';
-
-  const exPed=pn(document.getElementById('ex-pedagio').value);
-  const exEst=pn(document.getElementById('ex-estac').value);
-  const exMet=pn(document.getElementById('ex-metro').value);
-
-  const filtered=getFiltered();
-  const byFunc=calcStats(filtered);
-  const sorted=Object.entries(byFunc).sort((a,b)=>b[1].total-a[1].total);
-
-  let total=0,variavel=0,casa=0;
-  sorted.forEach(([,d])=>{total+=d.total;variavel+=d.variavel;casa+=d.casa;});
-
-  document.getElementById('kv-total').textContent=fmt(total);
-  document.getElementById('kv-var').textContent=fmt(variavel);
-  document.getElementById('kv-casa').textContent=fmt(casa);
-  document.getElementById('ks-total').textContent=filtered.length.toLocaleString('pt-BR')+' trechos';
-  document.getElementById('calc-tag').textContent=filtered.length.toLocaleString('pt-BR')+' trechos';
-  document.getElementById('ev-pedagio').textContent=fmt(exPed);
-  document.getElementById('ev-estac').textContent=fmt(exEst);
-  document.getElementById('ev-metro').textContent=fmt(exMet);
-  document.getElementById('kv-grand').textContent=fmt(total+exPed+exEst+exMet);
-
-  const totalAll=total;
-  document.getElementById('calc-tbody').innerHTML=sorted.length===0
-    ?'<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:2rem">Sem dados para os filtros selecionados.</td></tr>'
-    :sorted.map(([func,d])=>{
-      const ratio=totalAll>0?d.total/totalAll:(sorted.length>0?1/sorted.length:0);
-      const ped=exPed*ratio,est=exEst*ratio,met=exMet*ratio,grand=d.total+ped+est+met;
-      // OS Atendidas: OS únicas no campo OS Personalizada Final
-      const osSet=new Set();
-      rawData.forEach(row=>{
-        if(gv(row,COL.func)!==func) return;
-        const v=String(gv(row,COL.osPFin)??'').trim();
-        if(v&&v!=='-'&&v!=='') osSet.add(v);
+  function detectColumns(hdrs) {
+    Object.keys(COL_MAP).forEach(k => COL[k] = null);
+    hdrs.forEach((h, i) => {
+      const lc = String(h||'').toLowerCase().trim();
+      Object.entries(COL_MAP).forEach(([key, patterns]) => {
+        if (COL[key] === null && patterns.some(p => lc.startsWith(p) || lc === p)) COL[key] = i;
       });
+    });
+  }
+
+  function handleFile(e) {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const wb = XLSX.read(ev.target.result, {type:'binary', cellDates:true});
+        const sn = wb.SheetNames.includes('reembolsos') ? 'reembolsos' : wb.SheetNames[0];
+        loadArray(XLSX.utils.sheet_to_json(wb.Sheets[sn], {header:1, defval:null}));
+      } catch(err) { alert('Erro: ' + err.message); }
+    };
+    reader.readAsBinaryString(file);
+    e.target.value = '';
+  }
+
+  function loadArray(arr) {
+    if (!arr || arr.length < 2) { alert('Arquivo inválido.'); return; }
+    headers = arr[0].map(h => String(h??'').trim());
+    detectColumns(headers);
+    rawData = arr.slice(1).map(row => {
+      const obj = {}; headers.forEach((h,i) => { obj[h] = row[i]??null; }); return obj;
+    }).filter(r => headers.some(h => r[h]!==null && r[h]!==''));
+    updateFuncFilter(); renderCalc();
+  }
+
+  function updateFuncFilter() {
+    const sel = document.getElementById('f-func'), prev = sel.value;
+    const funcs = COL.func!==null ? [...new Set(rawData.map(r=>r[headers[COL.func]]).filter(Boolean))].sort() : [];
+    sel.innerHTML = '<option value="">(Todos)</option>' + funcs.map(f=>`<option${f===prev?' selected':''}>${f}</option>`).join('');
+  }
+
+  function gv(row,col){ return col===null ? null : row[headers[col]]; }
+  function pn(v){ if(v===null||v===undefined||v==='')return 0; const n=parseFloat(v); return isNaN(n)?0:n; }
+  function fmt(v){ return 'R$ ' + v.toLocaleString('pt-BR',{minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+  function renderCalc() {
+    const empty = document.getElementById('empty-state');
+    if (rawData.length === 0) { empty.style.display = 'flex'; return; }
+    empty.style.display = 'none';
+
+    const fFunc = document.getElementById('f-func').value;
+    const fTipo = document.getElementById('f-tipo').value;
+    const fCoef = document.getElementById('f-coef').value;
+    const exPed = pn(document.getElementById('ex-pedagio').value);
+    const exEst = pn(document.getElementById('ex-estac').value);
+
+    const filtered = rawData.filter(row => {
+      if(fFunc && gv(row, COL.func)!==fFunc) return false;
+      if(fTipo && gv(row, COL.tipo)!==fTipo) return false;
+      if(fCoef !== '') { const c = gv(row, COL.coef); if(String(c)!==fCoef && pn(c)!==pn(fCoef)) return false; }
+      return true;
+    });
+
+    const byFunc = {};
+    filtered.forEach(row => {
+      const name = String(gv(row, COL.func) ?? 'Sem Nome');
+      if(!byFunc[name]) byFunc[name] = { total:0, var:0, casa:0, count:0, os: new Set() };
+      const val = pn(gv(row, COL.valor)), coef = pn(gv(row, COL.coef));
+      const os = String(gv(row, COL.osPFin)??'').trim();
+      if(os && os!=='-') byFunc[name].os.add(os);
+      if(coef === 1) {
+        const isCasa = String(gv(row, COL.pi)??'').includes('Casa do Usuário') || String(gv(row, COL.pf)??'').includes('Casa do Usuário');
+        byFunc[name].total += val;
+        if(isCasa) byFunc[name].casa += val; else byFunc[name].var += val;
+      }
+    });
+
+    const sorted = Object.entries(byFunc).sort((a,b) => b[1].total - a[1].total);
+    let gTotal = 0, gVar = 0, gCasa = 0;
+    sorted.forEach(([,d]) => { gTotal += d.total; gVar += d.var; gCasa += d.casa; });
+
+    document.getElementById('kv-grand').textContent = fmt(gTotal + exPed + exEst);
+    document.getElementById('kv-var').textContent = fmt(gVar);
+    document.getElementById('kv-casa').textContent = fmt(gCasa);
+
+    const totalAll = gTotal;
+    document.getElementById('calc-tbody').innerHTML = sorted.map(([name, d]) => {
+      const ratio = totalAll > 0 ? d.total / totalAll : (sorted.length > 0 ? 1/sorted.length : 0);
+      const ped = exPed * ratio, est = exEst * ratio, total = d.total + ped + est;
       return `<tr>
-        <td>${func}</td>
-        <td class="num">${fmt(d.total)}</td>
-        <td class="num" style="color:var(--accent3)">${fmt(d.variavel)}</td>
-        <td class="num" style="color:var(--accent2)">${fmt(d.casa)}</td>
-        <td class="num" style="color:var(--accent2)">${fmt(ped)}</td>
-        <td class="num" style="color:var(--accent2)">${fmt(est)}</td>
-        <td class="num" style="color:var(--accent2)">${fmt(met)}</td>
-        <td class="num" style="color:#a78bfa">${fmt(grand)}</td>
-        <td class="num" style="color:var(--accent3)">${osSet.size}</td>
-        <td class="num" style="color:var(--muted)">${d.count}</td>
+        <td>${name}</td>
+        <td class="td-num" style="text-align:right">${fmt(d.var)}</td>
+        <td class="td-num" style="text-align:right">${fmt(d.casa)}</td>
+        <td class="td-num" style="text-align:right; color: var(--text-dim)">${fmt(ped)}</td>
+        <td class="td-num" style="text-align:right; color: var(--text-dim)">${fmt(est)}</td>
+        <td class="td-num td-total" style="text-align:right">${fmt(total)}</td>
+        <td class="td-num td-os" style="text-align:right">${d.os.size}</td>
       </tr>`;
     }).join('');
-}
-
-function resetFilters() {
-  ['f-func','f-tipo','f-coef'].forEach(id=>document.getElementById(id).value='');
-  ['f-pi','f-pf'].forEach(id=>document.getElementById(id).value='');
-  ['ex-pedagio','ex-estac','ex-metro'].forEach(id=>document.getElementById(id).value='0');
-  renderCalc();
-}
-
-// ── EXPORT XLSX — idêntico ao Comparativo_Quinzenas_Marco2026_MODELO1_v3.xlsx ──
-function exportXLSX() {
-  if (rawData.length === 0) { alert('Nenhum dado para exportar.'); return; }
-
-  const exPed = pn(document.getElementById('ex-pedagio').value);
-  const exEst = pn(document.getElementById('ex-estac').value);
-  const exMet = pn(document.getElementById('ex-metro').value);
-
-  // stats por funcionário (todos os dados, sem filtro de UI)
-  const byFunc = calcStats(rawData);
-
-  // qtd OS únicas por funcionário (OS Personalizada Final)
-  const osCount = {};
-  rawData.forEach(row => {
-    const func = String(gv(row, COL.func) ?? '');
-    const osVal = String(gv(row, COL.osPFin) ?? '').trim();
-    if (!func) return;
-    if (!osCount[func]) osCount[func] = new Set();
-    if (osVal && osVal !== '-' && osVal !== '') osCount[func].add(osVal);
-  });
-
-  // ORDEM ALFABÉTICA
-  const sorted = Object.entries(byFunc).sort((a, b) =>
-    a[0].localeCompare(b[0], 'pt-BR', { sensitivity: 'base' })
-  );
-
-  const totalAll   = sorted.reduce((s, [, d]) => s + d.total,    0);
-  const varAll     = sorted.reduce((s, [, d]) => s + d.variavel, 0);
-  const casaAll    = sorted.reduce((s, [, d]) => s + d.casa,     0);
-  const avulsoAll  = +(exPed + exEst + exMet).toFixed(2);
-  const grandTotal = +(totalAll + avulsoAll).toFixed(2);
-  const totalOS    = sorted.reduce((s, [f]) => s + (osCount[f]?.size || 0), 0);
-
-  const wb = XLSX.utils.book_new();
-  const ws = { '!merges': [] };
-
-  const NF  = String.raw`\R\$\ #,##0.00;[Red]\(\R\$\ #,##0.00\);"-"`;
-  const NFI = '#,##0;"-"';
-
-  function C(addr, value, { bold=false, fg='FF000000', bg='FFFFFFFF',
-                             h='general', wrap=false, nf=null } = {}) {
-    const cell = {};
-    if (value === null || value === undefined) {
-      cell.t = 'z';
-    } else if (typeof value === 'number') {
-      cell.t = 'n'; cell.v = value; cell.z = nf || NF;
-    } else {
-      cell.t = 's'; cell.v = String(value);
-    }
-    cell.s = {
-      font:      { bold, color: { rgb: fg }, name: 'Calibri', sz: 10 },
-      fill:      { patternType: 'solid', fgColor: { rgb: bg } },
-      alignment: { horizontal: h, vertical: 'center', wrapText: wrap },
-    };
-    ws[addr] = cell;
   }
 
-  function M(r1, c1, r2, c2) {
-    ws['!merges'].push({ s:{r:r1-1,c:c1-1}, e:{r:r2-1,c:c2-1} });
+  function resetFilters() {
+    document.getElementById('f-func').value = '';
+    document.getElementById('f-tipo').value = '';
+    document.getElementById('f-coef').value = '';
+    document.getElementById('ex-pedagio').value = '0';
+    document.getElementById('ex-estac').value = '0';
+    renderCalc();
   }
 
-  // ── R1: título A1:G1 ──────────────────────────────────────────────────────
-  M(1,1,1,7);
-  C('A1','COMPARATIVO DE QUINZENAS — MARÇO 2026',
-    {bold:true,fg:'FFFFFFFF',bg:'FF0D3B6E',h:'center'});
-  ['B1','C1','D1','E1','F1','G1'].forEach(a=>C(a,null,{bg:'FF0D3B6E'}));
+  // --- EXPORT LOGIC ---
+  function exportXLSX() {
+    if (rawData.length === 0) { alert('Sem dados para exportar.'); return; }
+    const exPed = pn(document.getElementById('ex-pedagio').value);
+    const exEst = pn(document.getElementById('ex-estac').value);
+    const byFunc = {};
+    rawData.forEach(row => {
+      const func = String(gv(row, COL.func) ?? '');
+      const osVal = String(gv(row, COL.osPFin) ?? '').trim();
+      if (!func) return;
+      if (!byFunc[func]) byFunc[func] = { total:0, var:0, casa:0, os: new Set() };
+      if (osVal && osVal !== '-' && osVal !== '') byFunc[func].os.add(osVal);
+      if (pn(gv(row, COL.coef)) === 1) {
+        const val = pn(gv(row, COL.valor));
+        const isCasa = String(gv(row, COL.pi)??'').includes('Casa do Usuário') || String(gv(row, COL.pf)??'').includes('Casa do Usuário');
+        byFunc[func].total += val;
+        if(isCasa) byFunc[func].casa += val; else byFunc[func].var += val;
+      }
+    });
 
-  // ── R2: subtítulo A2:G2 ───────────────────────────────────────────────────
-  M(2,1,2,7);
-  C('A2','1ª QUINZENA (01/03 a 15/03) — 10 dias úteis',
-    {bold:true,fg:'FFFFFFFF',bg:'FF1565C0',h:'center'});
-  ['B2','C2','D2','E2','F2','G2'].forEach(a=>C(a,null,{bg:'FF1565C0'}));
+    const sorted = Object.entries(byFunc).sort((a, b) => a[0].localeCompare(b[0], 'pt-BR'));
+    const totalAll = sorted.reduce((s, [, d]) => s + d.total, 0);
+    const grandTotal = totalAll + exPed + exEst;
 
-  // ── R3: cabeçalhos ────────────────────────────────────────────────────────
-  // A=Técnico | B=Área/Local | C=Custo Fixo | D=Custo Variável | E=avulso | F=TOTAL | G=OS Atendidas
-  [
-    ['A3','Técnico',          'FF0D3B6E'],
-    ['B3','Área / Local',     'FF0D3B6E'],
-    ['C3','Custo\nFixo',      'FF1565C0'],
-    ['D3','Custo\nVariável',  'FF1565C0'],
-    ['E3','avulso',           'FF1565C0'],
-    ['F3','TOTAL\n1ª Q.',     'FF0D3B6E'],
-    ['G3','OS\nAtendidas',    'FF0D3B6E'],
-  ].forEach(([addr,val,bg])=>
-    C(addr,val,{bold:true,fg:'FFFFFFFF',bg,h:'center',wrap:true}));
-
-  // ── R4+: funcionários em ordem alfabética ─────────────────────────────────
-  const ALT = ['FFFFFFFF','FFECEFF1'];
-  let row = 4;
-  let altIdx = 0;
-
-  sorted.forEach(([func, d]) => {
-    const isDiego   = func.toLowerCase().includes('diego severiano');
-    const isRodrigo = func.toLowerCase().includes('rodrigo f.');
-    let bg, fg;
-    if (isDiego)        { bg='FFEDE7F6'; fg='FF4A148C'; }
-    else if (isRodrigo) { bg='FFFBE9E7'; fg='FFBF360C'; }
-    else                { bg=ALT[altIdx%2]; fg='FF000000'; altIdx++; }
-
-    const rawRow = rawData.find(r => gv(r,COL.func)===func) || {};
-    const area   = COL.cargo!==null ? String(gv(rawRow,COL.cargo)||'') : '';
-
-    const fixo   = d.casa    >0 ? +d.casa.toFixed(2)    : null;
-    const vari   = d.variavel>0 ? +d.variavel.toFixed(2) : null;
-    const ratio  = totalAll>0 ? d.total/totalAll : (sorted.length>0?1/sorted.length:0);
-    const avulso = avulsoAll>0 ? +(avulsoAll*ratio).toFixed(2) : null;
-    const total  = +((d.total)+(avulso||0)).toFixed(2);
-    const osQtd  = osCount[func]?.size || 0;
-
-    const fBg = isDiego?'FFEDE7F6':isRodrigo?'FFFBE9E7':'FFD6E4F7';
-
-    C(`A${row}`,func,   {fg,bg,h:'left'});
-    C(`B${row}`,area,   {fg,bg,h:'left'});
-    fixo  !==null?C(`C${row}`,fixo,  {fg,bg,h:'center'}):C(`C${row}`,null,{bg});
-    vari  !==null?C(`D${row}`,vari,  {fg,bg,h:'center'}):C(`D${row}`,null,{bg});
-    avulso!==null?C(`E${row}`,avulso,{fg,bg,h:'center'}):C(`E${row}`,null,{bg});
-    C(`F${row}`,total,  {bold:true,fg,bg:fBg,h:'center'});
-    C(`G${row}`,osQtd,  {bold:true,fg,bg:fBg,h:'center',nf:NFI});
-    row++;
-  });
-
-  // ── TOTAL TÉCNICOS DE CAMPO ───────────────────────────────────────────────
-  const tRow=row++;
-  M(tRow,1,tRow,2);
-  C(`A${tRow}`,'TOTAL TÉCNICOS DE CAMPO',{bold:true,fg:'FFFFFFFF',bg:'FF0D3B6E',h:'center'});
-  C(`B${tRow}`,null,{bg:'FF0D3B6E'});
-  C(`C${tRow}`,+casaAll.toFixed(2),{bold:true,fg:'FFFFFFFF',bg:'FF0D3B6E',h:'center'});
-  C(`D${tRow}`,+varAll.toFixed(2), {bold:true,fg:'FFFFFFFF',bg:'FF0D3B6E',h:'center'});
-  avulsoAll>0
-    ?C(`E${tRow}`,avulsoAll,{bold:true,fg:'FFFFFFFF',bg:'FF0D3B6E',h:'center'})
-    :C(`E${tRow}`,null,{bg:'FF0D3B6E'});
-  C(`F${tRow}`,grandTotal,{bold:true,fg:'FFFFFFFF',bg:'FFB71C1C',h:'center'});
-  C(`G${tRow}`,totalOS,   {bold:true,fg:'FFFFFFFF',bg:'FFB71C1C',h:'center',nf:NFI});
-
-  row++; // linha em branco
-
-  // ── TOTAL GERAL ───────────────────────────────────────────────────────────
-  const gRow=row++;
-  M(gRow,1,gRow,2);
-  C(`A${gRow}`,'TOTAL GERAL (inclui extras)',{bold:true,fg:'FFFFFFFF',bg:'FF263238',h:'center'});
-  C(`B${gRow}`,null,{bg:'FF263238'});
-  C(`C${gRow}`,+casaAll.toFixed(2),{bold:true,fg:'FFFFFFFF',bg:'FF263238',h:'center'});
-  C(`D${gRow}`,+varAll.toFixed(2), {bold:true,fg:'FFFFFFFF',bg:'FF263238',h:'center'});
-  avulsoAll>0
-    ?C(`E${gRow}`,avulsoAll,{bold:true,fg:'FFFFFFFF',bg:'FF263238',h:'center'})
-    :C(`E${gRow}`,null,{bg:'FF263238'});
-  C(`F${gRow}`,grandTotal,{bold:true,fg:'FFFFFFFF',bg:'FFB71C1C',h:'center'});
-  C(`G${gRow}`,totalOS,   {bold:true,fg:'FFFFFFFF',bg:'FFB71C1C',h:'center',nf:NFI});
-
-  // ── RESUMO ────────────────────────────────────────────────────────────────
-  row++;
-  const resRow=row++;
-  M(resRow,1,resRow,7);
-  C(`A${resRow}`,'RESUMO COMPARATIVO — REEMBOLSOS',
-    {bold:true,fg:'FFFFFFFF',bg:'FF455A64',h:'center'});
-  ['B','C','D','E','F','G'].forEach(c=>C(`${c}${resRow}`,null,{bg:'FF455A64'}));
-
-  const hRow=row++;
-  M(hRow,1,hRow,4); M(hRow,5,hRow,7);
-  C(`A${hRow}`,'Indicador',{bold:true,fg:'FFFFFFFF',bg:'FF0D3B6E',h:'center'});
-  ['B','C','D'].forEach(c=>C(`${c}${hRow}`,null,{bg:'FF0D3B6E'}));
-  C(`E${hRow}`,'Total',    {bold:true,fg:'FFFFFFFF',bg:'FF1565C0',h:'center'});
-  ['F','G'].forEach(c=>C(`${c}${hRow}`,null,{bg:'FF1565C0'}));
-
-  [
-    ['Técnicos de Campo (Custo KM)', +totalAll.toFixed(2), 'FFECEFF1'],
-    ['Pedágios',                      +exPed.toFixed(2),   'FFFFFFFF'],
-    ['Estacionamento / Zona Azul',    +exEst.toFixed(2),   'FFECEFF1'],
-    ['Metrô / Ônibus',                +exMet.toFixed(2),   'FFFFFFFF'],
-    ['TOTAL GERAL',                   grandTotal,          'FFFFF9C4'],
-  ].forEach(([label,val,bg],idx)=>{
-    const rr=row++; const bold=idx===4; const vBg=bold?'FFD6E4F7':bg;
-    M(rr,1,rr,4); M(rr,5,rr,7);
-    C(`A${rr}`,label,{bold,bg,h:'left'});
-    ['B','C','D'].forEach(c=>C(`${c}${rr}`,null,{bg}));
-    C(`E${rr}`,val,  {bold,bg:vBg,h:'center'});
-    ['F','G'].forEach(c=>C(`${c}${rr}`,null,{bg:vBg}));
-  });
-
-  // ── metadados ─────────────────────────────────────────────────────────────
-  ws['!ref'] =`A1:G${row-1}`;
-  ws['!cols']=[
-    {wch:27.14},{wch:18},{wch:11},{wch:11},{wch:10},{wch:13.57},{wch:12}
-  ];
-  const rm={}; rm[1]={hpx:48}; rm[2]={hpx:27}; rm[3]={hpx:67};
-  for(let r=4;r<tRow;r++) rm[r]={hpx:24};
-  rm[tRow]={hpx:32}; rm[gRow]={hpx:32};
-  ws['!rows']=rm;
-
-  XLSX.utils.book_append_sheet(wb,ws,'Comparativo de Quinzenas');
-  XLSX.writeFile(wb,'Comparativo_Quinzenas.xlsx');
-}
+    const wb = XLSX.utils.book_new();
+    const data = sorted.map(([name, d]) => {
+      const ratio = totalAll > 0 ? d.total / totalAll : 0;
+      return {
+        'Técnico': name,
+        'Custo Fixo': d.casa,
+        'Custo Variável': d.var,
+        'Extras': (exPed + exEst) * ratio,
+        'TOTAL': d.total + ((exPed + exEst) * ratio),
+        'OS Atendidas': d.os.size
+      };
+    });
+    const ws = XLSX.utils.json_to_sheet(data);
+    XLSX.utils.book_append_sheet(wb, ws, "Reembolsos");
+    XLSX.writeFile(wb, "Relatorio_Reembolsos.xlsx");
+  }
 </script>
 </body>
 </html>
