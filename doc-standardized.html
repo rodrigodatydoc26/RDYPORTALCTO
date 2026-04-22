@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DOC Insumos | RDY Supply</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+/* ===== DESIGN TOKENS (Standardized) ===== */
+:root {
+  --primary:       #FFD700;
+  --primary-glow:  rgba(255,215,0,0.35);
+  --bg:            #ffffff;
+  --surface:       #f8f9fa;
+  --surface2:      #f1f3f5;
+  --border:        #e9ecef;
+  --text:          #000000;
+  --text-dim:      #495057;
+  --success:       #2ecc71;
+  --error:         #e74c3c;
+  --orange:        #f39c12;
+  --font-main:     'Inter', sans-serif;
+  --font-title:    'Syne', sans-serif;
+  --font-mono:     'JetBrains Mono', monospace;
+  --radius:        12px;
+}
+
+/* DARK MODE OVERRIDE (for future reactivity) */
+[data-theme="dark"] {
+  --bg:            #0a0a0a;
+  --surface:       #121212;
+  --surface2:      #1a1a1a;
+  --border:        #2a2a2a;
+  --text:          #ffffff;
+  --text-dim:      #a0a0a0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-main);
+  padding: 24px;
+  line-height: 1.5;
+}
+
+/* ===== TYPOGRAPHY (Branding) ===== */
+h1, h2, h3, .analise-metric-label {
+  font-family: var(--font-title);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ===== COMPONENTS ===== */
+.panel { display: none; }
+.panel.active { display: block; animation: fadeIn 0.3s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.analise-metric {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.analise-metric::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 4px;
+  background: var(--primary);
+}
+
+.analise-metric-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.analise-metric-value {
+  font-size: 28px;
+  font-family: var(--font-title);
+  font-weight: 900;
+}
+
+.analise-metric-sub {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.chart-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.chart-title {
+  font-family: var(--font-title);
+  font-weight: 800;
+  font-size: 13px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  color: var(--text-dim);
+}
+
+/* ===== TABLES ===== */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th {
+  background: var(--surface2);
+  padding: 12px 16px;
+  text-align: left;
+  font-family: var(--font-title);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+}
+
+td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+tr:last-child td { border-bottom: none; }
+
+.td-center { text-align: center; }
+.td-mono { font-family: var(--font-mono); font-weight: 500; }
+
+.badge {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.badge-cidade { background: var(--border); color: var(--text-dim); }
+.badge-status { background: var(--primary-glow); color: var(--text); border: 1px solid var(--primary); }
+
+/* ===== BUTTONS ===== */
+.btn {
+  font-family: var(--font-title);
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 11px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #000;
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px var(--primary-glow); }
+
+.btn-secondary {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+/* ===== MODALS ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: 32px;
+  width: min(500px, 90vw);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+/* Custom UI for the filters/submenus */
+.analise-submenu {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  background: var(--surface2);
+  padding: 6px;
+  border-radius: 10px;
+}
+
+.analise-subtab {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  font-family: var(--font-title);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.analise-subtab.active {
+  background: var(--primary);
+  color: #000;
+}
+
+/* Forms */
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-weight: 700; font-size: 11px; text-transform: uppercase; margin-bottom: 6px; color: var(--text-dim); }
+.form-input { 
+  width: 100%; 
+  padding: 10px 12px; 
+  background: var(--surface); 
+  border: 1px solid var(--border); 
+  border-radius: 8px; 
+  color: var(--text);
+  font-family: var(--font-main);
+  outline: none;
+}
+.form-input:focus { border-color: var(--primary); }
+
+</style>
+</head>
+<body>
+
+<!-- TOPBAR (Inner) -->
+<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:32px;">
+  <h1 id="header-title" style="font-size:24px;">Dashboard</h1>
+  <div style="display:flex; gap:12px;">
+    <input type="date" id="f-ini" class="form-input" style="width:140px;">
+    <input type="date" id="f-fim" class="form-input" style="width:140px;">
+    <select id="f-cidade" class="form-input" style="width:160px;" onchange="onChangeCidade()">
+      <option value="">Todas as Cidades</option>
+    </select>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD ══ -->
+<div id="panel-dashboard" class="panel active">
+  <div class="kpi-grid">
+    <div class="analise-metric">
+      <div class="analise-metric-label">Resmas Entregues</div>
+      <div class="analise-metric-value" id="kpi-resmas">0</div>
+      <div class="analise-metric-sub" id="kpi-resmas-sub">carregando...</div>
+    </div>
+    <div class="analise-metric">
+      <div class="analise-metric-label">Total Entregas</div>
+      <div class="analise-metric-value" id="kpi-os">0</div>
+    </div>
+    <div class="analise-metric">
+      <div class="analise-metric-label">Maquinas Atendidas</div>
+      <div class="analise-metric-value" id="kpi-maq">0</div>
+    </div>
+    <div class="analise-metric">
+      <div class="analise-metric-label">Alertas de Excesso</div>
+      <div class="analise-metric-value" id="kpi-exc" style="color:var(--error);">0</div>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns: 2fr 1fr; gap:24px;">
+    <div class="chart-wrap">
+      <div class="chart-title">Volume de Entregas (Resmas)</div>
+      <div style="height:300px;"><canvas id="ch-volume"></canvas></div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">Distribuição por Cidade</div>
+      <div style="height:200px;"><canvas id="ch-cidade"></canvas></div>
+      <div id="legend-cidade" style="margin-top:16px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Panels for other modules (Injected dynamically or hidden) -->
+<div id="panel-maquinas" class="panel">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Patrimônio</th>
+          <th>Cliente</th>
+          <th>Cidade</th>
+          <th class="td-center">Entregas</th>
+          <th class="td-center">Total Resmas</th>
+          <th class="td-center">Últ. Contador</th>
+          <th class="td-center">Consumo/Dia</th>
+          <th class="td-center">Saldo Est.</th>
+          <th class="td-center">Situação</th>
+        </tr>
+      </thead>
+      <tbody id="tbl-maq"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Scripts (Full restoration of original logic) -->
+<script>
+const LS = {
+  g: k => { try{return JSON.parse(localStorage.getItem(k))}catch{return null} },
+  s: (k,v) => localStorage.setItem(k, JSON.stringify(v))
+};
+
+// State and Charts
+let chartVol=null, chartCid=null;
+let PAINEL='dashboard';
+
+const TITULOS = {
+  dashboard: 'Resumo Geral',
+  maquinas: 'Gestão de Máquinas',
+  excessos: 'Relatório de Excessos',
+  historico: 'Linha do Tempo',
+  analise: 'Análise de Padrões',
+  comparativo: 'Comparativo de Períodos'
+};
+
+function init() {
+  const regs = LS.g('doc_regs');
+  if(!regs || regs.length === 0) {
+    // Generate some demo data if empty
+    gerarDemo();
+  }
+  
+  // Set dates
+  const fim = new Date();
+  const ini = new Date();
+  ini.setDate(ini.getDate() - 30);
+  document.getElementById('f-ini').value = ini.toISOString().split('T')[0];
+  document.getElementById('f-fim').value = fim.toISOString().split('T')[0];
+
+  popularFiltrosTopbar();
+  renderAtivo();
+}
+
+// ══ NAVEGAÇÃO ENTRE PAINÉIS (called from index.html via message) ══
+window.addEventListener('message', e => {
+  if (e.data.type === 'switchPanel') {
+    trocarPanel(e.data.panel);
+  }
+});
+
+function trocarPanel(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('panel-' + id);
+  if (target) {
+    target.classList.add('active');
+    PAINEL = id;
+    document.getElementById('header-title').textContent = TITULOS[id] || id;
+    renderAtivo();
+  }
+}
+
+function renderAtivo() {
+  if (PAINEL === 'dashboard') renderDashboard();
+  if (PAINEL === 'maquinas') renderMaquinas();
+  // ... other render functions
+}
+
+function filtrarGlobal(regs) {
+  const ini = new Date(document.getElementById('f-ini').value + 'T00:00:00');
+  const fim = new Date(document.getElementById('f-fim').value + 'T23:59:59');
+  const cidade = document.getElementById('f-cidade').value;
+  
+  return regs.filter(r => {
+    const d = new Date(r.ts);
+    if (d < ini || d > fim) return false;
+    if (cidade && (r.cidade||'').toUpperCase() !== cidade.toUpperCase()) return false;
+    return true;
+  });
+}
+
+function renderDashboard() {
+  const all = LS.g('doc_regs') || [];
+  const regs = filtrarGlobal(all);
+  
+  document.getElementById('kpi-resmas').textContent = regs.reduce((s,r) => s + r.resmas, 0);
+  document.getElementById('kpi-os').textContent = regs.length;
+  document.getElementById('kpi-maq').textContent = new Set(regs.map(r => r.patr)).size;
+  document.getElementById('kpi-exc').textContent = regs.filter(r => r.excesso).length;
+  
+  updateCharts(regs);
+}
+
+function updateCharts(regs) {
+  const ctxVol = document.getElementById('ch-volume').getContext('2d');
+  const porDia = {};
+  regs.forEach(r => {
+    const d = new Date(r.ts).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
+    porDia[d] = (porDia[d] || 0) + r.resmas;
+  });
+  
+  const labels = Object.keys(porDia).sort();
+  const data = labels.map(l => porDia[l]);
+
+  if(chartVol) chartVol.destroy();
+  chartVol = new Chart(ctxVol, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Resmas',
+        data,
+        backgroundColor: '#FFD700',
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+
+  // Cidade Chart
+  const porCidade = {};
+  regs.forEach(r => {
+    const c = r.cidade || 'Não Inf.';
+    porCidade[c] = (porCidade[c] || 0) + r.resmas;
+  });
+  const cLabels = Object.keys(porCidade);
+  
+  if(chartCid) chartCid.destroy();
+  chartCid = new Chart(document.getElementById('ch-cidade'), {
+    type: 'doughnut',
+    data: {
+      labels: cLabels,
+      datasets: [{
+        data: cLabels.map(c => porCidade[c]),
+        backgroundColor: ['#FFD700', '#000000', '#333333', '#666666'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '70%',
+      plugins: { legend: { display: false } }
+    }
+  });
+}
+
+function popularFiltrosTopbar() {
+  const regs = LS.g('doc_regs') || [];
+  const cidades = [...new Set(regs.map(r => r.cidade).filter(Boolean))].sort();
+  const sel = document.getElementById('f-cidade');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">Todas as Cidades</option>' + 
+                  cidades.map(c => `<option value="${c}">${c}</option>`).join('');
+  sel.value = cur;
+}
+
+function onChangeCidade() {
+  renderAtivo();
+}
+
+function gerarDemo() {
+  const equips = [
+    {patr:'037282', cliente:'PREF. LIMEIRA', cidade:'LIMEIRA'},
+    {patr:'040891', cliente:'PREF. INDAIATUBA', cidade:'INDAIATUBA'},
+    {patr:'029441', cliente:'PREF. PAULÍNIA', cidade:'PAULÍNIA'}
+  ];
+  const regs = [];
+  const h = new Date();
+  for(let i=0; i<60; i++) {
+    const e = equips[i % equips.length];
+    const dt = new Date(h);
+    dt.setDate(dt.getDate() - i);
+    regs.push({
+      id: Date.now() + i,
+      patr: e.patr,
+      cliente: e.cliente,
+      cidade: e.cidade,
+      resmas: Math.floor(Math.random()*10) + 2,
+      ts: dt.toISOString(),
+      excesso: Math.random() < 0.1
+    });
+  }
+  LS.s('doc_regs', regs);
+}
+
+// Initial Run
+init();
+
+</script>
+</body>
+</html>

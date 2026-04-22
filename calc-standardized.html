@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Reembolso | RDY Supply</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+:root {
+  --primary:       #FFD700;
+  --primary-glow:  rgba(255,215,0,0.3);
+  --bg:            #ffffff;
+  --surface:       #f8f9fa;
+  --surface2:      #f1f3f5;
+  --border:        #e9ecef;
+  --text:          #000000;
+  --text-dim:      #495057;
+  --success:       #2ecc71;
+  --error:         #e74c3c;
+  --font-main:     'Inter', sans-serif;
+  --font-title:    'Syne', sans-serif;
+  --font-mono:     'JetBrains Mono', monospace;
+  --radius:        12px;
+}
+
+[data-theme="dark"] {
+  --bg:            #0a0a0a;
+  --surface:       #121212;
+  --surface2:      #1a1a1a;
+  --border:        #2a2a2a;
+  --text:          #ffffff;
+  --text-dim:      #a0a0a0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-main);
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ===== SIDEBAR FILTERS ===== */
+.sidebar {
+  width: 300px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  gap: 24px;
+  overflow-y: auto;
+}
+
+.sidebar-title {
+  font-family: var(--font-title);
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-label {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+}
+
+.filter-input {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-main);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.filter-input:focus { border-color: var(--primary); }
+
+.extras-box {
+  background: var(--surface2);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 32px;
+  overflow-y: auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.header h1 {
+  font-family: var(--font-title);
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 24px;
+}
+
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.kpi {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  position: relative;
+}
+
+.kpi::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 4px;
+  background: var(--primary);
+  border-radius: 4px 4px 0 0;
+}
+
+.kpi-label {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.kpi-value {
+  font-family: var(--font-title);
+  font-weight: 900;
+  font-size: 32px;
+}
+
+.kpi-sub {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* ===== RESULTS TABLE ===== */
+.results-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+  font-family: var(--font-title);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+}
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+}
+
+td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.td-num { font-family: var(--font-mono); font-weight: 600; text-align: right; }
+
+/* ===== BUTTONS ===== */
+.btn {
+  font-family: var(--font-title);
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 11px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.btn-primary { background: var(--primary); color: #000; box-shadow: 0 4px 12px var(--primary-glow); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px var(--primary-glow); }
+
+.btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--border); }
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.tab {
+  padding: 8px 16px;
+  font-family: var(--font-title);
+  font-weight: 800;
+  font-size: 11px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  color: var(--text-dim);
+}
+
+.tab.active {
+  color: var(--text);
+  border-bottom-color: var(--primary);
+}
+
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="sidebar-title"><i data-lucide="filter"></i> Filtros</div>
+  
+  <div class="filter-group">
+    <label class="filter-label">Funcionário</label>
+    <select id="f-func" class="filter-input" onchange="renderCalc()">
+      <option value="">(Todos)</option>
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label class="filter-label">Tipo</label>
+    <select id="f-tipo" class="filter-input" onchange="renderCalc()">
+      <option value="">(Todos)</option>
+      <option value="KM">KM</option>
+      <option value="Avulso">Avulso</option>
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label class="filter-label">Ponto Inicial / Final</label>
+    <input type="text" id="f-pi" class="filter-input" placeholder="Busca P. Inicial..." oninput="renderCalc()">
+    <input type="text" id="f-pf" class="filter-input" placeholder="Busca P. Final..." oninput="renderCalc()" style="margin-top:4px;">
+  </div>
+
+  <div class="extras-box">
+    <div class="sidebar-title" style="font-size:11px;"><i data-lucide="plus-circle" style="width:14px;"></i> Extras (R$)</div>
+    <div class="filter-group">
+      <label class="filter-label">Pedágios</label>
+      <input type="number" id="ex-pedagio" class="filter-input" value="0" step="0.01" oninput="renderCalc()">
+    </div>
+    <div class="filter-group">
+      <label class="filter-label">Estac. / Zona Azul</label>
+      <input type="number" id="ex-estac" class="filter-input" value="0" step="0.01" oninput="renderCalc()">
+    </div>
+  </div>
+
+  <button class="btn btn-ghost" onclick="resetFilters()">↺ Resetar</button>
+  <button class="btn btn-primary" onclick="exportXLSX()">⬇ Baixar Excel</button>
+</div>
+
+<div class="main">
+  <div class="header">
+    <h1>Calculadora de Reembolso</h1>
+    <div style="display:flex; gap:12px;">
+      <button class="btn btn-primary" onclick="document.getElementById('file-input').click()"><i data-lucide="upload"></i> Importar</button>
+      <input type="file" id="file-input" style="display:none" onchange="handleFile(event)">
+      <button class="btn btn-ghost" onclick="loadSample()">Teste Demo</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" id="tab-base" onclick="switchTab('base')">Base de Dados</div>
+    <div class="tab" id="tab-calc" onclick="switchTab('calc')">Cálculos Automatizados</div>
+  </div>
+
+  <div id="panel-base" class="panel">
+    <div class="results-card">
+      <div class="card-header">Registros Brutos (<span id="base-count">0</span>)</div>
+      <div class="table-wrap">
+        <table id="tbl-base">
+          <thead id="base-thead"></thead>
+          <tbody id="base-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="panel-calc" class="panel" style="display:none">
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="kpi-label">Custo Total (KM)</div>
+        <div class="kpi-value" id="kv-total">R$ 0,00</div>
+        <div class="kpi-sub" id="ks-total">0 trechos filtrados</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Total Geral (+Extras)</div>
+        <div class="kpi-value" id="kv-grand" style="color:var(--primary);">R$ 0,00</div>
+        <div class="kpi-sub">Total KM + Pedágios + Estac.</div>
+      </div>
+    </div>
+
+    <div class="results-card">
+      <div class="card-header">Resumo por Funcionário</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Funcionário</th>
+              <th style="text-align:right">Custo Total</th>
+              <th style="text-align:right">Pedágios</th>
+              <th style="text-align:right">Custo Casa</th>
+              <th style="text-align:right">Total Geral</th>
+              <th style="text-align:right">Trechos</th>
+            </tr>
+          </thead>
+          <tbody id="calc-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Port of original logic
+let rawData = [], headers = [];
+const COL = {};
+const COL_MAP = {
+  func:      ['funcionário','funcionario'],
+  valor:     ['valor'],
+  coef:      ['coeficiente'],
+  tipo:      ['tipo (km'],
+  pi:        ['ponto inicial'],
+  pf:        ['ponto final'],
+  osPFin:    ['os personalizada final']
+};
+
+function detectColumns(hdrs) {
+  Object.keys(COL_MAP).forEach(k => COL[k] = null);
+  hdrs.forEach((h, i) => {
+    const lc = String(h||'').toLowerCase().trim();
+    Object.entries(COL_MAP).forEach(([key, patterns]) => {
+      if (COL[key] === null && patterns.some(p => lc.startsWith(p) || lc === p)) COL[key] = i;
+    });
+  });
+}
+
+function handleFile(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const wb = XLSX.read(ev.target.result, {type:'binary', cellDates:true});
+    const sn = wb.SheetNames[0];
+    loadArray(XLSX.utils.sheet_to_json(wb.Sheets[sn], {header:1, defval:null}));
+  };
+  reader.readAsBinaryString(file);
+}
+
+function loadArray(arr) {
+  headers = arr[0].map(h => String(h??'').trim());
+  detectColumns(headers);
+  rawData = arr.slice(1).map(row => {
+    const obj = {}; headers.forEach((h,i) => { obj[h] = row[i]??null; }); return obj;
+  });
+  renderBase();
+  updateFuncFilter();
+  lucide.createIcons();
+}
+
+function renderBase() {
+  const show = headers.slice(0, 8);
+  document.getElementById('base-thead').innerHTML = '<tr>' + show.map(h => `<th>${h}</th>`).join('') + '</tr>';
+  document.getElementById('base-tbody').innerHTML = rawData.slice(0, 100).map(row => 
+    '<tr>' + show.map(h => `<td>${row[h]||''}</td>`).join('') + '</tr>'
+  ).join('');
+  document.getElementById('base-count').textContent = rawData.length;
+}
+
+function updateFuncFilter() {
+  const funcs = [...new Set(rawData.map(r => r[headers[COL.func]]).filter(Boolean))].sort();
+  document.getElementById('f-func').innerHTML = '<option value="">(Todos)</option>' + funcs.map(f => `<option>${f}</option>`).join('');
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
+  document.getElementById('panel-' + name).style.display = 'block';
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if(name === 'calc') renderCalc();
+}
+
+function renderCalc() {
+  const fFunc = document.getElementById('f-func').value;
+  const fTipo = document.getElementById('f-tipo').value;
+  const exPed = parseFloat(document.getElementById('ex-pedagio').value) || 0;
+  const exEst = parseFloat(document.getElementById('ex-estac').value) || 0;
+
+  const filtered = rawData.filter(r => {
+    if(fFunc && r[headers[COL.func]] !== fFunc) return false;
+    if(fTipo && r[headers[COL.tipo]] !== fTipo) return false;
+    return true;
+  });
+
+  let total = 0;
+  const byFunc = {};
+  filtered.forEach(r => {
+    const f = r[headers[COL.func]] || 'Desconhecido';
+    const v = parseFloat(r[headers[COL.valor]]) || 0;
+    const c = parseFloat(r[headers[COL.coef]]) || 0;
+    if(c === 1) total += v;
+    
+    if(!byFunc[f]) byFunc[f] = { total: 0, count: 0, casa: 0 };
+    byFunc[f].count++;
+    if(c === 1) byFunc[f].total += v;
+    const isCasa = String(r[headers[COL.pi]]||'').includes('Casa') || String(r[headers[COL.pf]]||'').includes('Casa');
+    if(isCasa && c === 1) byFunc[f].casa += v;
+  });
+
+  const fmt = v => 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+  document.getElementById('kv-total').textContent = fmt(total);
+  document.getElementById('kv-grand').textContent = fmt(total + exPed + exEst);
+  document.getElementById('ks-total').textContent = filtered.length + ' trechos filtrados';
+
+  document.getElementById('calc-tbody').innerHTML = Object.entries(byFunc).map(([f, d]) => {
+    const ratio = total > 0 ? d.total / total : 0;
+    const grand = d.total + (exPed + exEst) * ratio;
+    return `<tr>
+      <td>${f}</td>
+      <td class="td-num">${fmt(d.total)}</td>
+      <td class="td-num">${fmt((exPed + exEst) * ratio)}</td>
+      <td class="td-num">${fmt(d.casa)}</td>
+      <td class="td-num" style="color:var(--primary); font-weight:800;">${fmt(grand)}</td>
+      <td class="td-num" style="color:var(--text-dim);">${d.count}</td>
+    </tr>`;
+  }).join('');
+}
+
+function resetFilters() {
+  document.getElementById('f-func').value = '';
+  document.getElementById('f-tipo').value = '';
+  document.getElementById('ex-pedagio').value = '0';
+  document.getElementById('ex-estac').value = '0';
+  renderCalc();
+}
+
+function loadSample() {
+  const H = ['Data','Funcionário','Valor','Coeficiente','Tipo (KM ou Avulso)','Ponto Inicial','Ponto Final'];
+  const D = [
+    ['16/03','Ana Costa', 22.5, 1, 'KM', 'Casa do Usuário', 'Cliente A'],
+    ['16/03','Ana Costa', 15.0, 1, 'KM', 'Cliente A', 'Cliente B'],
+    ['17/03','Bruno Lima', 30.0, 1, 'KM', 'Escritório', 'Cliente C'],
+    ['17/03','Bruno Lima', 5.0, 0, 'KM', 'Casa do Usuário', 'Escritório']
+  ];
+  loadArray([H, ...D]);
+}
+
+lucide.createIcons();
+</script>
+</body>
+</html>
