@@ -268,6 +268,15 @@ td {
   border-bottom-color: var(--primary);
 }
 
+.mt-4 { margin-top: 4px; }
+.flex-gap-12 { display: flex; gap: 12px; }
+.text-right { text-align: right; }
+.text-accent { color: var(--primary) !important; }
+.font-heavy { font-weight: 900 !important; }
+.font-800 { font-weight: 800 !important; }
+.chart-h-300 { height: 300px; }
+.fs-11 { font-size: 11px; }
+
 </style>
 </head>
 <body>
@@ -277,14 +286,14 @@ td {
   
   <div class="filter-group">
     <label class="filter-label">Funcionário</label>
-    <select id="f-func" class="filter-input" onchange="renderCalc()">
+    <select id="f-func" class="filter-input" onchange="renderCalc()" title="Selecione o funcionário">
       <option value="">(Todos)</option>
     </select>
   </div>
 
   <div class="filter-group">
     <label class="filter-label">Tipo</label>
-    <select id="f-tipo" class="filter-input" onchange="renderCalc()">
+    <select id="f-tipo" class="filter-input" onchange="renderCalc()" title="Tipo de reembolso">
       <option value="">(Todos)</option>
       <option value="KM">KM</option>
       <option value="Avulso">Avulso</option>
@@ -293,19 +302,19 @@ td {
 
   <div class="filter-group">
     <label class="filter-label">Ponto Inicial / Final</label>
-    <input type="text" id="f-pi" class="filter-input" placeholder="Busca P. Inicial..." oninput="renderCalc()">
-    <input type="text" id="f-pf" class="filter-input" placeholder="Busca P. Final..." oninput="renderCalc()" style="margin-top:4px;">
+    <input type="text" id="f-pi" class="filter-input" placeholder="Busca P. Inicial..." oninput="renderCalc()" title="Busca por ponto inicial">
+    <input type="text" id="f-pf" class="filter-input mt-4" placeholder="Busca P. Final..." oninput="renderCalc()" title="Busca por ponto final">
   </div>
 
   <div class="extras-box">
-    <div class="sidebar-title" style="font-size:11px;"><i data-lucide="plus-circle" style="width:14px;"></i> Extras (R$)</div>
+    <div class="sidebar-title fs-11"><i data-lucide="plus-circle" style="width:14px;"></i> Extras (R$)</div>
     <div class="filter-group">
       <label class="filter-label">Pedágios</label>
-      <input type="number" id="ex-pedagio" class="filter-input" value="0" step="0.01" oninput="renderCalc()">
+      <input type="number" id="ex-pedagio" class="filter-input" value="0" step="0.01" oninput="renderCalc()" title="Valor de pedágios" placeholder="0.00">
     </div>
     <div class="filter-group">
       <label class="filter-label">Estac. / Zona Azul</label>
-      <input type="number" id="ex-estac" class="filter-input" value="0" step="0.01" oninput="renderCalc()">
+      <input type="number" id="ex-estac" class="filter-input" value="0" step="0.01" oninput="renderCalc()" title="Valor de estacionamento" placeholder="0.00">
     </div>
   </div>
 
@@ -316,10 +325,10 @@ td {
 <div class="main">
   <div class="header">
     <h1>Calculadora de Reembolso</h1>
-    <div style="display:flex; gap:12px;">
-      <button class="btn btn-primary" onclick="document.getElementById('file-input').click()"><i data-lucide="upload"></i> Importar</button>
-      <input type="file" id="file-input" style="display:none" onchange="handleFile(event)">
-      <button class="btn btn-ghost" onclick="loadSample()">Teste Demo</button>
+    <div class="flex-gap-12">
+      <button class="btn btn-primary" onclick="document.getElementById('file-input').click()" title="Importar planilha"><i data-lucide="upload"></i> Importar</button>
+      <input type="file" id="file-input" class="hidden" onchange="handleFile(event)" title="Arquivo de entrada">
+      <button class="btn btn-ghost" onclick="loadSample()" title="Carregar dados de demonstração">Teste Demo</button>
     </div>
   </div>
 
@@ -344,12 +353,12 @@ td {
     <div class="kpi-row">
       <div class="kpi">
         <div class="kpi-label">Custo Total (KM)</div>
-        <div class="kpi-value" id="kv-total">R$ 0,00</div>
+        <div class="kpi-value text-accent" id="kv-total">R$ 0,00</div>
         <div class="kpi-sub" id="ks-total">0 trechos filtrados</div>
       </div>
       <div class="kpi">
         <div class="kpi-label">Total Geral (+Extras)</div>
-        <div class="kpi-value" id="kv-grand" style="color:var(--primary);">R$ 0,00</div>
+        <div class="kpi-value text-accent font-heavy" id="kv-grand">R$ 0,00</div>
         <div class="kpi-sub">Total KM + Pedágios + Estac.</div>
       </div>
     </div>
@@ -361,11 +370,11 @@ td {
           <thead>
             <tr>
               <th>Funcionário</th>
-              <th style="text-align:right">Custo Total</th>
-              <th style="text-align:right">Pedágios</th>
-              <th style="text-align:right">Custo Casa</th>
-              <th style="text-align:right">Total Geral</th>
-              <th style="text-align:right">Trechos</th>
+              <th class="text-right">Custo Total</th>
+              <th class="text-right">Pedágios</th>
+              <th class="text-right">Custo Casa</th>
+              <th class="text-right">Total Geral</th>
+              <th class="text-right">Trechos</th>
             </tr>
           </thead>
           <tbody id="calc-tbody"></tbody>

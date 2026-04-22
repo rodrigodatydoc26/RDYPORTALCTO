@@ -210,6 +210,7 @@ tr:last-child td { border-bottom: none; }
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.5);
+  -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
   display: none;
   align-items: center;
@@ -269,17 +270,26 @@ tr:last-child td { border-bottom: none; }
 }
 .form-input:focus { border-color: var(--primary); }
 
+.topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:32px; }
+.topbar-title { font-size:24px; font-weight:900; }
+.topbar-actions { display:flex; gap:12px; }
+.input-date { width:140px; }
+.input-select { width:160px; }
+.dashboard-grid { display:grid; grid-template-columns: 2fr 1fr; gap:24px; }
+.chart-container-300 { height:300px; }
+.chart-container-200 { height:200px; }
+
 </style>
 </head>
 <body>
 
 <!-- TOPBAR (Inner) -->
-<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:32px;">
-  <h1 id="header-title" style="font-size:24px;">Dashboard</h1>
-  <div style="display:flex; gap:12px;">
-    <input type="date" id="f-ini" class="form-input" style="width:140px;">
-    <input type="date" id="f-fim" class="form-input" style="width:140px;">
-    <select id="f-cidade" class="form-input" style="width:160px;" onchange="onChangeCidade()">
+<div class="topbar">
+  <h1 id="header-title" class="topbar-title">Dashboard</h1>
+  <div class="topbar-actions">
+    <input type="date" id="f-ini" class="form-input input-date" title="Data inicial" placeholder="Data inicial">
+    <input type="date" id="f-fim" class="form-input input-date" title="Data final" placeholder="Data final">
+    <select id="f-cidade" class="form-input input-select" title="Filtrar por cidade" onchange="onChangeCidade()">
       <option value="">Todas as Cidades</option>
     </select>
   </div>
@@ -307,14 +317,14 @@ tr:last-child td { border-bottom: none; }
     </div>
   </div>
 
-  <div style="display:grid; grid-template-columns: 2fr 1fr; gap:24px;">
+  <div class="dashboard-grid">
     <div class="chart-wrap">
       <div class="chart-title">Volume de Entregas (Resmas)</div>
-      <div style="height:300px;"><canvas id="ch-volume"></canvas></div>
+      <div class="chart-container-300"><canvas id="ch-volume"></canvas></div>
     </div>
     <div class="chart-wrap">
       <div class="chart-title">Distribuição por Cidade</div>
-      <div style="height:200px;"><canvas id="ch-cidade"></canvas></div>
+      <div class="chart-container-200"><canvas id="ch-cidade"></canvas></div>
       <div id="legend-cidade" style="margin-top:16px;"></div>
     </div>
   </div>
