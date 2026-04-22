@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-br">
 
 <head>
@@ -180,7 +180,7 @@
       text-transform: uppercase;
       color: var(--outline);
       cursor: pointer;
-      user-select: none;
+      -webkit-user-select: none; user-select: none;
       border-radius: var(--radius);
       transition: background .12s;
       border: none;
@@ -270,8 +270,8 @@
       right: 0;
       height: var(--header-h);
       background: rgba(0, 0, 0, .7);
-      -webkit-backdrop-filter: blur(20px);
-      backdrop-filter: blur(20px);
+      -webkit--webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
       z-index: 40;
       display: flex;
       align-items: center;
@@ -1190,7 +1190,7 @@
       font-weight: 500;
       color: var(--on-surface);
       transition: background .1s;
-      user-select: none;
+      -webkit-user-select: none; user-select: none;
     }
 
     .ms-option:hover {
@@ -1836,7 +1836,7 @@
       position: fixed;
       inset: 0;
       background: rgba(25, 28, 29, .45);
-      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
       z-index: 300;
       align-items: center;
       justify-content: center;
@@ -1980,7 +1980,7 @@
       margin-bottom: 24px;
       padding: 20px;
       background: rgba(255, 255, 255, 0.45);
-      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
       border-radius: var(--radius);
       border: 1px solid rgba(255, 255, 255, 0.4);
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
@@ -2293,7 +2293,7 @@
       <div class="sidebar-group">
         <button class="sidebar-group-header open" id="grp-resmas" onclick="toggleGrupo('resmas')">
           <span style="display:flex;align-items:center;gap:8px">
-            <span class="material-symbols-outlined">package_2</span> KPIS LOC1
+            <span class="material-symbols-outlined">package_2</span> Indicadores Locais
           </span>
           <span class="material-symbols-outlined">expand_more</span>
         </button>
@@ -2356,13 +2356,13 @@
   <main class="main-canvas">
 
     <div class="page-title">
-      <h1>KPIS LOC1</h1>
+      <h1>Indicadores Locais</h1>
       <p>Carregue os arquivos CSV para visualizar entregas, estoque e histórico por cidade.</p>
     </div>
 
     <!-- TABS (hidden — navegação pela sidebar) -->
     <div class="tabs-wrap" style="display:none">
-      <button class="tab active" onclick="trocarTab('entregas')">KPIS LOC1</button>
+      <button class="tab active" onclick="trocarTab('entregas')">Indicadores Locais</button>
       <button class="tab" onclick="trocarTab('kpis')">KPIs</button>
       <button class="tab" onclick="trocarTab('estoque')">Estoque por Cidade</button>
       <button class="tab" onclick="trocarTab('historico')">Histórico</button>
@@ -2410,14 +2410,14 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-cidade">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-cidade" checked onclick="msToggleAll('cidade', event)"> Todas as
+                  <input type="checkbox" id="ms-all-cidade" checked onclick="msToggleAll('cidade', event)" title="Campo de Entrada"> Todas as
                   cidades
                 </label>
                 <!-- populado por JS -->
               </div>
             </div>
             <!-- hidden select mantido para compatibilidade com filtrar() -->
-            <select id="sel-cidade" style="display:none"></select>
+            <select id="sel-cidade" style="display:none" title="Selecione uma opção"></select>
           </div>
           <div class="control-group">
             <label>Cliente</label>
@@ -2428,7 +2428,7 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-cliente">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-cliente" checked onclick="msToggleAll('cliente', event)"> Todos os
+                  <input type="checkbox" id="ms-all-cliente" checked onclick="msToggleAll('cliente', event)" title="Campo de Entrada"> Todos os
                   clientes
                 </label>
               </div>
@@ -2443,7 +2443,7 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-tecnico">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-tecnico" checked onclick="msToggleAll('tecnico', event)"> Todos os
+                  <input type="checkbox" id="ms-all-tecnico" checked onclick="msToggleAll('tecnico', event)" title="Campo de Entrada"> Todos os
                   técnicos
                 </label>
               </div>
@@ -2455,7 +2455,7 @@
               <span class="material-symbols-outlined"
                 style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:1rem;color:var(--outline);pointer-events:none">search</span>
               <input type="text" id="filtro-patrimonio" placeholder="Digite o nº do patrimônio..." oninput="filtrar()"
-                style="padding-left:34px;background:var(--surface-highest);border:none;border-radius:var(--radius-sm);color:var(--on-surface);font-family:var(--font);font-size:.82rem;font-weight:500;padding-top:10px;padding-bottom:10px;padding-right:14px;outline:none;transition:background .15s,box-shadow .15s;width:100%">
+                style="padding-left:34px;background:var(--surface-highest);border:none;border-radius:var(--radius-sm);color:var(--on-surface);font-family:var(--font);font-size:.82rem;font-weight:500;padding-top:10px;padding-bottom:10px;padding-right:14px;outline:none;transition:background .15s,box-shadow .15s;width:100%" title="Campo de Entrada">
             </div>
           </div>
         </div>
@@ -2465,36 +2465,36 @@
             <div class="dates-row-title">Data de Criação</div>
             <div class="dates-inner">
               <div class="control-group" style="flex:1"><label>De</label><input type="date" id="cri-ini"
-                  onchange="filtrar()"></div>
+                  onchange="filtrar()" title="Campo de Entrada"></div>
               <div class="control-group" style="flex:1"><label>Até</label><input type="date" id="cri-fim"
-                  onchange="filtrar()"></div>
+                  onchange="filtrar()" title="Campo de Entrada"></div>
             </div>
           </div>
           <div class="dates-row">
             <div class="dates-row-title">Data de Fechamento</div>
             <div class="dates-inner">
               <div class="control-group" style="flex:1"><label>De</label><input type="date" id="fec-ini"
-                  onchange="filtrar()"></div>
+                  onchange="filtrar()" title="Campo de Entrada"></div>
               <div class="control-group" style="flex:1"><label>Até</label><input type="date" id="fec-fim"
-                  onchange="filtrar()"></div>
+                  onchange="filtrar()" title="Campo de Entrada"></div>
             </div>
           </div>
           <div class="dates-row">
             <div class="dates-row-title">Início Programado</div>
             <div class="dates-inner">
               <div class="control-group" style="flex:1"><label>De</label><input type="date" id="iprog-ini"
-                  onchange="filtrar()"></div>
+                  onchange="filtrar()" title="Campo de Entrada"></div>
               <div class="control-group" style="flex:1"><label>Até</label><input type="date" id="iprog-fim"
-                  onchange="filtrar()"></div>
+                  onchange="filtrar()" title="Campo de Entrada"></div>
             </div>
           </div>
           <div class="dates-row">
             <div class="dates-row-title">Término Programado</div>
             <div class="dates-inner">
               <div class="control-group" style="flex:1"><label>De</label><input type="date" id="tprog-ini"
-                  onchange="filtrar()"></div>
+                  onchange="filtrar()" title="Campo de Entrada"></div>
               <div class="control-group" style="flex:1"><label>Até</label><input type="date" id="tprog-fim"
-                  onchange="filtrar()"></div>
+                  onchange="filtrar()" title="Campo de Entrada"></div>
             </div>
           </div>
         </div>
@@ -2502,7 +2502,7 @@
         <div class="controls-grid" style="margin-bottom:0;margin-top:14px">
           <div class="control-group">
             <label>Patrimônio — mínimo de resmas</label>
-            <input type="number" id="ent-min-resmas" min="0" value="0" placeholder="Ex: 7" oninput="filtrar()">
+            <input type="number" id="ent-min-resmas" min="0" value="0" placeholder="Ex: 7" oninput="filtrar()" title="Campo de Entrada">
           </div>
         </div>
 
@@ -2523,14 +2523,14 @@
             </button>
             <div class="ms-dropdown" id="ms-drop-export-ent">
               <label class="ms-option ms-item-wrap" style="opacity:0.6;pointer-events:none">
-                <input type="checkbox" class="ms-item" value="lista" checked disabled> Lista de Produção (Obrigatório)
+                <input type="checkbox" class="ms-item" value="lista" checked disabled title="Campo de Entrada"> Lista de Produção (Obrigatório)
               </label>
             </div>
           </div>
         </div>
         <div class="export-field">
           <label>Formato</label>
-          <select id="ent-export-format" class="export-select" onchange="toggleExportPdfOptionsEnt()">
+          <select id="ent-export-format" class="export-select" onchange="toggleExportPdfOptionsEnt()" title="Selecione uma opção">
             <option value="pdf">PDF</option>
             <option value="excel">Excel</option>
           </select>
@@ -2538,14 +2538,14 @@
         <div id="ent-export-pdf-opts" class="export-pdf-opt">
           <div class="export-field">
             <label>Tamanho</label>
-            <select id="ent-export-size" class="export-select">
+            <select id="ent-export-size" class="export-select" title="Selecione uma opção">
               <option value="a4">A4</option>
               <option value="a3">A3</option>
             </select>
           </div>
           <div class="export-field">
             <label>Orientação</label>
-            <select id="ent-export-orient" class="export-select">
+            <select id="ent-export-orient" class="export-select" title="Selecione uma opção">
               <option value="p">Retrato</option>
               <option value="l" selected>Paisagem</option>
             </select>
@@ -2612,7 +2612,7 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-kpi-cidade">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-kpi-cidade" checked onclick="msToggleAll('kpi-cidade', event)">
+                  <input type="checkbox" id="ms-all-kpi-cidade" checked onclick="msToggleAll('kpi-cidade', event)" title="Campo de Entrada">
                   Todas as cidades
                 </label>
               </div>
@@ -2627,7 +2627,7 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-kpi-cliente">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-kpi-cliente" checked onclick="msToggleAll('kpi-cliente', event)">
+                  <input type="checkbox" id="ms-all-kpi-cliente" checked onclick="msToggleAll('kpi-cliente', event)" title="Campo de Entrada">
                   Todos os clientes
                 </label>
               </div>
@@ -2642,7 +2642,7 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-kpi-tecnico">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-kpi-tecnico" checked onclick="msToggleAll('kpi-tecnico', event)">
+                  <input type="checkbox" id="ms-all-kpi-tecnico" checked onclick="msToggleAll('kpi-tecnico', event)" title="Campo de Entrada">
                   Todos os técnicos
                 </label>
               </div>
@@ -2654,12 +2654,12 @@
               <span class="material-symbols-outlined"
                 style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:.9rem;color:var(--outline);pointer-events:none">search</span>
               <input type="text" id="kpi-patrimonio" placeholder="Digite o nº do patrimônio..."
-                style="padding-left:36px" oninput="renderKpisVisuais()">
+                style="padding-left:36px" oninput="renderKpisVisuais()" title="Campo de Entrada">
             </div>
           </div>
           <div class="control-group">
             <label>Top N posições</label>
-            <select id="kpi-top-n" onchange="renderKpisVisuais()">
+            <select id="kpi-top-n" onchange="renderKpisVisuais()" title="Selecione uma opção">
               <option value="5">Top 5</option>
               <option value="10">Top 10</option>
               <option value="20">Top 20</option>
@@ -2672,11 +2672,11 @@
             <div class="dates-inner">
               <div class="control-group" style="flex:1">
                 <label>Início</label>
-                <input type="date" id="kpi-cri-ini" onchange="renderKpisVisuais()">
+                <input type="date" id="kpi-cri-ini" onchange="renderKpisVisuais()" title="Campo de Entrada">
               </div>
               <div class="control-group" style="flex:1">
                 <label>Fim</label>
-                <input type="date" id="kpi-cri-fim" onchange="renderKpisVisuais()">
+                <input type="date" id="kpi-cri-fim" onchange="renderKpisVisuais()" title="Campo de Entrada">
               </div>
             </div>
           </div>
@@ -2685,11 +2685,11 @@
             <div class="dates-inner">
               <div class="control-group" style="flex:1">
                 <label>Início</label>
-                <input type="date" id="kpi-fec-ini" onchange="renderKpisVisuais()">
+                <input type="date" id="kpi-fec-ini" onchange="renderKpisVisuais()" title="Campo de Entrada">
               </div>
               <div class="control-group" style="flex:1">
                 <label>Fim</label>
-                <input type="date" id="kpi-fec-fim" onchange="renderKpisVisuais()">
+                <input type="date" id="kpi-fec-fim" onchange="renderKpisVisuais()" title="Campo de Entrada">
               </div>
             </div>
           </div>
@@ -2772,11 +2772,11 @@
         <div style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap">
           <div class="control-group" style="min-width:160px">
             <label>Início</label>
-            <input type="date" id="est-data-ini" onchange="renderEstoque()">
+            <input type="date" id="est-data-ini" onchange="renderEstoque()" title="Campo de Entrada">
           </div>
           <div class="control-group" style="min-width:160px">
             <label>Fim</label>
-            <input type="date" id="est-data-fim" onchange="renderEstoque()">
+            <input type="date" id="est-data-fim" onchange="renderEstoque()" title="Campo de Entrada">
           </div>
           <button class="btn btn-secondary" onclick="limparFiltroEstoque()" style="margin-bottom:0">Limpar</button>
         </div>
@@ -2811,7 +2811,7 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-hist-local">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-hist-local" checked onclick="msToggleAll('hist-local', event)">
+                  <input type="checkbox" id="ms-all-hist-local" checked onclick="msToggleAll('hist-local', event)" title="Campo de Entrada">
                   Todos os clientes
                 </label>
               </div>
@@ -2826,7 +2826,7 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-hist-tec">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-hist-tec" checked onclick="msToggleAll('hist-tec', event)"> Todos os
+                  <input type="checkbox" id="ms-all-hist-tec" checked onclick="msToggleAll('hist-tec', event)" title="Campo de Entrada"> Todos os
                   técnicos
                 </label>
               </div>
@@ -2842,7 +2842,7 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-hist-motivo">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-hist-motivo" checked onclick="msToggleAll('hist-motivo', event)">
+                  <input type="checkbox" id="ms-all-hist-motivo" checked onclick="msToggleAll('hist-motivo', event)" title="Campo de Entrada">
                   Todos os motivos
                 </label>
               </div>
@@ -2858,7 +2858,7 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-hist-tipo">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-hist-tipo" checked onclick="msToggleAll('hist-tipo', event)"> Todos
+                  <input type="checkbox" id="ms-all-hist-tipo" checked onclick="msToggleAll('hist-tipo', event)" title="Campo de Entrada"> Todos
                   os tipos
                 </label>
               </div>
@@ -2871,12 +2871,12 @@
               <span class="material-symbols-outlined"
                 style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:.9rem;color:var(--outline);pointer-events:none">search</span>
               <input type="text" id="hist-patrimonio" placeholder="Digite o nº do patrimônio..."
-                style="padding-left:36px" oninput="renderHistorico()">
+                style="padding-left:36px" oninput="renderHistorico()" title="Campo de Entrada">
             </div>
           </div>
           <div class="control-group">
             <label>Mínimo de resmas</label>
-            <input type="number" id="hist-min-resmas" min="0" value="0" placeholder="Ex: 7" oninput="renderHistorico()">
+            <input type="number" id="hist-min-resmas" min="0" value="0" placeholder="Ex: 7" oninput="renderHistorico()" title="Campo de Entrada">
           </div>
         </div>
         <div class="dates-block" style="margin-bottom:0">
@@ -2884,18 +2884,18 @@
             <div class="dates-row-title">Data de Criação</div>
             <div class="dates-inner">
               <div class="control-group" style="flex:1"><label>Início</label><input type="date" id="hist-cri-ini"
-                  onchange="renderHistorico()"></div>
+                  onchange="renderHistorico()" title="Campo de Entrada"></div>
               <div class="control-group" style="flex:1"><label>Fim</label><input type="date" id="hist-cri-fim"
-                  onchange="renderHistorico()"></div>
+                  onchange="renderHistorico()" title="Campo de Entrada"></div>
             </div>
           </div>
           <div class="dates-row">
             <div class="dates-row-title">Data de Encerramento</div>
             <div class="dates-inner">
               <div class="control-group" style="flex:1"><label>Início</label><input type="date" id="hist-fec-ini"
-                  onchange="renderHistorico()"></div>
+                  onchange="renderHistorico()" title="Campo de Entrada"></div>
               <div class="control-group" style="flex:1"><label>Fim</label><input type="date" id="hist-fec-fim"
-                  onchange="renderHistorico()"></div>
+                  onchange="renderHistorico()" title="Campo de Entrada"></div>
             </div>
           </div>
         </div>
@@ -2941,7 +2941,7 @@
           <div>
             <div class="section-label" style="margin-bottom:8px">CSV de Chamados (OS)</div>
             <div class="upload-zone" id="zone-os">
-              <input type="file" id="fileOS" accept=".csv">
+              <input type="file" id="fileOS" accept=".csv" title="Campo de Entrada">
               <div class="upload-icon">📋</div>
               <div class="upload-text">
                 <div class="upload-title" id="label-os">Selecionar arquivo CSV</div>
@@ -2952,7 +2952,7 @@
           <div>
             <div class="section-label" style="margin-bottom:8px">CSV de Estoque (ESTOQUE_GERAL)</div>
             <div class="upload-zone" id="zone-est">
-              <input type="file" id="fileEstoque" accept=".csv">
+              <input type="file" id="fileEstoque" accept=".csv" title="Campo de Entrada">
               <div class="upload-icon">📦</div>
               <div class="upload-text">
                 <div class="upload-title" id="label-est">Selecionar arquivo CSV</div>
@@ -2965,7 +2965,7 @@
 
       <!-- FILTROS (compartilhados entre sub-abas) -->
       <div class="analise-chart-wrap" style="margin-bottom:20px">
-        <div class="analise-chart-title">Filtros da Análise</div>
+        <div class="analise-chart-title">Filtros de Análise</div>
         <div class="controls-grid" style="margin-bottom:14px">
           <div class="control-group">
             <label>Cliente</label>
@@ -2976,7 +2976,7 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-an-cliente">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-an-cliente" checked onclick="msToggleAll('an-cliente', event)">
+                  <input type="checkbox" id="ms-all-an-cliente" checked onclick="msToggleAll('an-cliente', event)" title="Campo de Entrada">
                   Todos os clientes
                 </label>
               </div>
@@ -2991,7 +2991,7 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-an-tipo">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-an-tipo" checked onclick="msToggleAll('an-tipo', event)"> Todos os
+                  <input type="checkbox" id="ms-all-an-tipo" checked onclick="msToggleAll('an-tipo', event)" title="Campo de Entrada"> Todos os
                   tipos
                 </label>
               </div>
@@ -3006,7 +3006,7 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-an-motivo">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-an-motivo" checked onclick="msToggleAll('an-motivo', event)"> Todos
+                  <input type="checkbox" id="ms-all-an-motivo" checked onclick="msToggleAll('an-motivo', event)" title="Campo de Entrada"> Todos
                   os motivos
                 </label>
               </div>
@@ -3021,7 +3021,7 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-an-status">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-an-status" checked onclick="msToggleAll('an-status', event)"> Todos
+                  <input type="checkbox" id="ms-all-an-status" checked onclick="msToggleAll('an-status', event)" title="Campo de Entrada"> Todos
                   os status
                 </label>
               </div>
@@ -3036,7 +3036,7 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-an-tecnico">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-an-tecnico" checked onclick="msToggleAll('an-tecnico', event)">
+                  <input type="checkbox" id="ms-all-an-tecnico" checked onclick="msToggleAll('an-tecnico', event)" title="Campo de Entrada">
                   Todos os técnicos
                 </label>
               </div>
@@ -3048,18 +3048,18 @@
             <div class="dates-row-title">Data de Criação</div>
             <div class="dates-inner">
               <div class="control-group" style="flex:1"><label>Início</label><input type="date" id="an-cri-ini"
-                  onchange="renderAnalise()"></div>
+                  onchange="renderAnalise()" title="Campo de Entrada"></div>
               <div class="control-group" style="flex:1"><label>Fim</label><input type="date" id="an-cri-fim"
-                  onchange="renderAnalise()"></div>
+                  onchange="renderAnalise()" title="Campo de Entrada"></div>
             </div>
           </div>
           <div class="dates-row">
             <div class="dates-row-title">Data de Encerramento</div>
             <div class="dates-inner">
               <div class="control-group" style="flex:1"><label>Início</label><input type="date" id="an-fec-ini"
-                  onchange="renderAnalise()"></div>
+                  onchange="renderAnalise()" title="Campo de Entrada"></div>
               <div class="control-group" style="flex:1"><label>Fim</label><input type="date" id="an-fec-fim"
-                  onchange="renderAnalise()"></div>
+                  onchange="renderAnalise()" title="Campo de Entrada"></div>
             </div>
           </div>
         </div>
@@ -3067,7 +3067,7 @@
         <div class="controls-grid" style="margin-bottom:0;margin-top:14px">
           <div class="control-group">
             <label>Situação</label>
-            <select id="an-situacao" onchange="renderAnalise()">
+            <select id="an-situacao" onchange="renderAnalise()" title="Selecione uma opção">
               <option value="todos">Todos</option>
               <option value="abertos">Abertos (não fechados)</option>
               <option value="fechados">Fechados</option>
@@ -3079,7 +3079,7 @@
               <span class="material-symbols-outlined"
                 style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:.9rem;color:var(--outline);pointer-events:none">search</span>
               <input type="text" id="an-patrimonio" placeholder="Digite o nº do patrimônio..." style="padding-left:36px"
-                oninput="renderAnalise()">
+                oninput="renderAnalise()" title="Campo de Entrada">
             </div>
           </div>
           <div class="control-group"></div>
@@ -3102,33 +3102,33 @@
             </button>
             <div class="ms-dropdown" id="ms-drop-export-ana">
               <label class="ms-option all-opt">
-                <input type="checkbox" id="ms-all-export-ana" checked onclick="msToggleAll('export-ana', event)">
+                <input type="checkbox" id="ms-all-export-ana" checked onclick="msToggleAll('export-ana', event)" title="Campo de Entrada">
                 Selecionar Todos
               </label>
               <label class="ms-option ms-item-wrap" style="opacity:0.6;pointer-events:none">
-                <input type="checkbox" class="ms-item" value="kpis" checked disabled> Total e Média (Obrigatório)
+                <input type="checkbox" class="ms-item" value="kpis" checked disabled title="Campo de Entrada"> Total e Média (Obrigatório)
               </label>
               <label class="ms-option ms-item-wrap"><input type="checkbox" class="ms-item" value="volume" checked
-                  onchange="msOnItem('export-ana')"> Volume por Dia de Criação</label>
+                  onchange="msOnItem('export-ana')" title="Campo de Entrada"> Volume por Dia de Criação</label>
               <label class="ms-option ms-item-wrap"><input type="checkbox" class="ms-item" value="tipo" checked
-                  onchange="msOnItem('export-ana')"> Distribuição por Tipo</label>
+                  onchange="msOnItem('export-ana')" title="Campo de Entrada"> Distribuição por Tipo</label>
               <label class="ms-option ms-item-wrap" style="padding-left:1.8rem;opacity:.8"><input type="checkbox"
-                  class="ms-item" value="add-resmas" onchange="msOnItem('export-ana')"> + Incluir Total de
+                  class="ms-item" value="add-resmas" onchange="msOnItem('export-ana')" title="Campo de Entrada"> + Incluir Total de
                 Resmas</label>
               <label class="ms-option ms-item-wrap"><input type="checkbox" class="ms-item" value="status" checked
-                  onchange="msOnItem('export-ana')"> Distribuição por Status</label>
+                  onchange="msOnItem('export-ana')" title="Campo de Entrada"> Distribuição por Status</label>
               <label class="ms-option ms-item-wrap"><input type="checkbox" class="ms-item" value="motivo" checked
-                  onchange="msOnItem('export-ana')"> Ranking por Motivo</label>
+                  onchange="msOnItem('export-ana')" title="Campo de Entrada"> Ranking por Motivo</label>
               <label class="ms-option ms-item-wrap"><input type="checkbox" class="ms-item" value="cliente" checked
-                  onchange="msOnItem('export-ana')"> Ranking por Cliente</label>
+                  onchange="msOnItem('export-ana')" title="Campo de Entrada"> Ranking por Cliente</label>
               <label class="ms-option ms-item-wrap"><input type="checkbox" class="ms-item" value="patrimonio" checked
-                  onchange="msOnItem('export-ana')"> Ranking por Patrimônio</label>
+                  onchange="msOnItem('export-ana')" title="Campo de Entrada"> Ranking por Patrimônio</label>
             </div>
           </div>
         </div>
         <div class="export-field">
           <label>Formato</label>
-          <select id="ana-export-format" class="export-select" onchange="toggleExportPdfOptionsAna()">
+          <select id="ana-export-format" class="export-select" onchange="toggleExportPdfOptionsAna()" title="Selecione uma opção">
             <option value="pdf">PDF</option>
             <option value="excel">Excel</option>
           </select>
@@ -3136,14 +3136,14 @@
         <div id="ana-export-pdf-opts" class="export-pdf-opt">
           <div class="export-field">
             <label>Tamanho</label>
-            <select id="ana-export-size" class="export-select">
+            <select id="ana-export-size" class="export-select" title="Selecione uma opção">
               <option value="a4">A4</option>
               <option value="a3">A3</option>
             </select>
           </div>
           <div class="export-field">
             <label>Orientação</label>
-            <select id="ana-export-orient" class="export-select">
+            <select id="ana-export-orient" class="export-select" title="Selecione uma opção">
               <option value="p">Retrato (P)</option>
               <option value="l">Paisagem (L)</option>
             </select>
@@ -3260,7 +3260,7 @@
               <div class="an-rank-filter-box">
                 <span class="an-rank-filter-label">Mín. Resmas</span>
                 <input type="number" id="an-min-resmas" value="0" min="0" class="an-rank-inline-input"
-                  oninput="renderAnalise()" title="Filtrar equipamentos com entrega mínima de resmas">
+                  oninput="renderAnalise()" title="Filtrar equipamentos com entrega mínima de resmas" title="Campo de Entrada">
               </div>
 
               <div class="an-rank-export-group">
@@ -3451,7 +3451,7 @@
             <div class="section-label" style="margin-bottom:8px">Período 1 <span
                 style="color:var(--error);font-size:.65rem">*obrigatório</span></div>
             <div class="upload-zone" id="cmp-zone-1">
-              <input type="file" id="cmp-file-1" accept=".csv">
+              <input type="file" id="cmp-file-1" accept=".csv" title="Campo de Entrada">
               <div class="upload-icon">📋</div>
               <div class="upload-text">
                 <div class="upload-title" id="cmp-label-1">Selecionar arquivo CSV</div>
@@ -3464,7 +3464,7 @@
             <div class="section-label" style="margin-bottom:8px">Período 2 <span
                 style="color:var(--outline);font-size:.65rem">opcional</span></div>
             <div class="upload-zone" id="cmp-zone-2">
-              <input type="file" id="cmp-file-2" accept=".csv">
+              <input type="file" id="cmp-file-2" accept=".csv" title="Campo de Entrada">
               <div class="upload-icon">📋</div>
               <div class="upload-text">
                 <div class="upload-title" id="cmp-label-2">Selecionar arquivo CSV</div>
@@ -3477,7 +3477,7 @@
             <div class="section-label" style="margin-bottom:8px">Período 3 <span
                 style="color:var(--outline);font-size:.65rem">opcional</span></div>
             <div class="upload-zone" id="cmp-zone-3">
-              <input type="file" id="cmp-file-3" accept=".csv">
+              <input type="file" id="cmp-file-3" accept=".csv" title="Campo de Entrada">
               <div class="upload-icon">📋</div>
               <div class="upload-text">
                 <div class="upload-title" id="cmp-label-3">Selecionar arquivo CSV</div>
@@ -3490,7 +3490,7 @@
             <div class="section-label" style="margin-bottom:8px">Período 4 <span
                 style="color:var(--outline);font-size:.65rem">opcional</span></div>
             <div class="upload-zone" id="cmp-zone-4">
-              <input type="file" id="cmp-file-4" accept=".csv">
+              <input type="file" id="cmp-file-4" accept=".csv" title="Campo de Entrada">
               <div class="upload-icon">📋</div>
               <div class="upload-text">
                 <div class="upload-title" id="cmp-label-4">Selecionar arquivo CSV</div>
@@ -3516,7 +3516,7 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-cmp-cidade">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-cmp-cidade" checked onclick="msToggleAll('cmp-cidade', event)">
+                  <input type="checkbox" id="ms-all-cmp-cidade" checked onclick="msToggleAll('cmp-cidade', event)" title="Campo de Entrada">
                   Todas as cidades
                 </label>
               </div>
@@ -3532,7 +3532,7 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-cmp-cliente">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-cmp-cliente" checked onclick="msToggleAll('cmp-cliente', event)">
+                  <input type="checkbox" id="ms-all-cmp-cliente" checked onclick="msToggleAll('cmp-cliente', event)" title="Campo de Entrada">
                   Todos os clientes
                 </label>
               </div>
@@ -3548,7 +3548,7 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-cmp-motivo">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-cmp-motivo" checked onclick="msToggleAll('cmp-motivo', event)">
+                  <input type="checkbox" id="ms-all-cmp-motivo" checked onclick="msToggleAll('cmp-motivo', event)" title="Campo de Entrada">
                   Todos os motivos
                 </label>
               </div>
@@ -3564,7 +3564,7 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-cmp-tecnico">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-cmp-tecnico" checked onclick="msToggleAll('cmp-tecnico', event)">
+                  <input type="checkbox" id="ms-all-cmp-tecnico" checked onclick="msToggleAll('cmp-tecnico', event)" title="Campo de Entrada">
                   Todos os técnicos
                 </label>
               </div>
@@ -3580,7 +3580,7 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-cmp-tipo">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-cmp-tipo" checked onclick="msToggleAll('cmp-tipo', event)"> Todos os
+                  <input type="checkbox" id="ms-all-cmp-tipo" checked onclick="msToggleAll('cmp-tipo', event)" title="Campo de Entrada"> Todos os
                   tipos
                 </label>
               </div>
@@ -3592,7 +3592,7 @@
             <div style="position:relative">
               <span class="material-symbols-outlined"
                 style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:.9rem;color:var(--outline);pointer-events:none">search</span>
-              <input type="text" id="cmp-patrimonio" placeholder="Buscar patrimônio..." style="padding-left:36px">
+              <input type="text" id="cmp-patrimonio" placeholder="Buscar patrimônio..." style="padding-left:36px" title="Campo de Entrada">
             </div>
           </div>
 
@@ -3607,36 +3607,36 @@
             <div class="control-group">
               <label>Data Criação</label>
               <div style="display:flex;gap:6px;align-items:center">
-                <input type="date" id="cmp-cri-ini" class="date-input-cmp" placeholder="De">
+                <input type="date" id="cmp-cri-ini" class="date-input-cmp" placeholder="De" title="Campo de Entrada">
                 <span style="color:var(--outline);font-size:.7rem">—</span>
-                <input type="date" id="cmp-cri-fim" class="date-input-cmp" placeholder="Até">
+                <input type="date" id="cmp-cri-fim" class="date-input-cmp" placeholder="Até" title="Campo de Entrada">
               </div>
             </div>
 
             <div class="control-group">
               <label>Data Fechamento</label>
               <div style="display:flex;gap:6px;align-items:center">
-                <input type="date" id="cmp-enc-ini" class="date-input-cmp" placeholder="De">
+                <input type="date" id="cmp-enc-ini" class="date-input-cmp" placeholder="De" title="Campo de Entrada">
                 <span style="color:var(--outline);font-size:.7rem">—</span>
-                <input type="date" id="cmp-enc-fim" class="date-input-cmp" placeholder="Até">
+                <input type="date" id="cmp-enc-fim" class="date-input-cmp" placeholder="Até" title="Campo de Entrada">
               </div>
             </div>
 
             <div class="control-group">
               <label>Início Programado</label>
               <div style="display:flex;gap:6px;align-items:center">
-                <input type="date" id="cmp-iprog-ini" class="date-input-cmp" placeholder="De">
+                <input type="date" id="cmp-iprog-ini" class="date-input-cmp" placeholder="De" title="Campo de Entrada">
                 <span style="color:var(--outline);font-size:.7rem">—</span>
-                <input type="date" id="cmp-iprog-fim" class="date-input-cmp" placeholder="Até">
+                <input type="date" id="cmp-iprog-fim" class="date-input-cmp" placeholder="Até" title="Campo de Entrada">
               </div>
             </div>
 
             <div class="control-group">
               <label>Término Programado</label>
               <div style="display:flex;gap:6px;align-items:center">
-                <input type="date" id="cmp-tprog-ini" class="date-input-cmp" placeholder="De">
+                <input type="date" id="cmp-tprog-ini" class="date-input-cmp" placeholder="De" title="Campo de Entrada">
                 <span style="color:var(--outline);font-size:.7rem">—</span>
-                <input type="date" id="cmp-tprog-fim" class="date-input-cmp" placeholder="Até">
+                <input type="date" id="cmp-tprog-fim" class="date-input-cmp" placeholder="Até" title="Campo de Entrada">
               </div>
             </div>
 
@@ -3663,23 +3663,23 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-export-tipo">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-export-tipo" checked onclick="msToggleAll('export-tipo', event)">
+                  <input type="checkbox" id="ms-all-export-tipo" checked onclick="msToggleAll('export-tipo', event)" title="Campo de Entrada">
                   Todos os relatórios
                 </label>
                 <label class="ms-option ms-item-wrap"><input type="checkbox" class="ms-item" value="chamados" checked
-                    onchange="msOnItem('export-tipo')"> Comparativo de Chamados</label>
+                    onchange="msOnItem('export-tipo')" title="Campo de Entrada"> Comparativo de Chamados</label>
                 <label class="ms-option ms-item-wrap"><input type="checkbox" class="ms-item" value="tipo" checked
-                    onchange="msOnItem('export-tipo')"> Por Tipo de Chamado</label>
+                    onchange="msOnItem('export-tipo')" title="Campo de Entrada"> Por Tipo de Chamado</label>
                 <label class="ms-option ms-item-wrap"><input type="checkbox" class="ms-item" value="motivo" checked
-                    onchange="msOnItem('export-tipo')"> Por Motivo</label>
+                    onchange="msOnItem('export-tipo')" title="Campo de Entrada"> Por Motivo</label>
                 <label class="ms-option ms-item-wrap"><input type="checkbox" class="ms-item" value="sla" checked
-                    onchange="msOnItem('export-tipo')"> SLA — Dias Úteis</label>
+                    onchange="msOnItem('export-tipo')" title="Campo de Entrada"> SLA — Dias Úteis</label>
               </div>
             </div>
           </div>
           <div class="export-field">
             <label>Formato</label>
-            <select id="cmp-export-format" class="export-select" onchange="toggleExportPdfOptions()">
+            <select id="cmp-export-format" class="export-select" onchange="toggleExportPdfOptions()" title="Selecione uma opção">
               <option value="pdf">PDF</option>
               <option value="excel">Excel</option>
             </select>
@@ -3687,14 +3687,14 @@
           <div id="cmp-export-pdf-opts" class="export-pdf-opt">
             <div class="export-field">
               <label>Tamanho</label>
-              <select id="cmp-export-size" class="export-select">
+              <select id="cmp-export-size" class="export-select" title="Selecione uma opção">
                 <option value="a4">A4</option>
                 <option value="a3">A3</option>
               </select>
             </div>
             <div class="export-field">
               <label>Orientação</label>
-              <select id="cmp-export-orient" class="export-select">
+              <select id="cmp-export-orient" class="export-select" title="Selecione uma opção">
                 <option value="p">Retrato (P)</option>
                 <option value="l">Paisagem (L)</option>
               </select>
@@ -3955,11 +3955,11 @@
           <div>
             <div class="control-group" style="margin-bottom:10px">
               <label>Label — KM 1</label>
-              <input type="text" id="km1-label" placeholder="Ex: Janeiro 2026" oninput="calcularKM()">
+              <input type="text" id="km1-label" placeholder="Ex: Janeiro 2026" oninput="calcularKM()" title="Campo de Entrada">
             </div>
             <div class="control-group">
               <label>KM Total 1</label>
-              <input type="number" id="km1-valor" placeholder="0,000" step="0.01" min="0" oninput="calcularKM()">
+              <input type="number" id="km1-valor" placeholder="0,000" step="0.01" min="0" oninput="calcularKM()" title="Campo de Entrada">
             </div>
           </div>
 
@@ -3967,11 +3967,11 @@
           <div>
             <div class="control-group" style="margin-bottom:10px">
               <label>Label — KM 2</label>
-              <input type="text" id="km2-label" placeholder="Ex: Fevereiro 2026" oninput="calcularKM()">
+              <input type="text" id="km2-label" placeholder="Ex: Fevereiro 2026" oninput="calcularKM()" title="Campo de Entrada">
             </div>
             <div class="control-group">
               <label>KM Total 2</label>
-              <input type="number" id="km2-valor" placeholder="0,000" step="0.01" min="0" oninput="calcularKM()">
+              <input type="number" id="km2-valor" placeholder="0,000" step="0.01" min="0" oninput="calcularKM()" title="Campo de Entrada">
             </div>
           </div>
 
@@ -3980,11 +3980,11 @@
             <div class="control-group" style="margin-bottom:10px">
               <label>Label — KM 3 <span
                   style="color:var(--outline);font-size:.65rem;font-weight:400">(opcional)</span></label>
-              <input type="text" id="km3-label" placeholder="Ex: Março 2026" oninput="calcularKM()">
+              <input type="text" id="km3-label" placeholder="Ex: Março 2026" oninput="calcularKM()" title="Campo de Entrada">
             </div>
             <div class="control-group">
               <label>KM Total 3</label>
-              <input type="number" id="km3-valor" placeholder="0,000" step="0.01" min="0" oninput="calcularKM()">
+              <input type="number" id="km3-valor" placeholder="0,000" step="0.01" min="0" oninput="calcularKM()" title="Campo de Entrada">
             </div>
           </div>
 
@@ -4006,14 +4006,14 @@
               </button>
               <div class="ms-dropdown" id="ms-drop-export-km">
                 <label class="ms-option ms-item-wrap" style="opacity:0.6;pointer-events:none">
-                  <input type="checkbox" class="ms-item" value="km" checked disabled> Comparativo de KM (Obrigatório)
+                  <input type="checkbox" class="ms-item" value="km" checked disabled title="Campo de Entrada"> Comparativo de KM (Obrigatório)
                 </label>
               </div>
             </div>
           </div>
           <div class="export-field">
             <label>Formato</label>
-            <select id="km-export-format" class="export-select" onchange="toggleExportPdfOptionsKM()">
+            <select id="km-export-format" class="export-select" onchange="toggleExportPdfOptionsKM()" title="Selecione uma opção">
               <option value="pdf">PDF</option>
               <option value="excel">Excel</option>
             </select>
@@ -4021,14 +4021,14 @@
           <div id="km-export-pdf-opts" class="export-pdf-opt">
             <div class="export-field">
               <label>Tamanho</label>
-              <select id="km-export-size" class="export-select">
+              <select id="km-export-size" class="export-select" title="Selecione uma opção">
                 <option value="a4">A4</option>
                 <option value="a3">A3</option>
               </select>
             </div>
             <div class="export-field">
               <label>Orientação</label>
-              <select id="km-export-orient" class="export-select">
+              <select id="km-export-orient" class="export-select" title="Selecione uma opção">
                 <option value="p">Retrato</option>
                 <option value="l">Paisagem</option>
               </select>
@@ -4174,7 +4174,7 @@
       if (id === 'analise') renderAnalise();
     }
 
-    // ==================== MAPEAMENTO DINÂMICO DE COLUNAS ====================
+    // ==================== MAPEAMENTO DINMICO DE COLUNAS ====================
     // Índices padrão (fallback se o cabeçalho não for detectado)
     let COL = {
       os: 0,   // Nº OS
@@ -4550,7 +4550,7 @@
       itens.forEach(v => {
         const lbl = document.createElement('label');
         lbl.className = 'ms-option ms-item-wrap';
-        lbl.innerHTML = `<input type="checkbox" class="ms-item" value="${v}" checked onchange="msOnItem('${key}')"> ${v}`;
+        lbl.innerHTML = `<input type="checkbox" class="ms-item" value="${v}" checked onchange="msOnItem('${key}')" title="Campo de Entrada"> ${v}`;
         drop.appendChild(lbl);
       });
       if (allCb) {
@@ -4572,7 +4572,7 @@
     function popularFiltros() {
       const clientesSet = new Set(); // clientes com PAPEL (para Entregas/KPIs)
       const tecnicosSet = new Set(); // técnicos com PAPEL (para Entregas/KPIs)
-      const todosClientes = new Set(); // todos os clientes (para Histórico/Análise)
+      const todosClientes = new Set(); // Todos os clientes (para Histórico/Análise)
       const todosTecnicos = new Set(); // todos os técnicos do CSV
 
       dadosOS.forEach(col => {
@@ -5869,7 +5869,7 @@
           <div class="pagination-controls">
             <div class="pagination-select-wrap">
               Exibir
-              <select class="pagination-select" onchange="changeAnPatrLimit(this.value)">
+              <select class="pagination-select" onchange="changeAnPatrLimit(this.value)" title="Selecione uma opção">
                 <option value="10" ${anPatrLimit == 10 ? 'selected' : ''}>10</option>
                 <option value="25" ${anPatrLimit == 25 ? 'selected' : ''}>25</option>
                 <option value="50" ${anPatrLimit == 50 ? 'selected' : ''}>50</option>
@@ -8029,7 +8029,7 @@
               doc.setLineWidth(0.05);
               doc.line(data.cell.x, data.cell.y + data.cell.height, data.cell.x + data.cell.width, data.cell.y + data.cell.height);
 
-              // Desenhar triângulos manualmente (posicionados próximos ao texto, seguindo o alinhamento à direita)
+              // Desenhar tringulos manualmente (posicionados próximos ao texto, seguindo o alinhamento à direita)
               const ds = data.cell.raw._delta;
               if (ds && ds.trend !== 'stable') {
                 const textWidth = doc.getTextWidth(ds.txt || "");
@@ -8422,7 +8422,7 @@
       XLSX.writeFile(wb, `Comparativo_${sufixo}_${new Date().getTime()}.xlsx`);
     }
 
-    // ==================== EXPORTAÇÃO KPIS LOC1 (ENTREGAS) ====================
+    // ==================== EXPORTAÇÃO Indicadores Locais (ENTREGAS) ====================
     function executarExportacaoEntregas() {
       const formato = document.getElementById('ent-export-format').value;
       if (formato === 'excel') {
@@ -8459,7 +8459,7 @@
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF(orient, 'mm', size);
 
-      const currentY = docGetPdfHeader(doc, 'Relatório de Produção - KPIS LOC1');
+      const currentY = docGetPdfHeader(doc, 'Relatório de Produção - Indicadores Locais');
 
       const headers = [['DATA CRIAÇÃO', 'ENCERRAMENTO', 'OS', 'CLIENTE', 'CIDADE', 'PATRIMÔNIO', 'TÉCNICO', 'QTD']];
       const body = linhasFiltradas.map(({ col, qtd, cliente, cidade }) => [
@@ -8700,6 +8700,61 @@
       XLSX.writeFile(wb, `Analise_${sufixo}_${new Date().getTime()}.xlsx`);
     }
   </script>
+<script>
+  function syncTheme() {
+    try {
+      const parentDoc = window.parent.document.documentElement;
+      const theme = parentDoc.getAttribute('data-theme') || 'dark';
+      const accent = parentDoc.getAttribute('data-accent') || 'gold';
+      
+      document.documentElement.setAttribute('data-theme', theme);
+      
+      const colors = {
+        gold:    { primary: '#ffcc00', container: '#332b00' },
+        magenta: { primary: '#ff0090', container: '#33001d' },
+        blue:    { primary: '#00b0ff', container: '#002333' }
+      };
+      
+      const sel = colors[accent] || colors.gold;
+      const root = document.documentElement;
+      root.style.setProperty('--primary', sel.primary);
+      root.style.setProperty('--primary-container', sel.container);
+      
+      if (theme === 'light') {
+        root.style.setProperty('--surface', '#f5f6f8');
+        root.style.setProperty('--surface-low', '#ffffff');
+        root.style.setProperty('--surface-container', '#eceef2');
+        root.style.setProperty('--surface-high', '#e1e4e9');
+        root.style.setProperty('--surface-highest', '#d6dae0');
+        root.style.setProperty('--surface-lowest', '#ffffff');
+        root.style.setProperty('--on-surface', '#000000');
+        root.style.setProperty('--on-surface-variant', '#444444');
+        root.style.setProperty('--outline', '#bbbbbb');
+        root.style.setProperty('--outline-variant', '#dddddd');
+        root.style.setProperty('--shadow-ambient', '0 12px 40px rgba(0,0,0,0.08)');
+        root.style.setProperty('--shadow-card', '0 4px 16px rgba(0,0,0,0.05)');
+      } else {
+        root.style.setProperty('--surface', '#000000');
+        root.style.setProperty('--surface-low', '#0f0f0f');
+        root.style.setProperty('--surface-container', '#161616');
+        root.style.setProperty('--surface-high', '#1d1d1d');
+        root.style.setProperty('--surface-highest', '#242424');
+        root.style.setProperty('--surface-lowest', '#050505');
+        root.style.setProperty('--on-surface', '#ffffff');
+        root.style.setProperty('--on-surface-variant', '#cccccc');
+        root.style.setProperty('--outline', '#444444');
+        root.style.setProperty('--outline-variant', '#222222');
+        root.style.setProperty('--shadow-ambient', '0 12px 40px rgba(0,0,0,0.8)');
+        root.style.setProperty('--shadow-card', '0 4px 16px rgba(0,0,0,0.5)');
+      }
+    } catch (e) {}
+  }
+  if (window.parent !== window) {
+    const observer = new MutationObserver(syncTheme);
+    observer.observe(window.parent.document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'data-accent'] });
+    syncTheme();
+  }
+</script>
 </body>
 
 </html>
