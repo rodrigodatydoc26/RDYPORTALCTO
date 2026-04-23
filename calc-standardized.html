@@ -1,529 +1,535 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark" data-accent="gold">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Calculadora de Reembolso | RDY Supply</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://unpkg.com/lucide@latest"></script>
-<style>
-:root {
-  --primary:       #FFD700;
-  --primary-glow:  rgba(255,215,0,0.3);
-  --bg:            #ffffff;
-  --surface:       #f8f9fa;
-  --surface2:      #f1f3f5;
-  --border:        #e9ecef;
-  --text:          #000000;
-  --text-dim:      #495057;
-  --success:       #2ecc71;
-  --error:         #e74c3c;
-  --font-main:     'Inter', sans-serif;
-  --font-title:    'Syne', sans-serif;
-  --font-mono:     'JetBrains Mono', monospace;
-  --radius:        12px;
-}
-
-[data-theme="dark"] {
-  --bg:            #0a0a0a;
-  --surface:       #121212;
-  --surface2:      #1a1a1a;
-  --border:        #2a2a2a;
-  --text:          #ffffff;
-  --text-dim:      #a0a0a0;
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-main);
-  height: 100vh;
-  display: flex;
-  overflow: hidden;
-}
-
-/* ===== SIDEBAR FILTERS ===== */
-.sidebar {
-  width: 300px;
-  background: var(--surface);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  padding: 24px;
-  gap: 24px;
-  overflow-y: auto;
-}
-
-.sidebar-title {
-  font-family: var(--font-title);
-  font-weight: 900;
-  text-transform: uppercase;
-  font-size: 14px;
-  letter-spacing: 0.1em;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.filter-label {
-  font-size: 10px;
-  font-weight: 800;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  letter-spacing: 0.05em;
-}
-
-.filter-input {
-  width: 100%;
-  padding: 10px 12px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text);
-  font-family: var(--font-main);
-  font-size: 13px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.filter-input:focus { border-color: var(--primary); }
-
-.extras-box {
-  background: var(--surface2);
-  border-radius: 10px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* ===== MAIN CONTENT ===== */
-.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 32px;
-  overflow-y: auto;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 32px;
-}
-
-.header h1 {
-  font-family: var(--font-title);
-  font-weight: 900;
-  text-transform: uppercase;
-  font-size: 24px;
-}
-
-.kpi-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin-bottom: 32px;
-}
-
-.kpi {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 24px;
-  position: relative;
-}
-
-.kpi::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; height: 4px;
-  background: var(--primary);
-  border-radius: 4px 4px 0 0;
-}
-
-.kpi-label {
-  font-size: 11px;
-  font-weight: 800;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-bottom: 8px;
-}
-
-.kpi-value {
-  font-family: var(--font-title);
-  font-weight: 900;
-  font-size: 32px;
-}
-
-.kpi-sub {
-  font-size: 11px;
-  color: var(--text-dim);
-  margin-top: 4px;
-}
-
-/* ===== RESULTS TABLE ===== */
-.results-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-
-.card-header {
-  padding: 16px 24px;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface2);
-  font-family: var(--font-title);
-  font-weight: 800;
-  text-transform: uppercase;
-  font-size: 12px;
-  letter-spacing: 0.05em;
-}
-
-.table-wrap {
-  width: 100%;
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-
-th {
-  padding: 12px 16px;
-  text-align: left;
-  font-size: 10px;
-  font-weight: 800;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  border-bottom: 1px solid var(--border);
-}
-
-td {
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--border);
-}
-
-.td-num { font-family: var(--font-mono); font-weight: 600; text-align: right; }
-
-/* ===== BUTTONS ===== */
-.btn {
-  font-family: var(--font-title);
-  font-weight: 900;
-  text-transform: uppercase;
-  font-size: 11px;
-  padding: 12px 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  border: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all 0.2s;
-}
-
-.btn-primary { background: var(--primary); color: #000; box-shadow: 0 4px 12px var(--primary-glow); }
-.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px var(--primary-glow); }
-
-.btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-.btn-ghost:hover { background: var(--border); }
-
-/* Tabs */
-.tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 24px;
-}
-
-.tab {
-  padding: 8px 16px;
-  font-family: var(--font-title);
-  font-weight: 800;
-  font-size: 11px;
-  text-transform: uppercase;
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  color: var(--text-dim);
-}
-
-.tab.active {
-  color: var(--text);
-  border-bottom-color: var(--primary);
-}
-
-.mt-4 { margin-top: 4px; }
-.flex-gap-12 { display: flex; gap: 12px; }
-.text-right { text-align: right; }
-.text-accent { color: var(--primary) !important; }
-.font-heavy { font-weight: 900 !important; }
-.font-800 { font-weight: 800 !important; }
-.chart-h-300 { height: 300px; }
-.fs-11 { font-size: 11px; }
-
-</style>
-</head>
-<body>
-
-<div class="sidebar">
-  <div class="sidebar-title"><i data-lucide="filter"></i> Filtros</div>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Reembolsos — RDY Supply</title>
   
-  <div class="filter-group">
-    <label class="filter-label">Funcionário</label>
-    <select id="f-func" class="filter-input" onchange="renderCalc()" title="Selecione o funcionário">
-      <option value="">(Todos)</option>
-    </select>
-  </div>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-  <div class="filter-group">
-    <label class="filter-label">Tipo</label>
-    <select id="f-tipo" class="filter-input" onchange="renderCalc()" title="Tipo de reembolso">
-      <option value="">(Todos)</option>
-      <option value="KM">KM</option>
-      <option value="Avulso">Avulso</option>
-    </select>
-  </div>
+  <style>
+    :root {
+      --accent:        #FFD700;
+      --accent-soft:   rgba(255,215,0,0.12);
+      --accent-glow:   rgba(255,215,0,0.35);
+      --bg:            #050505;
+      --surface:       #0E0E0E;
+      --surface2:      #161616;
+      --surface3:      #1E1E1E;
+      --border:        rgba(255,255,255,0.06);
+      --border-strong: rgba(255,255,255,0.12);
+      --text:          #FFFFFF;
+      --text-dim:      rgba(255,255,255,0.45);
+      --text-faint:    rgba(255,255,255,0.22);
+      --success:       #00C853;
+      --danger:        #FF1744;
+      --radius:        16px;
+      --radius-sm:     10px;
+      --sidebar-w:     280px;
+      --header-h:      68px;
+      --shadow:        0 20px 60px -20px rgba(0,0,0,0.8);
+    }
+    [data-theme="light"] {
+      --bg:            #F5F6F8;
+      --surface:       #FFFFFF;
+      --surface2:      #F0F1F4;
+      --surface3:      #E8E9ED;
+      --border:        rgba(0,0,0,0.07);
+      --border-strong: rgba(0,0,0,0.14);
+      --text:          #0D0D0F;
+      --text-dim:      rgba(0,0,0,0.45);
+      --text-faint:    rgba(0,0,0,0.28);
+      --shadow:        0 8px 32px -8px rgba(0,0,0,0.12);
+    }
+    [data-accent="magenta"] { 
+      --accent:#FF0090;
+      --accent-soft:rgba(255,0,144,0.12);
+      --accent-glow:rgba(255,0,144,0.35); 
+    }
+    [data-accent="blue"] { 
+      --accent:#00B0FF;
+      --accent-soft:rgba(0,176,255,0.12);
+      --accent-glow:rgba(0,176,255,0.35); 
+    }
 
-  <div class="filter-group">
-    <label class="filter-label">Ponto Inicial / Final</label>
-    <input type="text" id="f-pi" class="filter-input" placeholder="Busca P. Inicial..." oninput="renderCalc()" title="Busca por ponto inicial">
-    <input type="text" id="f-pf" class="filter-input mt-4" placeholder="Busca P. Final..." oninput="renderCalc()" title="Busca por ponto final">
-  </div>
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }       
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-  <div class="extras-box">
-    <div class="sidebar-title fs-11"><i data-lucide="plus-circle" style="width:14px;"></i> Extras (R$)</div>
-    <div class="filter-group">
-      <label class="filter-label">Pedágios</label>
-      <input type="number" id="ex-pedagio" class="filter-input" value="0" step="0.01" oninput="renderCalc()" title="Valor de pedágios" placeholder="0.00">
-    </div>
-    <div class="filter-group">
-      <label class="filter-label">Estac. / Zona Azul</label>
-      <input type="number" id="ex-estac" class="filter-input" value="0" step="0.01" oninput="renderCalc()" title="Valor de estacionamento" placeholder="0.00">
-    </div>
-  </div>
+    * { box-sizing:border-box; margin:0; padding:0; letter-spacing:-0.02em; }
+    html,body { height:100%; background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased; overflow:hidden; }
 
-  <button class="btn btn-ghost" onclick="resetFilters()">↺ Resetar</button>
-  <button class="btn btn-primary" onclick="exportXLSX()">⬇ Baixar Excel</button>
-</div>
+    .sidebar {
+      width:var(--sidebar-w); height:100vh;
+      background:var(--surface); border-right:1px solid var(--border);  
+      display:flex; flex-direction:column; flex-shrink:0;
+      position:fixed; left:0; top:0; z-index:50;
+      transition:width 0.3s cubic-bezier(0.4,0,0.2,1); overflow:hidden; 
+    }
+    .sidebar.collapsed { width:72px; }
+    .sidebar-header {
+      height:var(--header-h); padding:0 20px;
+      display:flex; align-items:center; gap:12px;
+      border-bottom:1px solid var(--border); flex-shrink:0;
+    }
+    .sidebar-logo-mark {
+      width:36px; height:36px; border-radius:10px;
+      background:var(--accent); color:#000;
+      font-family:'Syne',sans-serif; font-weight:900; font-size:18px;   
+      display:grid; place-items:center; flex-shrink:0;
+      box-shadow:0 4px 16px var(--accent-glow);
+    }
+    .sidebar-brand { display:flex; flex-direction:column; white-space:nowrap; transition:opacity 0.2s; }
+    .sidebar.collapsed .sidebar-brand { opacity:0; pointer-events:none; }
+    .sidebar-brand-name { font-family:'Syne',sans-serif; font-weight:800; font-size:15px; letter-spacing:0.05em; text-transform:uppercase; }
+    .sidebar-brand-sub  { font-size:10px; color:var(--text-faint); font-family:'JetBrains Mono',monospace; letter-spacing:0.1em; text-transform:uppercase; }
+    
+    .sidebar-nav { flex:1; padding:16px 12px; display:flex; flex-direction:column; gap:4px; overflow-y:auto; }
+    .nav-group-label { font-size:10px; font-weight:700; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.12em; padding:12px 8px 6px; }
+    .sidebar.collapsed .nav-group-label { opacity:0; }
+    
+    .sidebar-footer { padding:16px 12px; border-top:1px solid var(--border); flex-shrink:0; }
+    
+    .topbar {
+      position:fixed; top:0; left:var(--sidebar-w); right:0;
+      height:var(--header-h); background:var(--surface);
+      border-bottom:1px solid var(--border); z-index:40;
+      display:flex; align-items:center; gap:16px; padding:0 28px;       
+      transition:left 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    .sidebar-toggled .topbar { left:72px; }
+    .topbar-toggle {
+      width:36px; height:36px; border-radius:10px;
+      background:transparent; border:1px solid var(--border); color:var(--text-dim);
+      cursor:pointer; display:grid; place-items:center; transition:all 0.18s;
+    }
+    .topbar-toggle:hover { background:var(--surface2); color:var(--text); }
+    .topbar-toggle svg { width:18px; height:18px; }
+    .topbar-title { font-family:'Syne',sans-serif; font-weight:700; font-size:17px; white-space:nowrap; }
+    .topbar-right { display:flex; align-items:center; gap:10px; margin-left:auto; }
+    .clock-display { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-dim); white-space:nowrap; }        
+    .accent-picker { display:flex; gap:6px; align-items:center; }       
+    .accent-swatch { width:20px; height:20px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition:all 0.18s; }
+    .accent-swatch.active { border-color:var(--text); transform:scale(1.2); }
+    .accent-swatch[data-accent="gold"]    { background:#FFD700; }       
+    .accent-swatch[data-accent="magenta"] { background:#FF0090; }       
+    .accent-swatch[data-accent="blue"]    { background:#00B0FF; }       
+    .theme-btn { width:36px; height:36px; border-radius:10px; background:var(--surface2); border:1px solid var(--border); color:var(--text-dim); cursor:pointer; display:grid; place-items:center; transition:all 0.18s; }
+    .theme-btn:hover { color:var(--accent); border-color:var(--accent); }
+    .theme-btn svg { width:16px; height:16px; }
 
-<div class="main">
-  <div class="header">
-    <h1>Calculadora de Reembolso</h1>
-    <div class="flex-gap-12">
-      <button class="btn btn-primary" onclick="document.getElementById('file-input').click()" title="Importar planilha"><i data-lucide="upload"></i> Importar</button>
-      <input type="file" id="file-input" class="hidden" onchange="handleFile(event)" title="Arquivo de entrada">
-      <button class="btn btn-ghost" onclick="loadSample()" title="Carregar dados de demonstração">Teste Demo</button>
-    </div>
-  </div>
+    .main-canvas {
+      margin-left:var(--sidebar-w); margin-top:var(--header-h);
+      height:calc(100vh - var(--header-h)); overflow-y:auto;
+      padding:32px 36px 60px;
+      transition:margin-left 0.3s cubic-bezier(0.4,0,0.2,1);
+      animation:fadeUp 0.4s ease;
+    }
+    .sidebar-toggled .main-canvas { margin-left:72px; }
+    ::-webkit-scrollbar { width:5px; height:5px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:var(--border); border-radius:99px; }
+    ::-webkit-scrollbar-thumb:hover { background:var(--accent); }       
 
-  <div class="tabs">
-    <div class="tab active" id="tab-base" onclick="switchTab('base')">Base de Dados</div>
-    <div class="tab" id="tab-calc" onclick="switchTab('calc')">Cálculos Automatizados</div>
-  </div>
+    .card {
+      background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px; position:relative; overflow:hidden;
+      transition:all 0.3s cubic-bezier(0.2,0.8,0.2,1);
+    }
+    .card:hover { transform:translateY(-3px); border-color:var(--accent); box-shadow:0 16px 48px -12px var(--accent-glow); }
+    .card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--accent); opacity:0; transition:opacity 0.3s; }
+    .card:hover::before { opacity:1; }
 
-  <div id="panel-base" class="panel">
-    <div class="results-card">
-      <div class="card-header">Registros Brutos (<span id="base-count">0</span>)</div>
-      <div class="table-wrap">
-        <table id="tbl-base">
-          <thead id="base-thead"></thead>
-          <tbody id="base-tbody"></tbody>
-        </table>
+    .btn-primary { background:var(--accent); color:#000; font-weight:700; border:none; border-radius:var(--radius-sm); padding:10px 18px; cursor:pointer; transition:all 0.18s; font-family:'Inter',sans-serif; text-transform:uppercase; font-size:12px; letter-spacing:0.05em; display:flex; align-items:center; justify-content:center; gap:8px; }
+    .btn-primary:hover { box-shadow:0 6px 20px -6px var(--accent-glow); transform:translateY(-1px); }
+    
+    .btn-secondary { background:var(--surface2); color:var(--text); font-weight:600; border:1px solid var(--border); border-radius:var(--radius-sm); padding:10px 18px; cursor:pointer; transition:all 0.18s; font-family:'Inter',sans-serif; text-transform:uppercase; font-size:11px; letter-spacing:0.05em; }
+    .btn-secondary:hover { background:var(--surface3); }
+
+    /* Custom styles for calculator elements */
+    .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 24px; }
+    .kpi-label { font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.05em; }
+    .kpi-value { font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 700; color: var(--text); }
+    .kpi-card.total .kpi-value { color: var(--accent); }
+
+    .filter-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .filter-group label { font-size: 10px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.08em; }
+    
+    select, input { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); padding: 10px 12px; font-family: 'Inter', sans-serif; font-size: 13px; outline: none; transition: all 0.2s; width: 100%; }
+    select:focus, input:focus { border-color: var(--accent); background: var(--surface3); }
+
+    .row-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .table-container { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; position: relative; }
+    .table-scroll { overflow: auto; max-height: 600px; }
+    
+    table { width: 100%; border-collapse: collapse; }
+    thead th { text-align: left; font-size: 11px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; padding: 16px 24px; letter-spacing: 0.08em; position: sticky; top: 0; background: var(--surface2); z-index: 10; border-bottom: 1px solid var(--border); }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+    tbody tr:hover { background: var(--surface2); }
+    tbody td { padding: 14px 24px; font-size: 13px; font-weight: 500; color: var(--text); }
+    
+    .td-num { font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+    .td-total { color: var(--accent); font-weight: 700; }
+    .td-os { color: var(--success); font-weight: 700; }
+
+    .empty-state { padding: 60px; text-align: center; color: var(--text-dim); font-size: 14px; font-weight: 500; }
+    
+    .sidebar-section-title { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 800; color: var(--text); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .sidebar-section-title i { width: 16px; height: 16px; color: var(--accent); }
+
+    #file-input { display: none; }
+    
+    .flex-column { display: flex; flex-direction: column; }
+    .gap-7 { gap: 7px; }
+    .mb-20 { margin-bottom: 20px; }
+  </style>
+</head>
+<body class="">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo-mark">C</div>
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-name">Calculadora</div>
+        <div class="sidebar-brand-sub">RDY Supply</div>
       </div>
     </div>
-  </div>
-
-  <div id="panel-calc" class="panel" style="display:none">
-    <div class="kpi-row">
-      <div class="kpi">
-        <div class="kpi-label">Custo Total (KM)</div>
-        <div class="kpi-value text-accent" id="kv-total">R$ 0,00</div>
-        <div class="kpi-sub" id="ks-total">0 trechos filtrados</div>
+    <div class="sidebar-nav">
+      
+      <div class="sidebar-section-title" style="padding: 12px 8px 4px;">
+        <i data-lucide="filter"></i> Filtros
       </div>
-      <div class="kpi">
-        <div class="kpi-label">Total Geral (+Extras)</div>
-        <div class="kpi-value text-accent font-heavy" id="kv-grand">R$ 0,00</div>
-        <div class="kpi-sub">Total KM + Pedágios + Estac.</div>
+
+      <div style="padding: 8px;">
+        <div class="filter-group">
+          <label for="f-func">Funcionário</label>
+          <select id="f-func" title="Selecionar Funcionário" onchange="renderCalc()">
+            <option value="">(Todos)</option>
+          </select>
+        </div>
+
+        <div class="row-filters">
+          <div class="filter-group">
+            <label for="f-tipo">Tipo</label>
+            <select id="f-tipo" title="Selecionar Tipo" onchange="renderCalc()">
+              <option value="">(Todos)</option>
+              <option value="KM">KM</option>
+              <option value="Avulso">Avulso</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="f-coef">Coef.</label>
+            <select id="f-coef" title="Selecionar Coeficiente" onchange="renderCalc()">
+              <option value="">(Todos)</option>
+              <option value="1">Reemb. (=1)</option>
+              <option value="0">Não reemb. (=0)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label>Extras Manuais (R$)</label>
+          <div class="flex-column gap-7">
+            <input type="number" id="ex-Pedágio" placeholder="Pedágios..." value="0" step="0.01" oninput="renderCalc()">
+            <input type="number" id="ex-estac" placeholder="Estac. / Outros..." value="0" step="0.01" oninput="renderCalc()">
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-group-label">Ações</div>
+      <div style="padding: 8px; display: flex; flex-direction: column; gap: 10px;">
+        <button class="btn-primary" onclick="document.getElementById('file-input').click()" style="width: 100%;">
+          <i data-lucide="upload"></i> IMPORTAR XLSX
+        </button>
+        <input type="file" id="file-input" accept=".xlsx,.xls,.csv" onchange="handleFile(event)">
+        
+        <button class="btn-primary" onclick="exportXLSX()" style="width: 100%; background: var(--success);">
+          <i data-lucide="file-text"></i> GERAR RELATÓRIO
+        </button>
+
+        <button class="btn-secondary" onclick="resetFilters()" style="width: 100%;">
+          LIMPAR FILTROS
+        </button>
+      </div>
+
+    </div>
+    <div class="sidebar-footer">
+      <button class="sidebar-link">
+        <i data-lucide="help-circle"></i>
+        <span>Suporte</span>
+      </button>
+    </div>
+  </aside>
+
+  <header class="topbar">
+    <button class="topbar-toggle" onclick="toggleSidebar()" title="Menu">
+      <i data-lucide="menu"></i>
+    </button>
+    <div class="topbar-title" id="topbar-title">Calculadora de Reembolsos</div>   
+    <div class="topbar-right">
+      <div class="clock-display" id="topbar-clock"></div>
+      <div class="accent-picker">
+        <div class="accent-swatch active" data-accent="gold" title="Dourado"></div>
+        <div class="accent-swatch" data-accent="magenta" title="Magenta"></div>
+        <div class="accent-swatch" data-accent="blue" title="Azul"></div>
+      </div>
+      <button class="theme-btn" id="theme-btn" title="Alternar tema"> 
+        <i data-lucide="moon"></i>
+      </button>
+    </div>
+  </header>
+
+  <main class="main-canvas">
+    
+    <div class="kpi-grid">
+      <div class="card kpi-card total">
+        <div class="kpi-label">Total Reembolso</div>
+        <div class="kpi-value" id="kv-grand">R$ 0,00</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-label">Custo KM (VAR)</div>
+        <div class="kpi-value" id="kv-var">R$ 0,00</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-label">Custo Fixo (CASA)</div>
+        <div class="kpi-value" id="kv-casa">R$ 0,00</div>
       </div>
     </div>
 
-    <div class="results-card">
-      <div class="card-header">Resumo por Funcionário</div>
-      <div class="table-wrap">
+    <div class="table-container card" style="padding: 0;">
+      <div class="table-scroll">
         <table>
           <thead>
             <tr>
               <th>Funcionário</th>
-              <th class="text-right">Custo Total</th>
-              <th class="text-right">Pedágios</th>
-              <th class="text-right">Custo Casa</th>
-              <th class="text-right">Total Geral</th>
-              <th class="text-right">Trechos</th>
+              <th style="text-align:right">Custo KM</th>
+              <th style="text-align:right">Fixo</th>
+              <th style="text-align:right">Pedágios</th>
+              <th style="text-align:right">Estac.</th>
+              <th style="text-align:right">Total</th>
+              <th style="text-align:right">OS</th>
             </tr>
           </thead>
           <tbody id="calc-tbody"></tbody>
         </table>
       </div>
+      <div id="empty-state" class="empty-state">
+        Aguardando importação de dados...
+      </div>
     </div>
-  </div>
-</div>
 
-<script>
-// Port of original logic
-let rawData = [], headers = [];
-const COL = {};
-const COL_MAP = {
-  func:      ['funcionário','funcionario'],
-  valor:     ['valor'],
-  coef:      ['coeficiente'],
-  tipo:      ['tipo (km'],
-  pi:        ['ponto inicial'],
-  pf:        ['ponto final'],
-  osPFin:    ['os personalizada final']
-};
+  </main>
 
-function detectColumns(hdrs) {
-  Object.keys(COL_MAP).forEach(k => COL[k] = null);
-  hdrs.forEach((h, i) => {
-    const lc = String(h||'').toLowerCase().trim();
-    Object.entries(COL_MAP).forEach(([key, patterns]) => {
-      if (COL[key] === null && patterns.some(p => lc.startsWith(p) || lc === p)) COL[key] = i;
-    });
-  });
-}
+  <script>
+    let rawData = [], headers = [];
+    const COL = {};
+    const COL_MAP = {
+      func:    ['funcionário','funcionario'],
+      valor:   ['valor'],
+      coef:    ['coeficiente'],
+      tipo:    ['tipo (km'],
+      pi:      ['ponto inicial'],
+      pf:      ['ponto final'],
+      osPFin:  ['os personalizada final'],
+      cargo:   ['cargo']
+    };
 
-function handleFile(e) {
-  const file = e.target.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const wb = XLSX.read(ev.target.result, {type:'binary', cellDates:true});
-    const sn = wb.SheetNames[0];
-    loadArray(XLSX.utils.sheet_to_json(wb.Sheets[sn], {header:1, defval:null}));
-  };
-  reader.readAsBinaryString(file);
-}
-
-function loadArray(arr) {
-  headers = arr[0].map(h => String(h??'').trim());
-  detectColumns(headers);
-  rawData = arr.slice(1).map(row => {
-    const obj = {}; headers.forEach((h,i) => { obj[h] = row[i]??null; }); return obj;
-  });
-  renderBase();
-  updateFuncFilter();
-  lucide.createIcons();
-}
-
-function renderBase() {
-  const show = headers.slice(0, 8);
-  document.getElementById('base-thead').innerHTML = '<tr>' + show.map(h => `<th>${h}</th>`).join('') + '</tr>';
-  document.getElementById('base-tbody').innerHTML = rawData.slice(0, 100).map(row => 
-    '<tr>' + show.map(h => `<td>${row[h]||''}</td>`).join('') + '</tr>'
-  ).join('');
-  document.getElementById('base-count').textContent = rawData.length;
-}
-
-function updateFuncFilter() {
-  const funcs = [...new Set(rawData.map(r => r[headers[COL.func]]).filter(Boolean))].sort();
-  document.getElementById('f-func').innerHTML = '<option value="">(Todos)</option>' + funcs.map(f => `<option>${f}</option>`).join('');
-}
-
-function switchTab(name) {
-  document.querySelectorAll('.panel').forEach(p => p.style.display = 'none');
-  document.getElementById('panel-' + name).style.display = 'block';
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
-  if(name === 'calc') renderCalc();
-}
-
-function renderCalc() {
-  const fFunc = document.getElementById('f-func').value;
-  const fTipo = document.getElementById('f-tipo').value;
-  const exPed = parseFloat(document.getElementById('ex-pedagio').value) || 0;
-  const exEst = parseFloat(document.getElementById('ex-estac').value) || 0;
-
-  const filtered = rawData.filter(r => {
-    if(fFunc && r[headers[COL.func]] !== fFunc) return false;
-    if(fTipo && r[headers[COL.tipo]] !== fTipo) return false;
-    return true;
-  });
-
-  let total = 0;
-  const byFunc = {};
-  filtered.forEach(r => {
-    const f = r[headers[COL.func]] || 'Desconhecido';
-    const v = parseFloat(r[headers[COL.valor]]) || 0;
-    const c = parseFloat(r[headers[COL.coef]]) || 0;
-    if(c === 1) total += v;
+    // Note: Removed the local updateTime to use the mandatory one
     
-    if(!byFunc[f]) byFunc[f] = { total: 0, count: 0, casa: 0 };
-    byFunc[f].count++;
-    if(c === 1) byFunc[f].total += v;
-    const isCasa = String(r[headers[COL.pi]]||'').includes('Casa') || String(r[headers[COL.pf]]||'').includes('Casa');
-    if(isCasa && c === 1) byFunc[f].casa += v;
-  });
+    function detectColumns(hdrs) {
+      Object.keys(COL_MAP).forEach(k => COL[k] = null);
+      hdrs.forEach((h, i) => {
+        const lc = String(h||'').toLowerCase().trim();
+        Object.entries(COL_MAP).forEach(([key, patterns]) => {
+          if (COL[key] === null && patterns.some(p => lc.startsWith(p) || lc === p)) COL[key] = i;
+        });
+      });
+    }
 
-  const fmt = v => 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-  document.getElementById('kv-total').textContent = fmt(total);
-  document.getElementById('kv-grand').textContent = fmt(total + exPed + exEst);
-  document.getElementById('ks-total').textContent = filtered.length + ' trechos filtrados';
+    function handleFile(e) {
+      const file = e.target.files[0]; if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        try {
+          const wb = XLSX.read(ev.target.result, {type:'binary', cellDates:true});
+          const sn = wb.SheetNames.includes('reembolsos') ? 'reembolsos' : wb.SheetNames[0];
+          loadArray(XLSX.utils.sheet_to_json(wb.Sheets[sn], {header:1, defval:null}));
+        } catch(err) { alert('Erro: ' + err.message); }
+      };
+      reader.readAsBinaryString(file);
+      e.target.value = '';
+    }
 
-  document.getElementById('calc-tbody').innerHTML = Object.entries(byFunc).map(([f, d]) => {
-    const ratio = total > 0 ? d.total / total : 0;
-    const grand = d.total + (exPed + exEst) * ratio;
-    return `<tr>
-      <td>${f}</td>
-      <td class="td-num">${fmt(d.total)}</td>
-      <td class="td-num">${fmt((exPed + exEst) * ratio)}</td>
-      <td class="td-num">${fmt(d.casa)}</td>
-      <td class="td-num" style="color:var(--primary); font-weight:800;">${fmt(grand)}</td>
-      <td class="td-num" style="color:var(--text-dim);">${d.count}</td>
-    </tr>`;
-  }).join('');
-}
+    function loadArray(arr) {
+      if (!arr || arr.length < 2) { alert('Arquivo inválido.'); return; }
+      headers = arr[0].map(h => String(h??'').trim());
+      detectColumns(headers);
+      rawData = arr.slice(1).map(row => {
+        const obj = {}; headers.forEach((h,i) => { obj[h] = row[i]??null; }); return obj;
+      }).filter(r => headers.some(h => r[h]!==null && r[h]!==''));
+      updateFuncFilter(); renderCalc();
+    }
 
-function resetFilters() {
-  document.getElementById('f-func').value = '';
-  document.getElementById('f-tipo').value = '';
-  document.getElementById('ex-pedagio').value = '0';
-  document.getElementById('ex-estac').value = '0';
-  renderCalc();
-}
+    function updateFuncFilter() {
+      const sel = document.getElementById('f-func'), prev = sel.value;
+      const funcs = COL.func!==null ? [...new Set(rawData.map(r=>r[headers[COL.func]]).filter(Boolean))].sort() : [];
+      sel.innerHTML = '<option value="">(Todos)</option>' + funcs.map(f=>`<option${f===prev?' selected':''}>${f}</option>`).join('');
+    }
 
-function loadSample() {
-  const H = ['Data','Funcionário','Valor','Coeficiente','Tipo (KM ou Avulso)','Ponto Inicial','Ponto Final'];
-  const D = [
-    ['16/03','Ana Costa', 22.5, 1, 'KM', 'Casa do Usuário', 'Cliente A'],
-    ['16/03','Ana Costa', 15.0, 1, 'KM', 'Cliente A', 'Cliente B'],
-    ['17/03','Bruno Lima', 30.0, 1, 'KM', 'Escritório', 'Cliente C'],
-    ['17/03','Bruno Lima', 5.0, 0, 'KM', 'Casa do Usuário', 'Escritório']
-  ];
-  loadArray([H, ...D]);
-}
+    function gv(row,col){ return col===null ? null : row[headers[col]]; }
+    function pn(v){ if(v===null||v===undefined||v==='')return 0; const n=parseFloat(v); return isNaN(n)?0:n; }
+    function fmt(v){ return 'R$ ' + v.toLocaleString('pt-BR',{minimumFractionDigits:2, maximumFractionDigits:2}); }
 
-lucide.createIcons();
+    function renderCalc() {
+      const empty = document.getElementById('empty-state');
+      if (rawData.length === 0) { empty.style.display = 'block'; return; }
+      empty.style.display = 'none';
 
-// Theme Sync
-window.addEventListener('message', e => {
-  if (e.data.type === 'setTheme') document.documentElement.setAttribute('data-theme', e.data.theme);
-  if (e.data.type === 'setAccent') document.documentElement.setAttribute('data-accent', e.data.accent);
-});
-</script>
+      const fFunc = document.getElementById('f-func').value;
+      const fTipo = document.getElementById('f-tipo').value;
+      const fCoef = document.getElementById('f-coef').value;
+      const exPed = pn(document.getElementById('ex-Pedágio').value);
+      const exEst = pn(document.getElementById('ex-estac').value);
+
+      const filtered = rawData.filter(row => {
+        if(fFunc && gv(row, COL.func)!==fFunc) return false;
+        if(fTipo && gv(row, COL.tipo)!==fTipo) return false;
+        if(fCoef !== '') { const c = gv(row, COL.coef); if(String(c)!==fCoef && pn(c)!==pn(fCoef)) return false; }
+        return true;
+      });
+
+      const byFunc = {};
+      filtered.forEach(row => {
+        const name = String(gv(row, COL.func) ?? 'Sem Nome');
+        if(!byFunc[name]) byFunc[name] = { total:0, var:0, casa:0, count:0, os: new Set() };
+        const val = pn(gv(row, COL.valor)), coef = pn(gv(row, COL.coef));
+        const os = String(gv(row, COL.osPFin)??'').trim();
+        if(os && os!=='-') byFunc[name].os.add(os);
+        if(coef === 1) {
+          const isCasa = String(gv(row, COL.pi)??'').includes('Casa do Usuário') || String(gv(row, COL.pf)??'').includes('Casa do Usuário');
+          byFunc[name].total += val;
+          if(isCasa) byFunc[name].casa += val; else byFunc[name].var += val;
+        }
+      });
+
+      const sorted = Object.entries(byFunc).sort((a,b) => b[1].total - a[1].total);
+      let gTotal = 0, gVar = 0, gCasa = 0;
+      sorted.forEach(([,d]) => { gTotal += d.total; gVar += d.var; gCasa += d.casa; });
+
+      document.getElementById('kv-grand').textContent = fmt(gTotal + exPed + exEst);
+      document.getElementById('kv-var').textContent = fmt(gVar);
+      document.getElementById('kv-casa').textContent = fmt(gCasa);
+
+      const totalAll = gTotal;
+      document.getElementById('calc-tbody').innerHTML = sorted.map(([name, d]) => {
+        const ratio = totalAll > 0 ? d.total / totalAll : (sorted.length > 0 ? 1/sorted.length : 0);
+        const ped = exPed * ratio, est = exEst * ratio, total = d.total + ped + est;
+        return `<tr>
+          <td>${name}</td>
+          <td class="td-num" style="text-align:right">${fmt(d.var)}</td>
+          <td class="td-num" style="text-align:right">${fmt(d.casa)}</td>
+          <td class="td-num" style="text-align:right; color: var(--text-dim)">${fmt(ped)}</td>
+          <td class="td-num" style="text-align:right; color: var(--text-dim)">${fmt(est)}</td>
+          <td class="td-num td-total" style="text-align:right">${fmt(total)}</td>
+          <td class="td-num td-os" style="text-align:right">${d.os.size}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    function resetFilters() {
+      document.getElementById('f-func').value = '';
+      document.getElementById('f-tipo').value = '';
+      document.getElementById('f-coef').value = '';
+      document.getElementById('ex-Pedágio').value = '0';
+      document.getElementById('ex-estac').value = '0';
+      renderCalc();
+    }
+
+    function exportXLSX() {
+      if (rawData.length === 0) { alert('Sem dados para exportar.'); return; }
+      const exPed = pn(document.getElementById('ex-Pedágio').value);
+      const exEst = pn(document.getElementById('ex-estac').value);
+      const byFunc = {};
+      rawData.forEach(row => {
+        const func = String(gv(row, COL.func) ?? '');
+        const osVal = String(gv(row, COL.osPFin) ?? '').trim();
+        if (!func) return;
+        if (!byFunc[func]) byFunc[func] = { total:0, var:0, casa:0, os: new Set() };
+        if (osVal && osVal !== '-' && osVal !== '') byFunc[func].os.add(osVal);
+        if (pn(gv(row, COL.coef)) === 1) {
+          const val = pn(gv(row, COL.valor));
+          const isCasa = String(gv(row, COL.pi)??'').includes('Casa do Usuário') || String(gv(row, COL.pf)??'').includes('Casa do Usuário');
+          byFunc[func].total += val;
+          if(isCasa) byFunc[func].casa += val; else byFunc[func].var += val;
+        }
+      });
+
+      const sorted = Object.entries(byFunc).sort((a, b) => a[0].localeCompare(b[0], 'pt-BR'));
+      const totalAll = sorted.reduce((s, [, d]) => s + d.total, 0);
+
+      const wb = XLSX.utils.book_new();
+      const data = sorted.map(([name, d]) => {
+        const ratio = totalAll > 0 ? d.total / totalAll : 0;
+        return {
+          'Técnico': name,
+          'Custo Fixo': d.casa,
+          'Custo Variável': d.var,
+          'Extras': (exPed + exEst) * ratio,
+          'TOTAL': d.total + ((exPed + exEst) * ratio),
+          'OS Atendidas': d.os.size
+        };
+      });
+      const ws = XLSX.utils.json_to_sheet(data);
+      XLSX.utils.book_append_sheet(wb, ws, "Reembolsos");
+      XLSX.writeFile(wb, "Relatorio_Reembolsos.xlsx");
+    }
+  </script>
+
+  <script>
+  (function(){
+    const html = document.documentElement;
+    // Clock
+    function tick() {
+      const el = document.getElementById('topbar-clock');
+      if(el) el.textContent = new Date().toLocaleTimeString('pt-BR'); 
+    }
+    tick(); setInterval(tick, 1000);
+    // Theme
+    const themeBtn = document.getElementById('theme-btn');
+    if(themeBtn) themeBtn.addEventListener('click', function(){       
+      const t = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', t);
+      if(window.lucide) lucide.createIcons();
+    });
+    // Accent
+    document.querySelectorAll('.accent-swatch').forEach(function(s){  
+      s.addEventListener('click', function(){
+        html.setAttribute('data-accent', this.dataset.accent);        
+        document.querySelectorAll('.accent-swatch').forEach(function(x){ x.classList.remove('active'); });
+        this.classList.add('active');
+      });
+    });
+    // Sidebar toggle
+    function toggleSidebar(){
+      document.querySelector('.sidebar').classList.toggle('collapsed');   
+      document.body.classList.toggle('sidebar-toggled');
+    }
+    window.toggleSidebar = toggleSidebar;
+    // Lucide icons
+    if(window.lucide) lucide.createIcons();
+    // Theme sync com parent (quando em iframe)
+    window.addEventListener('message', function(e){
+      if(e.data && e.data.type === 'setTheme') html.setAttribute('data-theme', e.data.theme);
+      if(e.data && e.data.type === 'setAccent') html.setAttribute('data-accent', e.data.accent);
+    });
+  })();
+  </script>
 </body>
 </html>
