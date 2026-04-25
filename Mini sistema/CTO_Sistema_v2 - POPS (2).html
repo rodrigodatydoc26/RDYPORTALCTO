@@ -1,0 +1,2427 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CTO — Sistema Operacional</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root {
+    --navy:#F4F5F7;--navy2:#FFFFFF;--bl:#F9FAFB;--bm:#F4F5F7;
+    --green:#00C853;--gl:rgba(0,200,83,0.1);--orange:#FFD700;--ol:rgba(255,215,0,0.1);
+    --gray:#F0F2F5;--bdr:rgba(0,0,0,0.1);--txt:#000000;--txt2:rgba(0,0,0,0.7);
+    --gold:#CC0000;--red:#FF1744;--sw:80px;--sw-expanded:220px;--hh:72px;
+    --accent: #CC0000;
+    --accent-rgb: 204, 0, 0;
+    --font: 'Outfit', sans-serif;
+  }
+body{font-family:var(--font);background:#F4F5F7;color:var(--txt);font-size:13.5px; -webkit-font-smoothing: antialiased; margin:0; padding:0; display:flex; flex-direction:column; min-height:100vh;}
+
+/* ── LOGIN ── */
+#login-ov{position:fixed;inset:0;background:rgba(13,33,55,.96);z-index:9999;display:none;align-items:center;justify-content:center}
+#login-ov.show{display:flex}
+.lbox{background:#fff;border-radius:14px;padding:36px;width:340px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.lbox-logo{text-align:center;margin-bottom:24px}
+.lbox-icon{width:52px;height:52px;background:var(--navy);border-radius:10px;display:inline-flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--gold);margin-bottom:10px}
+.lbox h2{font-family:'Syne',sans-serif;font-size:18px;color:var(--navy);font-weight:700}
+.lbox p{color:var(--txt2);font-size:12px;margin-top:3px}
+.lfield{margin-bottom:14px}
+.lfield label{display:block;font-size:11px;font-weight:600;color:var(--txt2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
+.lfield input{width:100%;padding:9px 12px;border:1.5px solid var(--bdr);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:.2s}
+.lfield input:focus{border-color:var(--navy2)}
+.lbtn{width:100%;padding:11px;background:var(--navy);color:#fff;border:none;border-radius:7px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:.2s;margin-bottom:8px}
+.lbtn:hover{background:var(--navy2)}
+.lbtn-ghost{width:100%;padding:9px;background:var(--gray);color:var(--txt2);border:none;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer}
+.lerr{color:var(--red);font-size:12px;text-align:center;margin-top:8px;display:none}
+.lhint{margin-top:16px;padding-top:14px;border-top:1px solid #f0f0f0;font-size:11px;color:#bbb;text-align:center}
+
+/* ── TOPBAR (Calculadora Style) ── */
+#hdr {
+  position:fixed; top:0; left:0; right:0; height:var(--hh);
+  background: rgba(var(--surface-rgb, 255, 255, 255), 0.9);
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--bdr);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px; z-index: 1100;
+}
+.topbar-left  { display: flex; align-items: center; gap: 20px; }
+.topbar-right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+.topbar-brand {
+  width: 42px; height: 42px; border-radius: 12px; background: var(--accent);
+  display: grid; place-items: center; color: #000; flex-shrink: 0;
+  box-shadow: 0 4px 12px var(--accent);
+}
+.topbar-title { font-family: var(--font); font-size: 1.1rem; font-weight: 900; color: var(--txt); text-transform: uppercase; letter-spacing: -0.02em; }
+.topbar-title span { font-weight: 400; color: var(--txt2); }
+.btn-back {
+  display: flex; align-items: center; gap: 8px; text-decoration: none;
+  color: var(--accent); font-size: 0.8rem; font-weight: 800;
+  padding: 8px 16px; border-radius: 12px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--bdr); background: rgba(var(--surface-rgb), 0.05);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+}
+.btn-back:hover { border-color: var(--accent); background: var(--navy2); transform: translateY(-2px); }
+
+/* ── SCROLLBARS ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bdr); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--txt2); }
+
+/* ── THEME PICKER ── */
+.theme-picker-hdr { display: flex; align-items: center; gap: 12px; }
+.accent-pill { 
+  background: rgba(0,0,0,0.03); border: 1px solid var(--bdr); 
+  border-radius: 100px; padding: 4px 10px; display: flex; gap: 8px; align-items: center;
+}
+[data-theme="dark"] .accent-pill { background: rgba(255,255,255,0.03); }
+.color-dot { 
+  width: 12px; height: 12px; border-radius: 50%; cursor: pointer; 
+  transition: transform 0.2s; border: 1px solid transparent; 
+}
+.color-dot:hover { transform: scale(1.2); }
+.color-dot.active { border-color: var(--txt); transform: scale(1.1); box-shadow: 0 0 10px var(--accent); }
+
+.mode-toggle { 
+  width: 36px; height: 36px; border-radius: 10px; 
+  background: var(--navy2); border: 1px solid var(--bdr); 
+  display: grid; place-items: center; cursor: pointer; color: var(--txt);
+  transition: 0.2s;
+}
+.mode-toggle:hover { background: var(--bl); }
+
+#srch{flex:1;max-width:320px;position:relative;margin-left:20px}
+#srch input{width:100%;padding:10px 14px 10px 42px;background:var(--gray);border:1px solid var(--bdr);border-radius:100px;color:var(--txt);font-family:var(--font);font-size:13px;outline:none;transition:0.2s}
+#srch .si{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--accent);font-size:16px;pointer-events:none}
+
+/* ── SIDEBAR ── */
+#sb{position:fixed;top:0;left:0;bottom:0;width:var(--sw);background:linear-gradient(180deg, #000 0%, #111 100%) !important;border-right:1px solid rgba(255,255,255,0.1);z-index:100;padding-top:var(--hh);transition:width 0.3s cubic-bezier(0.4, 0, 0.2, 1);overflow-y:auto;overflow-x:visible;box-shadow:4px 0 15px rgba(0,0,0,0.5);}
+#sb.expanded{width:var(--sw-expanded)}
+
+#sb.expanded ~ #main { margin-left:var(--sw-expanded); }
+
+/* ── TOGGLE ── */
+.sb-toggle {
+  position: fixed; left: 67px; top: calc(var(--hh) + 32px); width: 26px; height: 26px;
+  background: #000; border-radius: 50%; display: grid; place-items: center;
+  cursor: pointer; z-index: 1200; color: #fff; transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3); border: 1px solid var(--bdr);
+}
+.sb-toggle:hover { background: var(--accent); color: #000; }
+#sb.expanded ~ .sb-toggle { left: calc(var(--sw-expanded) - 14px); transform: rotate(180deg); }
+.btn-v-back {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  background: var(--gold); color: #000; padding: 16px 8px; border-radius: 14px;
+  font-weight: 900; font-size: 10px; text-transform: uppercase; cursor: pointer;
+  margin-bottom: 24px; text-align: center; line-height: 1.2;
+}
+#sb-logo {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 100px; margin-bottom: 10px; flex-shrink: 0;
+}
+.brand-icon {
+  width: 38px; height: 38px; background: var(--gold); border-radius: 10px;
+  display: grid; place-items: center; color: #000;
+  box-shadow: 0 0 20px var(--gold);
+}
+.sb-logo-txt { 
+  font-weight: 900; font-size: 13px; margin-top: 10px; color: #fff;
+  white-space: nowrap; display: none;
+}
+#sb.expanded .sb-logo-txt { display: block; }
+
+.sbi i { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; }
+.sbi span, .sb-lbl { opacity: 0; white-space: nowrap; transition: opacity 0.2s; pointer-events: none; display: none; }
+#sb.expanded .sbi span, #sb.expanded .sb-lbl { opacity: 1; pointer-events: auto; display: block; }
+.sbi { 
+  width: 52px; height: 52px; border-radius: 16px; margin: 0 auto 4px;
+  display: flex; align-items: center; justify-content: center; 
+  cursor: pointer; color: var(--txt2); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+  position: relative; overflow: hidden; border: none;
+}
+#sb.expanded .sbi { width: calc(100% - 24px); height: 48px; justify-content: flex-start; padding-left: 14px; gap: 12px; margin: 0 12px 4px; }
+.sbi:hover { background: rgba(var(--surface-rgb), 0.05); color: var(--txt); }
+.sbi.active { 
+  background: rgba(255,255,255,0.08) !important; 
+  color: #fff !important; 
+  box-shadow: 0 15px 30px -10px rgba(var(--accent-rgb), 0.6);
+  border: 1px solid rgba(var(--accent-rgb), 0.2);
+}
+.sbi.active i { color: var(--accent) !important; }
+.sb-div{height:1px;background:rgba(255,255,255,0.06);margin:5px 9px}
+.sb-lbl { 
+  font-size: 10px; font-weight: 800; text-transform: uppercase; 
+  color: var(--gold); margin: 24px 0 8px 20px; letter-spacing: 0.1em; 
+}
+
+/* ── MAIN ── */
+#main{margin-left:var(--sw);margin-top:var(--hh);padding:22px;min-height:calc(100vh - var(--hh));transition:margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1)}
+.view{display:none}
+.view.active{display:block}
+
+/* ── HOME ── */
+.hero{background:linear-gradient(135deg,#2c3e50 0%,#1a1a2e 100%);border-radius:24px;padding:48px;margin-bottom:24px;color:#fff;position:relative;overflow:hidden}
+.hero::after{content:'CTO';position:absolute;right:-20px;top:50%;transform:translateY(-50%);font-family:'Orbitron',sans-serif;font-size:200px;font-weight:900;color:rgba(255,255,255,0.03);line-height:1;pointer-events:none}
+.hero h1{font-family:'Orbitron',sans-serif;font-size:36px;font-weight:900;margin-bottom:8px;letter-spacing:0.02em}
+.hero p{color:rgba(255,255,255,.4);font-size:14px;font-weight:600}
+.hero-stats{display:flex;gap:48px;margin-top:32px}
+.hs-val{font-family:'Orbitron',sans-serif;font-size:32px;font-weight:900;color:var(--gold)}
+.hs-lbl{font-size:11px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1px;font-weight:800}
+.sb-lbl { 
+  font-size: 10px; font-weight: 800; text-transform: uppercase; 
+  color: var(--txt2); margin: 24px 0 8px 20px; letter-spacing: 0.1em; 
+}
+.tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.tab{padding:8px 16px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:600;border:1px solid var(--bdr);background:var(--navy2);color:var(--txt2);transition:all 0.2s}
+.tab:hover{background:var(--bl);color:var(--txt)}
+.tab.active{background:var(--accent);color:#000;border-color:var(--accent);box-shadow:0 8px 20px -5px var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+.card{background:var(--navy2);border-radius:20px;padding:24px;cursor:pointer;transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);border:1px solid var(--bdr);display:flex;flex-direction:column;gap:4px;height:100%}
+.card:hover{transform:translateY(-5px);box-shadow:0 12px 30px rgba(0,0,0,.15);border-color:var(--accent)}
+.cbadge{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;padding:2px 7px;border-radius:4px;display:inline-block;margin-bottom:7px}
+.cbadge-p{color:var(--accent);background:rgba(var(--surface-rgb), 0.05);border: 1px solid var(--bdr)}
+.cbadge-m{color:var(--green);background:var(--gl);border: 1px solid rgba(0,200,83,0.2)}
+.ctitle{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--txt);line-height:1.3;margin-bottom:6px}
+.cdesc{font-size:12px;color:var(--txt2);line-height:1.5}
+.ctags{display:flex;gap:4px;margin-top:9px;flex-wrap:wrap}
+.tag{font-size:10px;padding:2px 6px;border-radius:7px;font-weight:500}
+.tag-op{background:#e8f0fe;color:#3a5bd9}.tag-c{background:#fef3c7;color:#92400e}
+.tag-e{background:#f3e8ff;color:#7c3aed}.tag-g{background:#ecfdf5;color:#065f46}
+.tag-s{background:#fff7ed;color:#9a3412}
+
+/* ── DOC VIEW ── */
+.abar{display:flex;align-items:center;gap:7px;margin-bottom:14px;flex-wrap:wrap}
+.abar-bc{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--txt2);flex:1}
+.abar-bc a{color:var(--accent);cursor:pointer;font-weight:700}
+.abar-bc a:hover{text-decoration:underline}
+.abar-bc span{color:#ccc}
+.btn{padding:8px 16px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--bdr);background:var(--navy2);color:var(--txt);transition:.2s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:var(--bl);border-color:var(--accent);color:var(--txt)}
+.btn-p{background:var(--navy);color:#fff;border-color:var(--navy)}.btn-p:hover{background:var(--navy2)}
+.btn-s{background:var(--green);color:#fff;border-color:var(--green)}.btn-s:hover{background:#155e2e}
+.btn-d{background:var(--red);color:#fff;border-color:var(--red)}.btn-d:hover{background:#b91c1c}
+.btn-g{background:var(--gold);color:var(--navy);border-color:var(--gold)}.btn-g:hover{opacity:.88}
+.dochdr{background:var(--navy);color:#fff;border-radius:12px 12px 0 0;padding:24px 28px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.1)}
+[data-theme="light"] .dochdr { background: #1a1a2e; color: #fff; }
+[data-theme="dark"] .dochdr { background: #0d1117; color: #fff; }
+
+.dochdr-code{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);margin-bottom:6px;font-weight:700;letter-spacing:1px}
+.dochdr h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin:0;line-height:1.2}
+.dochdr-meta{display:flex;gap:20px;margin-top:12px;opacity:0.8}
+.dochdr-meta span{font-size:11px;color:rgba(255,255,255,0.7)}
+.dochdr-meta strong{color:#fff}
+
+.docbody{background:var(--navy2);border-radius:0 0 12px 12px;border:1px solid var(--bdr);border-top:none;overflow:hidden;margin-bottom:24px;box-shadow:0 4px 20px rgba(0,0,0,0.05)}
+.dshdr{display:flex;align-items:center;border-left:4px solid var(--accent);background:var(--bl);padding:10px 20px;font-weight:800;font-size:12px;color:var(--txt);letter-spacing:1px;text-transform:uppercase}
+.dshdr-g{background:var(--gl);color:var(--green);border-left-color:var(--green)}
+.dshdr-o{background:var(--ol);color:var(--orange);border-left-color:var(--orange)}
+.dsbody{padding:16px 24px 20px;font-size:14px;line-height:1.7;color:var(--txt)}
+
+table.pt{width:100%;border-collapse:collapse;font-size:13px}
+table.pt th{background:var(--navy);color:#fff;padding:10px 14px;font-weight:700;font-size:11px;text-align:left;text-transform:uppercase;letter-spacing:1px}
+[data-theme="light"] table.pt th { background: var(--navy); color: #fff; }
+[data-theme="dark"] table.pt th { background: #1a1a2e; color: #fff; }
+
+table.pt td{padding:10px 14px;border:1px solid var(--bdr);vertical-align:top}
+table.pt tr:nth-child(odd) td{background:var(--gray)}
+table.pt tr:nth-child(even) td{background:var(--navy2)}
+
+.sn{text-align:center;font-weight:800;color:var(--accent);width:42px;min-width:42px;font-family:'DM Mono',monospace}
+.rc-o, .rc-e { font-weight:700; color:var(--txt); }
+
+table.ct, table.ct2 { width:100%; border-collapse:collapse; font-size:13px; }
+table.ct th { background:var(--green); color:#fff; padding:8px 12px; font-size:11px; }
+table.ct2 th { background:var(--orange); color:#fff; padding:8px 12px; font-size:11px; }
+table.ct td, table.ct2 td { padding:10px 12px; border:1px solid var(--bdr); }
+.st{font-weight:700;color:var(--orange)}
+.ck{text-align:center;color:var(--green);font-weight:700;width:32px}
+
+/* ── EDITOR ── */
+.ewrap{background:var(--navy2);border-radius:12px;border:1px solid var(--bdr);overflow:hidden;margin-bottom:14px}
+.etbar{background:var(--gray);border-bottom:1px solid var(--bdr);padding:9px 14px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.etbar label{font-size:11px;font-weight:600;color:var(--txt2);white-space:nowrap}
+.etbar select,.etbar input{border:1px solid var(--bdr);border-radius:6px;padding:6px 12px;font-family:'DM Sans',sans-serif;font-size:13px;background:var(--bl);color:var(--txt);outline:none}
+.etbar select:focus,.etbar input:focus{border-color:var(--accent)}
+.etsep{width:1px;height:20px;background:var(--bdr);margin:0 2px;flex-shrink:0}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px}
+.fgfull{grid-column:1/-1}
+.fg label{display:block;font-size:11px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px}
+.fg input,.fg textarea,.fg select{border:1.5px solid var(--bdr);border-radius:6px;padding:8px 10px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--txt);outline:none;width:100%;transition:.15s}
+.fg input:focus,.fg textarea:focus{border-color:var(--navy2);box-shadow:0 0 0 3px rgba(26,74,122,.06)}
+.fg textarea{resize:vertical;min-height:64px}
+.rsec{padding:0 16px 14px}
+.rsec h4{font-size:11px;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;padding-top:2px}
+.ri{display:flex;gap:6px;padding:7px;background:var(--gray);border-radius:6px;margin-bottom:4px;border:1px solid var(--bdr);align-items:flex-start}
+.ri input,.ri textarea,.ri select{border:1.5px solid var(--bdr);border-radius:5px;padding:5px 8px;font-family:'DM Sans',sans-serif;font-size:12px;background:#fff;flex:1;outline:none;min-width:0}
+.ri input:focus,.ri textarea:focus{border-color:var(--navy2)}
+.ri-n{width:28px;height:28px;background:var(--navy);color:#fff;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;font-family:'DM Mono',monospace}
+.ri-bloco{background:var(--bl);color:var(--accent);border-radius:4px;padding:4px 8px;font-size:11px;font-weight:700;flex-shrink:0}
+.ri-drag{color:#aaa;font-size:14px;cursor:grab;flex-shrink:0;padding-top:2px}
+.ri-del{background:#fee2e2;color:#991b1b;border:none;border-radius:4px;padding:4px 7px;cursor:pointer;font-size:12px;flex-shrink:0}
+.ri-del:hover{background:#fca5a5}
+.badd{border:1.5px dashed var(--bdr);background:transparent;border-radius:6px;padding:7px;width:100%;font-size:12.5px;color:var(--txt2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;margin-top:4px;transition:.15s;font-family:'DM Sans',sans-serif}
+.badd:hover{background:var(--bl);border-color:var(--navy2);color:var(--navy2)}
+.badd-bloco{border-style:solid;background:var(--bm)}
+
+/* ── DRAG LIST (reorder) ── */
+.dli{background:#fff;border:1.5px solid var(--bdr);border-radius:7px;padding:9px 13px;margin-bottom:5px;display:flex;align-items:center;gap:9px;cursor:grab;transition:.2s}
+.dli:hover{border-color:var(--navy2);box-shadow:0 2px 8px rgba(0,0,0,.07)}
+.dli.dragging{opacity:.4;border-style:dashed}
+.dli.over{border-color:var(--gold);background:var(--bl)}
+.dli-handle{color:#ccc;font-size:16px}
+.dli-code{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--accent);background:var(--bl);padding:2px 6px;border-radius:3px;flex-shrink:0}
+.dli-title{font-size:13px;flex:1}
+.dli-sec{font-size:10px;font-weight:600;padding:2px 7px;border-radius:5px;flex-shrink:0}
+
+/* ── USERS ── */
+.ugrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:11px;margin-bottom:14px}
+.ucard{background:#fff;border-radius:9px;padding:14px;border:1.5px solid #e8eef5;display:flex;align-items:center;gap:11px}
+.uav-big{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:14px;flex-shrink:0}
+.uav-a{background:var(--navy);color:var(--gold)}.uav-e{background:var(--navy2);color:#fff}.uav-v{background:var(--gray);color:var(--txt2)}
+.uinfo{flex:1}.uname{font-weight:600;font-size:13px;color:var(--navy)}.ulogin{font-size:11px;color:var(--txt2)}
+.urole{font-size:10px;font-weight:600;padding:2px 7px;border-radius:7px;display:inline-block;margin-top:2px}
+.ur-a{background:#fef3c7;color:#92400e}.ur-e{background:var(--bl);color:var(--navy2)}.ur-v{background:var(--gl);color:var(--green)}
+.uacts{display:flex;gap:4px}
+
+/* ── MODAL ── */
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px}
+.mbox{background:#fff;border-radius:12px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.mhdr{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid #f0f0f0}
+.mhdr h3{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;color:var(--navy)}
+.mcls{width:26px;height:26px;border-radius:50%;background:var(--gray);border:none;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center}
+.mbody{padding:20px}
+.mfoot{padding:14px 20px;border-top:1px solid #f0f0f0;display:flex;gap:7px;justify-content:flex-end}
+.dopt{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:8px;border:1.5px solid var(--bdr);background:#fff;cursor:pointer;transition:.15s;margin-bottom:8px;text-align:left;width:100%;font-family:'DM Sans',sans-serif}
+.dopt:hover{border-color:var(--navy2);background:var(--bl)}
+.dopt-icon{font-size:20px;flex-shrink:0}
+.dopt-title{font-weight:600;font-size:13px;color:var(--navy)}
+.dopt-sub{font-size:11px;color:var(--txt2);margin-top:1px}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:18px;right:18px;z-index:9999;background:var(--navy);color:#fff;padding:10px 16px;border-radius:7px;font-size:13px;font-weight:500;box-shadow:0 4px 18px rgba(0,0,0,.22);transform:translateY(60px);transition:transform .3s;pointer-events:none}
+#toast.show{transform:translateY(0)}
+#toast.ok{background:var(--green)}
+#toast.err{background:var(--red)}
+
+/* ── PRINT ── */
+@media print{
+  #hdr,#sb,.abar,.tabs,.ewrap,#toast,.mov,#login-ov{display:none!important}
+  #main{margin:0;padding:14px}
+  body{background:#fff}
+  .view{display:block!important}
+  .view:not(.pm){display:none!important}
+}
+
+/* ══════════════════════════════════════════
+   PORTAL THEME SYSTEM
+══════════════════════════════════════════ */
+:root { --accent: #CC0000; }
+
+[data-theme="dark"] {
+  --navy:   #080808; --navy2:  #111111;
+  --bl:     #151515; --bm:     #111111;
+  --gray:   #0f0f0f; --bdr:    rgba(255,255,255,0.08);
+  --txt:    #FFFFFF; --txt2:   rgba(255,255,255,0.7);
+  --gl: rgba(0,200,83,0.08); --ol: rgba(204,0,0,0.08);
+  --gold: var(--accent); --orange: var(--accent);
+  --surface-rgb: 10, 10, 10;
+}
+[data-theme="light"] {
+  --navy:   #F8F9FA; --navy2:  #FFFFFF;
+  --bl:     #F8F9FA; --bm:     #FFFFFF;
+  --gray:   #F1F3F5; --bdr:    rgba(0,0,0,0.1);
+  --txt:    #000000; --txt2:   rgba(0,0,0,0.8);
+  --gl: rgba(0,200,83,0.1); --ol: rgba(255,215,0,0.1);
+  --gold: var(--accent); --orange: var(--accent);
+  --surface-rgb: 255, 255, 255;
+}
+[data-theme="light"] body { background: #F4F5F7 !important; color: #000 !important; }
+[data-theme="light"] #hdr { background: rgba(255,255,255,0.95) !important; border-bottom: 1px solid rgba(0,0,0,0.08) !important; box-shadow: 0 1px 12px rgba(0,0,0,0.06) !important; }
+[data-theme="light"] #sb { background: #FFFFFF !important; border-right: 1px solid rgba(0,0,0,0.08) !important; box-shadow: 2px 0 8px rgba(0,0,0,0.04) !important; }
+[data-theme="light"] .sbi { color: rgba(0,0,0,0.6) !important; }
+[data-theme="light"] .sbi:hover { background: rgba(0,0,0,0.04) !important; color: #000 !important; }
+[data-theme="light"] .sbi.active { background: var(--accent) !important; color: #000 !important; box-shadow: 0 10px 20px -5px var(--accent); }
+[data-theme="light"] .sb-div { background: rgba(0,0,0,0.06) !important; }
+[data-theme="light"] .sb-lbl { color: rgba(0,0,0,0.4) !important; }
+[data-theme="light"] .sb-logo-txt { color: #000 !important; }
+[data-theme="light"] .brand-icon { box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important; }
+[data-theme="light"] .sb-toggle { background: #fff !important; color: #333 !important; border-color: rgba(0,0,0,0.12) !important; box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important; }
+[data-theme="dark"] body { background: #000 !important; color: #fff !important; }
+[data-theme="dark"] #hdr { background: rgba(5,5,5,0.96) !important; box-shadow: none !important; border-bottom: 1px solid rgba(255,255,255,0.08) !important; }
+[data-theme="dark"] #sb { background: #080808 !important; border-right: 1px solid rgba(255,255,255,0.08) !important; }
+[data-theme="dark"] .sbi:hover { background: rgba(255,255,255,0.05) !important; }
+[data-theme="dark"] .sb-div { background: rgba(255,255,255,0.06) !important; }
+[data-theme="dark"] .card { background: #0f0f0f !important; border-color: rgba(255,255,255,0.06) !important; }
+[data-theme="dark"] .card:hover { border-color: rgba(255,255,255,0.15) !important; box-shadow: 0 5px 18px rgba(0,0,0,.5) !important; }
+[data-theme="dark"] .ewrap { background: #0f0f0f !important; border-color: rgba(255,255,255,0.06) !important; }
+[data-theme="dark"] .docbody { background: #0f0f0f !important; border-color: rgba(255,255,255,0.06) !important; }
+[data-theme="dark"] .dsbody { color: rgba(255,255,255,0.8) !important; }
+[data-theme="dark"] .dochdr { background: #0d1117 !important; }
+[data-theme="dark"] .etbar { background: #111 !important; border-bottom-color: rgba(255,255,255,0.06) !important; }
+[data-theme="dark"] .etbar select,[data-theme="dark"] .etbar input { background: #1a1a1a !important; color: #fff !important; border-color: rgba(255,255,255,0.1) !important; }
+[data-theme="dark"] .fg input,[data-theme="dark"] .fg textarea,[data-theme="dark"] .fg select { background: #151515 !important; color: #fff !important; border-color: rgba(255,255,255,0.1) !important; }
+[data-theme="dark"] .ri { background: #111 !important; border-color: rgba(255,255,255,0.08) !important; }
+[data-theme="dark"] .ri input,[data-theme="dark"] .ri textarea,[data-theme="dark"] .ri select { background: #0f0f0f !important; color: #fff !important; border-color: rgba(255,255,255,0.1) !important; }
+[data-theme="dark"] .ri-n { background: #1a1a2e !important; }
+[data-theme="dark"] .badd { border-color: rgba(255,255,255,0.1) !important; color: rgba(255,255,255,0.4) !important; }
+[data-theme="dark"] .badd:hover { background: #151515 !important; }
+[data-theme="dark"] .dli { background: #111 !important; border-color: rgba(255,255,255,0.06) !important; }
+[data-theme="dark"] .dli:hover { border-color: rgba(255,255,255,0.2) !important; }
+[data-theme="dark"] .ucard { background: #111 !important; border-color: rgba(255,255,255,0.06) !important; }
+[data-theme="dark"] .btn { background: #151515 !important; border-color: rgba(255,255,255,0.1) !important; color: #fff !important; }
+[data-theme="dark"] .btn-p { background: #1a1a2e !important; }
+[data-theme="dark"] .btn:hover { background: #1f1f1f !important; }
+[data-theme="dark"] .mbox { background: #111 !important; }
+[data-theme="dark"] .mhdr { border-bottom-color: rgba(255,255,255,0.06) !important; }
+[data-theme="dark"] .mhdr h3 { color: #fff !important; }
+[data-theme="dark"] .mfoot { border-top-color: rgba(255,255,255,0.06) !important; }
+[data-theme="dark"] .mcls { background: #222 !important; color: #fff !important; }
+[data-theme="dark"] .dopt { background: #151515 !important; border-color: rgba(255,255,255,0.08) !important; }
+[data-theme="dark"] .dopt:hover { background: #1f1f1f !important; border-color: rgba(255,255,255,0.2) !important; }
+[data-theme="dark"] .dopt-title { color: #fff !important; }
+[data-theme="dark"] .lbox { background: #111 !important; }
+[data-theme="dark"] .lbox h2 { color: #fff !important; }
+[data-theme="dark"] .lfield input { background: #1a1a1a !important; color: #fff !important; border-color: rgba(255,255,255,0.1) !important; }
+[data-theme="dark"] .lbtn { background: #222 !important; }
+[data-theme="dark"] .lbtn-ghost { background: #111 !important; color: rgba(255,255,255,0.6) !important; }
+[data-theme="dark"] .lhint { color: rgba(255,255,255,0.25) !important; border-top-color: rgba(255,255,255,0.06) !important; }
+[data-theme="dark"] #sdrop { background: #111 !important; box-shadow: 0 8px 28px rgba(0,0,0,.5) !important; }
+[data-theme="dark"] .sdi { border-bottom-color: rgba(255,255,255,0.06) !important; }
+[data-theme="dark"] .sdi:hover { background: #1a1a1a !important; }
+[data-theme="dark"] .sdi-t { color: #fff !important; }
+[data-theme="dark"] #srch input { background: #151515 !important; color: #fff !important; }
+[data-theme="dark"] #srch input::placeholder { color: rgba(255,255,255,0.3) !important; }
+[data-theme="dark"] table.pt th { background: #0d1117 !important; }
+[data-theme="dark"] table.pt td { border-color: rgba(255,255,255,0.06) !important; color: rgba(255,255,255,0.85) !important; }
+[data-theme="dark"] table.pt tr:nth-child(odd) td { background: #111 !important; }
+[data-theme="dark"] table.pt tr:nth-child(even) td { background: #0f0f0f !important; }
+[data-theme="dark"] #main > div[style*="background:#fff"] { background: #111 !important; border-color: rgba(255,255,255,0.06) !important; }
+[data-theme="dark"] #toast { background: #1a1a2e !important; }
+[data-theme="dark"] #login-ov { background: rgba(0,0,0,0.97) !important; }
+
+/* ── HEADER ADJUSTMENTS ── */
+.hacts { display: flex; align-items: center; gap: 12px; }
+.hbtn { 
+  padding: 8px 16px; border-radius: 12px; font-size: 0.8rem; font-weight: 700;
+  cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(var(--surface-rgb), 0.05); border: 1px solid var(--bdr); color: var(--txt);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+}
+.hbtn:hover { background: var(--navy2); border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+.hbtn i { width: 16px; height: 16px; color: var(--accent); }
+
+.cto-clock { 
+  font-family: 'DM Mono', monospace; font-weight: 700; font-size: 0.8rem; 
+  color: var(--txt2); background: rgba(var(--surface-rgb), 0.05); padding: 5px 12px; border-radius: 10px;
+  margin-left: 10px; min-width: 50px; text-align: center;
+}
+[data-theme="dark"] .cto-clock { background: rgba(255,255,255,0.05); }
+[data-theme="dark"] .hbtn { background: rgba(255, 255, 255, 0.03); }
+
+/* ── THEME PICKER CSS ── */
+.theme-picker-hdr { display: flex; align-items: center; gap: 8px; margin-left: 8px; }
+.accent-pill { background: rgba(255,255,255,0.04); border: 1px solid var(--bdr); border-radius: 100px; padding: 4px 10px; display: flex; gap: 8px; align-items: center; }
+.color-dot { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; transition: transform 0.2s; border: 2px solid transparent; }
+.color-dot:hover { transform: scale(1.2); }
+.color-dot.active { border-color: #fff; transform: scale(1.1); box-shadow: 0 0 8px var(--accent); }
+.mode-toggle { width: 32px; height: 32px; border-radius: 8px; background: var(--gray); border: 1px solid var(--bdr); display: grid; place-items: center; cursor: pointer; color: var(--txt); transition: 0.2s; }
+.mode-toggle:hover { background: var(--bl); transform: translateY(-1px); }
+.cto-clock { font-family: 'Orbitron', monospace; font-weight: 700; font-size: 13px; color: var(--txt2); margin-left: 6px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN OVERLAY -->
+<div id="login-ov">
+  <div class="lbox">
+    <div class="lbox-logo">
+      <div class="lbox-icon">CTO</div>
+      <h2>DocTecnologia</h2>
+      <p>Faça login para editar POPs e Manuais</p>
+    </div>
+    <div class="lfield"><label>Usuário</label><input type="text" id="lu" placeholder="seu.usuario"></div>
+    <div class="lfield"><label>Senha</label><input type="password" id="lp" placeholder="••••••••"></div>
+    <button class="lbtn" onclick="doLogin()">Entrar</button>
+    <button class="lbtn-ghost" onclick="closeLogin()">Continuar como visitante</button>
+    <div class="lerr" id="lerr">Usuário ou senha incorretos.</div>
+    <div class="lhint">admin / cto2026 &nbsp;·&nbsp; editor / pop2026 &nbsp;·&nbsp; viewer / view123</div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div id="hdr">
+  <div class="topbar-left">
+    <h1 class="topbar-title">DOC <span>POPs</span></h1>
+    <a href="../portal.html" class="btn-back">
+      <i data-lucide="layout-grid" style="width:14px"></i> VOLTA PARA PORTAL
+    </a>
+    <div id="srch">
+      <span class="si"><i data-lucide="search"></i></span>
+      <input type="text" id="srch-inp" placeholder="Buscar POPs, manuais...">
+      <div id="sdrop"></div>
+    </div>
+  </div>
+  <div class="hacts">
+    <button class="hbtn hbtn-gold" onclick="showModal('mdl-dl')"><i data-lucide="download"></i> Baixar POPs</button>
+    <button class="hbtn hbtn-login" id="btn-login" onclick="openLogin()"><i data-lucide="lock"></i> Entrar</button>
+    <div id="hdr-user" style="display:none;align-items:center;gap:7px;font-size:12px;padding:4px 9px;border-radius:6px;border:1px solid var(--bdr);color:var(--txt2)">
+      <div class="uav" id="uav">?</div><span id="uname-hdr">--</span>
+    </div>
+    <button class="hbtn hbtn-out" id="btn-out" onclick="doLogout()" style="display:none"><i data-lucide="log-out"></i> Sair</button>
+    <div class="theme-picker-hdr">
+      <div class="accent-pill">
+        <div class="color-dot active" style="background:#CC0000" onclick="setAccent('#CC0000',this)"></div>
+        <div class="color-dot" style="background:#FFD700" onclick="setAccent('#FFD700',this)"></div>
+        <div class="color-dot" style="background:#FF007A" onclick="setAccent('#FF007A',this)"></div>
+        <div class="color-dot" style="background:#0066FF" onclick="setAccent('#0066FF',this)"></div>
+      </div>
+      <div class="mode-toggle" id="btnTheme"><i data-lucide="moon" id="themeIcon"></i></div>
+    </div>
+    <span class="cto-clock" id="cto-clock">--:--</span>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div id="sb" style="padding-top: 24px;">
+  <div class="sb-sec" style="padding:0">
+    <div class="sb-lbl">Menu</div>
+    <div class="sbi" onclick="goHome()"><i data-lucide="home"></i> <span>Início</span></div>
+    <div class="sbi" id="sb-ed" onclick="openEditor(null)" style="display:none"><i data-lucide="edit-3"></i> <span>Novo POP/Manual</span></div>
+    <div class="sbi" id="sb-ro" onclick="showView('reorder')" style="display:none"><i data-lucide="move-vertical"></i> <span>Reorganizar</span></div>
+    <div class="sbi" id="sb-us" onclick="showView('users')" style="display:none"><i data-lucide="users"></i> <span>Usuários</span></div>
+  </div>
+  <div class="sb-div"></div>
+  <div class="sb-sec"><div class="sb-lbl">📋 Pré-Operação</div><div id="sb-pre"></div></div>
+  <div class="sb-div"></div>
+  <div class="sb-sec"><div class="sb-lbl">🚗 Campo</div><div id="sb-campo"></div></div>
+  <div class="sb-div"></div>
+  <div class="sb-sec"><div class="sb-lbl">🖨 Equipamentos</div><div id="sb-equip"></div></div>
+  <div class="sb-div"></div>
+  <div class="sb-sec"><div class="sb-lbl">📊 Gestão</div><div id="sb-gestao"></div></div>
+  <div class="sb-div"></div>
+  <div class="sb-sec"><div class="sb-lbl">📖 Manuais</div><div id="sb-manuais"></div></div>
+</div>
+<div class="sb-toggle" onclick="document.getElementById('sb').classList.toggle('expanded'); if(window.lucide) lucide.createIcons();">
+  <i data-lucide="chevron-right" style="width:16px;height:16px"></i>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+  <!-- HOME -->
+  <div id="view-home" class="view active">
+    <div class="hero">
+      <h1 style="font-size: 42px;">Procedimentos Operacionais Padrão</h1>
+      <p style="letter-spacing: 0.1em; opacity: 0.6;">Centro Técnico Operacional · DocTecnologia · Versão 18 · 2026</p>
+      <div class="hero-stats">
+        <div><div class="hs-val" id="stat-n">24</div><div class="hs-lbl">POPs</div></div>
+        <div><div class="hs-val">6</div><div class="hs-lbl">Manuais</div></div>
+        <div><div class="hs-val">V18</div><div class="hs-lbl">Versão</div></div>
+      </div>
+    </div>
+    <div class="tabs" id="tabs">
+      <div class="tab active" onclick="filterCards('all',this)">Todos</div>
+      <div class="tab" onclick="filterCards('pop',this)">POPs</div>
+      <div class="tab" onclick="filterCards('manual',this)">Manuais</div>
+      <div class="tab" onclick="filterCards('pre',this)">Pré-Operação</div>
+      <div class="tab" onclick="filterCards('campo',this)">Campo</div>
+      <div class="tab" onclick="filterCards('equip',this)">Equipamentos</div>
+      <div class="tab" onclick="filterCards('gestao',this)">Gestão</div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <!-- POP -->
+  <div class="view" id="view-pop">
+    <div class="abar">
+      <div class="abar-bc"><a onclick="goHome()">Início</a><span>›</span><span id="bc-sec"></span><span>›</span><span id="bc-title"></span></div>
+      <button class="btn" id="btn-ed-pop" onclick="editPOP()" style="display:none">✏️ Editar</button>
+      <button class="btn" onclick="printCurrent()">🖨 Imprimir</button>
+      <button class="btn btn-g" onclick="pdfCurrent()">⬇ PDF</button>
+    </div>
+    <div id="pop-content"></div>
+  </div>
+
+  <!-- MANUAL -->
+  <div class="view" id="view-manual">
+    <div class="abar">
+      <div class="abar-bc"><a onclick="goHome()">Início</a><span>›</span><span>Manuais</span><span>›</span><span id="bc-manual"></span></div>
+      <button class="btn" id="btn-ed-man" onclick="editManual()" style="display:none">✏️ Editar</button>
+      <button class="btn" onclick="printCurrent()">🖨 Imprimir</button>
+    </div>
+    <div id="manual-content"></div>
+  </div>
+
+  <!-- EDITOR -->
+  <div class="view" id="view-editor">
+    <div class="abar">
+      <div class="abar-bc"><a onclick="goHome()">Início</a><span>›</span><span>Editor</span></div>
+      <button class="btn btn-p" onclick="saveDoc()">💾 Salvar</button>
+      <button class="btn" onclick="previewDoc()">👁 Pré-visualizar</button>
+      <button class="btn btn-d" id="btn-del" onclick="deleteDoc()" style="display:none">🗑 Excluir</button>
+    </div>
+    <div class="ewrap">
+      <div class="etbar">
+        <label>Tipo:</label>
+        <select id="ed-type" onchange="toggleEditorType()" style="width:95px">
+          <option value="pop">POP</option>
+          <option value="manual">Manual</option>
+        </select>
+        <div class="etsep"></div>
+        <label>Código:</label><input id="ed-code" placeholder="POP-25" style="width:80px">
+        <label>Versão:</label><input id="ed-ver" value="1.0" style="width:52px">
+        <div class="etsep"></div>
+        <label>Seção:</label>
+        <select id="ed-sec" style="width:155px">
+          <option>Pré-Operação</option>
+          <option>Operação de Campo</option>
+          <option>Equipamentos</option>
+          <option>Gestão</option>
+        </select>
+      </div>
+      <div class="fgrid">
+        <div class="fg fgfull"><label>Título</label><input id="ed-title" placeholder="Nome do procedimento..."></div>
+        <div class="fg fgfull" id="ed-obj-w"><label>Objetivo</label><textarea id="ed-obj" rows="2" placeholder="Descreva o objetivo..."></textarea></div>
+        <div class="fg fgfull" id="ed-esc-w"><label>Escopo</label><textarea id="ed-esc" rows="2" placeholder="Quem e o que está coberto..."></textarea></div>
+        <div class="fg fgfull" id="ed-int-w" style="display:none"><label>Introdução</label><textarea id="ed-int" rows="3" placeholder="Texto introdutório..."></textarea></div>
+        <div class="fg" id="ed-sis-w" style="display:none"><label>Sistema</label><input id="ed-sis" placeholder="LOC1, Contele..."></div>
+        <div class="fg"><label>Área / Seção</label><input id="ed-area" placeholder="CTO – Operações de Campo"></div>
+        <div class="fg"><label>Data de vigência</label><input id="ed-data" placeholder="Abril / 2026"></div>
+      </div>
+      <div class="rsec" id="ed-resp-s"><h4>Responsáveis</h4><div id="r-resp"></div><button class="badd" onclick="addRow('resp')">+ Responsável</button></div>
+      <div class="rsec" id="ed-flx-s"><h4>Fluxo Passo a Passo</h4><div id="r-step"></div>
+        <div style="display:flex;gap:6px;margin-top:4px">
+          <button class="badd" onclick="addRow('step')" style="flex:1">+ Passo</button>
+          <button class="badd badd-bloco" onclick="addRow('bloco')" style="flex:1">+ Bloco</button>
+        </div>
+      </div>
+      <div class="rsec" id="ed-crit-s"><h4>Critérios de Qualidade</h4><div id="r-crit"></div><button class="badd" onclick="addRow('crit')">+ Critério</button></div>
+      <div class="rsec" id="ed-cont-s"><h4>Contingências</h4><div id="r-cont"></div><button class="badd" onclick="addRow('cont')">+ Contingência</button></div>
+      <div class="rsec" id="ed-mst-s" style="display:none"><h4>Passos do Manual</h4><div id="r-mst"></div><button class="badd" onclick="addRow('mst')">+ Passo</button></div>
+      <div class="rsec" id="ed-nte-s" style="display:none"><h4>Observações</h4><div id="r-nte"></div><button class="badd" onclick="addRow('nte')">+ Observação</button></div>
+    </div>
+    <div id="ed-preview"></div>
+  </div>
+
+  <!-- REORDER -->
+  <div class="view" id="view-reorder">
+    <div class="abar">
+      <div class="abar-bc"><a onclick="goHome()">Início</a><span>›</span><span>Reorganizar</span></div>
+      <button class="btn btn-s" onclick="saveOrder()">💾 Salvar Ordem</button>
+      <button class="btn" onclick="resetOrder()">↺ Padrão</button>
+    </div>
+    <div style="background:#fff;border-radius:10px;border:1.5px solid #e8eef5;padding:18px">
+      <p style="font-size:13px;color:var(--txt2);margin-bottom:14px">🖱️ Arraste os itens para reorganizar a sequência dos POPs.</p>
+      <div id="dl"></div>
+    </div>
+  </div>
+
+  <!-- USERS -->
+  <div class="view" id="view-users">
+    <div class="abar">
+      <div class="abar-bc"><a onclick="goHome()">Início</a><span>›</span><span>Usuários</span></div>
+      <button class="btn btn-p" onclick="showAddUser()">+ Novo Usuário</button>
+    </div>
+    <div class="ugrid" id="ugrid"></div>
+  </div>
+
+</div>
+
+<!-- MODAL DOWNLOAD -->
+<div class="mov" id="mdl-dl" style="display:none">
+  <div class="mbox">
+    <div class="mhdr"><h3>⬇ Baixar Documentos</h3><button class="mcls" onclick="closeModal('mdl-dl')">✕</button></div>
+    <div class="mbody">
+      <button class="dopt" onclick="dlAllPDF()"><span class="dopt-icon">📄</span><div><div class="dopt-title">Todos os POPs — Impressão/PDF</div><div class="dopt-sub">Abre janela de impressão com todos os 24 POPs</div></div></button>
+      <button class="dopt" onclick="dlCurrentPDF()"><span class="dopt-icon">📄</span><div><div class="dopt-title">POP atual — PDF</div><div class="dopt-sub">Somente o documento em visualização</div></div></button>
+      <button class="dopt" onclick="dlJSON()"><span class="dopt-icon">💾</span><div><div class="dopt-title">Exportar backup — JSON</div><div class="dopt-sub">Todos os dados para backup ou importação</div></div></button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL USER -->
+<div class="mov" id="mdl-user" style="display:none">
+  <div class="mbox">
+    <div class="mhdr"><h3 id="mtitle-user">Novo Usuário</h3><button class="mcls" onclick="closeModal('mdl-user')">✕</button></div>
+    <div class="mbody">
+      <div class="fgrid" style="padding:0">
+        <div class="fg fgfull"><label>Nome completo</label><input id="u-name" placeholder="João Silva"></div>
+        <div class="fg"><label>Usuário (login)</label><input id="u-login" placeholder="joao.silva"></div>
+        <div class="fg"><label>Senha</label><input type="password" id="u-pass" placeholder="mínimo 4 caracteres"></div>
+        <div class="fg fgfull"><label>Perfil</label>
+          <select id="u-role">
+            <option value="admin">Admin — acesso total</option>
+            <option value="editor">Editor — criar e editar</option>
+            <option value="viewer">Visualizador — somente leitura</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="btn" onclick="closeModal('mdl-user')">Cancelar</button>
+      <button class="btn btn-p" onclick="saveUser()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRM -->
+<div class="mov" id="mdl-confirm" style="display:none">
+  <div class="mbox" style="max-width:360px">
+    <div class="mhdr"><h3 id="mc-title">Confirmar</h3><button class="mcls" onclick="closeModal('mdl-confirm')">✕</button></div>
+    <div class="mbody"><p id="mc-msg" style="font-size:13.5px;color:var(--txt2)"></p></div>
+    <div class="mfoot">
+      <button class="btn" onclick="closeModal('mdl-confirm')">Cancelar</button>
+      <button class="btn btn-d" id="mc-ok">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// AUTH
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+var USERS = JSON.parse(localStorage.getItem('cto_users') || 'null') || [
+  {id:'u1',name:'Administrador',login:'admin',pass:'cto2026',role:'admin'},
+  {id:'u2',name:'Editor CTO',login:'editor',pass:'pop2026',role:'editor'},
+  {id:'u3',name:'Visualizador',login:'viewer',pass:'view123',role:'viewer'}
+];
+var CU = null; // current user
+var pendingFn = null;
+
+function saveUsers(){ localStorage.setItem('cto_users', JSON.stringify(USERS)); }
+
+function openLogin(cb){
+  pendingFn = cb || null;
+  document.getElementById('login-ov').classList.add('show');
+  document.getElementById('lu').value = '';
+  document.getElementById('lp').value = '';
+  document.getElementById('lerr').style.display = 'none';
+  setTimeout(function(){ document.getElementById('lu').focus(); }, 100);
+}
+
+function closeLogin(){
+  document.getElementById('login-ov').classList.remove('show');
+  pendingFn = null;
+}
+
+function doLogin(){
+  var l = document.getElementById('lu').value.trim();
+  var p = document.getElementById('lp').value;
+  var u = USERS.find(function(u){ return u.login===l && u.pass===p; });
+  if(!u){ document.getElementById('lerr').style.display='block'; return; }
+  CU = u;
+  closeLogin();
+  document.getElementById('uav').textContent = u.name[0].toUpperCase();
+  document.getElementById('uname-hdr').textContent = u.name.split(' ')[0];
+  document.getElementById('hdr-user').style.display = 'flex';
+  document.getElementById('btn-login').style.display = 'none';
+  document.getElementById('btn-out').style.display = 'flex';
+  applyRole();
+  toast('Bem-vindo, ' + u.name.split(' ')[0] + '!', 'ok');
+  if(pendingFn){ var fn=pendingFn; pendingFn=null; fn(); }
+}
+
+function doLogout(){
+  CU = null;
+  document.getElementById('hdr-user').style.display = 'none';
+  document.getElementById('btn-login').style.display = 'flex';
+  document.getElementById('btn-out').style.display = 'none';
+  applyRole();
+  toast('Sessão encerrada');
+}
+
+function canEdit(){ return CU && (CU.role==='admin'||CU.role==='editor'); }
+function isAdmin(){ return CU && CU.role==='admin'; }
+
+function requireEdit(fn){
+  if(canEdit()){ fn(); }
+  else { openLogin(fn); }
+}
+
+function applyRole(){
+  var e = canEdit(), a = isAdmin();
+  document.getElementById('sb-ed').style.display = e?'flex':'none';
+  document.getElementById('sb-ro').style.display = e?'flex':'none';
+  document.getElementById('sb-us').style.display = a?'flex':'none';
+  document.getElementById('btn-ed-pop').style.display = e?'inline-flex':'none';
+  document.getElementById('btn-ed-man').style.display = e?'inline-flex':'none';
+  document.getElementById('btn-del').style.display = (a && editId)?'inline-flex':'none';
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// DATA
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const POPS = {
+  pop01: {
+    code: 'POP-01', title: 'Estrutura da Equipe', section: 'Pré-Operação',
+    objetivo: 'Definir a composição, níveis hierárquicos e responsabilidades de cada cargo do departamento CTO, garantindo que todos conheçam seu papel na operação.',
+    escopo: 'Todos os colaboradores internos do CTO: Supervisão, Liderança, Analistas, SAC e Laboratório.',
+    responsaveis: [
+      ['Responsável pelo POP', 'Líder CTO (N2)'],
+      ['Aprovação', 'Supervisão Geral (N2)'],
+      ['Atualização', 'A cada mudança de equipe'],
+    ],
+    fluxo: [
+      {desc: 'Consultar a tabela de cargos atualizada no documento oficial da gestão – Organograma.'},
+      {desc: 'Identificar seu cargo e nível (N1, N2 ou N3) e as funções correspondentes.'},
+      {desc: 'Em caso de dúvida sobre atribuição de tarefa, acionar o Líder/Gestor CTO.'},
+      {desc: 'Em ausência de um analista (férias/falta), o Líder/Gestor CTO faz a redistribuição dos contratos.'},
+      {desc: 'Nunca assumir função de outro nível sem autorização explícita do gestor.'},
+    ],
+    criterios: [
+      'Todos os colaboradores conhecem seu nível e responsabilidades antes de iniciar operação.',
+      'A tabela de cargos está disponível e atualizada no sistema.',
+      'Redistribuição de contratos comunicada formalmente em caso de ausência.',
+    ],
+    contingencias: [
+      ['Analista ausente sem aviso', 'Líder/Gestor CTO redistribui contratos entre os demais analistas imediatamente.'],
+      ['Dúvida sobre quem executa tarefa', 'Consultar Líder/Gestor CTO antes de agir. Nunca deixar tarefa sem responsável.'],
+      ['Cargo vago por demissão', 'Líder/Gestor CTO reorganiza equipe até reposição.'],
+    ]
+  },
+
+  pop04: {
+    code: 'POP-04', title: 'Início de Turno', section: 'Pré-Operação',
+    objetivo: 'Garantir que o analista inicie o turno com todos os sistemas abertos, verificados e prontos para operar, evitando atrasos no atendimento.',
+    escopo: 'Todos os analistas N1 ao iniciarem o turno diário.',
+    responsaveis: [
+      ['Responsável', 'Analista de plantão (N1)'],
+      ['Supervisão', 'Líder CTO (N2)'],
+      ['Horário de início', '08h12'],
+    ],
+    fluxo: [
+      {desc: 'Acessar o LOC1 via navegador web e verificar a fila de chamados recebidos e pendências do dia anterior.'},
+      {desc: 'Acessar o e-mail corporativo e verificar solicitações, comunicados e interações de clientes.'},
+      {desc: 'Acessar o BI e verificar o painel de indicadores.'},
+      {desc: 'Acessar o WhatsApp corporativo e verificar mensagens de técnicos e clientes.'},
+      {desc: 'Acessar o Contele e conferir o status das OS atribuídas do dia anterior.'},
+      {desc: 'Identificar chamados com SLA em alerta e priorizar imediatamente.'},
+      {desc: 'Comunicar ao Líder/Gestor CTO qualquer anomalia identificada na abertura do turno.'},
+    ],
+    criterios: [
+      'Todos os 5 sistemas abertos e verificados até 08h20 no máximo.',
+      'Chamados em SLAs estourados priorizados antes de qualquer outra ação.',
+      'Nenhum chamado pendente do dia anterior sem status atualizado.',
+    ],
+    contingencias: [
+      ['Sistema indisponível (LOC1/Contele)', 'Comunicar Líder/Gestor CTO e TI. Registrar manualmente até restabelecer.'],
+      ['Acesso bloqueado (senha/login)', 'Acionar Líder/Gestor CTO para reset. Não iniciar operação sem acesso.'],
+      ['Analista chega atrasado', 'Verificar se outro analista abriu e cobriu a fila inicial.'],
+    ]
+  },
+
+
+  pop02: {
+    code: 'POP-02', title: 'Entrada de Novos Contratos', section: 'Pré-Operação',
+    objetivo: 'Garantir que a entrada de um novo contrato seja gerenciada com planejamento, mobilização correta de equipe e início de operação dentro do prazo do edital.',
+    escopo: 'CTO, Comercial, Contabilidade, técnicos de campo (próprios ou terceirizados).',
+    responsaveis: [
+      ['Comunicação ao CTO','Comercial'],
+      ['Cadastro de equipamentos','Contabilidade'],
+      ['Mobilização de equipe','CTO'],
+      ['Gestão de terceiros','Comercial'],
+    ],
+    fluxo: [
+      {desc:'Comercial informa o CTO sobre o novo contrato com os dados: cliente, objeto, prazo de implantação do edital.'},
+      {desc:'Comercial avalia a necessidade de equipe própria ou terceirização.'},
+      {desc:'Contabilidade cadastra todos os equipamentos do novo contrato no sistema.'},
+      {desc:'CTO mobiliza técnicos e analistas para o novo contrato.'},
+      {desc:'Se terceirizado: Comercial gerencia os terceiros com processo próprio. CTO acompanha.'},
+      {desc:'Técnico novo no cliente recebe briefing antes da primeira visita.'},
+      {desc:'Quando Comercial informa que equipe própria assume, CTO encerra processo com terceiros.'},
+      {desc:'Acompanhar primeiros atendimentos de perto para garantir qualidade.'},
+    ],
+    criterios: [
+      'Início de operação dentro do prazo definido pelo edital.',
+      'Todos os equipamentos cadastrados pela Contabilidade antes do primeiro atendimento.',
+      'Briefing realizado com o técnico antes da primeira visita ao cliente.',
+      'Primeiros 10 OS do contrato auditadas com atenção redobrada.',
+    ],
+    contingencias: [
+      ['Edital com prazo muito curto','CTO aciona terceiros imediatamente. Comercial lidera gestão dos terceiros.'],
+      ['Equipamentos não cadastrados a tempo','Contabilidade prioriza cadastro. Sem atendimento antes do cadastro.'],
+      ['Técnico novo sem briefing','Não enviar ao cliente sem briefing. Atrasar se necessário.'],
+    ]
+  },
+
+  pop03: {
+    code: 'POP-03', title: 'Gestão de Clientes e Contratos', section: 'Pré-Operação',
+    objetivo: 'Garantir o acompanhamento eficiente da carteira de contratos, com visibilidade de status, SLA, criticidade e atualização das plataformas dos clientes.',
+    escopo: 'Analistas de contratos, Gestor (AÇÃO 02), SAC.',
+    responsaveis: [
+      ['Gestão da carteira','Analista AÇÃO 02 (N1)'],
+      ['Clientes críticos','Monitoramento reforçado — Líder CTO ciente'],
+      ['Atualização plataforma','Analista de baixa + SAC'],
+    ],
+    fluxo: [
+      {desc:'Cada analista é responsável pelos contratos designados pela gestão — fixo ou rotativo.'},
+      {desc:'Consultar diariamente o BI para verificar status de SLA, chamados em aberto e pendências.'},
+      {desc:'Clientes com chamado laranja (SLA próximo): priorizar e comunicar técnico imediatamente.'},
+      {desc:'Clientes críticos (PM Embu das Artes e similares): acompanhamento reforçado e comunicação ao Líder CTO.'},
+      {desc:'Após encerramento de OS: SAC e analista de baixa atualizam a plataforma do cliente.'},
+      {desc:'Contratos em encerramento: NÃO atribuir novos chamados. Acionar gestor se surgir OS.'},
+      {desc:'Gestão registra qualquer alteração de distribuição de contratos e comunica à equipe.'},
+    ],
+    criterios: [
+      '100% dos contratos com analista responsável definido e conhecido pela equipe.',
+      'Plataforma do cliente atualizada após CADA OS encerrada.',
+      'Clientes críticos com comunicação ao Líder CTO no mesmo dia de qualquer ocorrência.',
+      'Nenhum chamado de contrato encerrado atribuído — bloqueio imediato.',
+    ],
+    contingencias: [
+      ['Analista responsável ausente','Líder CTO redistribui os contratos entre os demais analistas no mesmo dia.'],
+      ['Cliente reclama de falta de atualização','SAC verifica e atualiza imediatamente. Registrar para análise de causa.'],
+      ['Novo contrato sem analista definido','Líder CTO define o responsável antes do primeiro chamado chegar.'],
+    ]
+  },
+
+  pop05: {
+    code: 'POP-05', title: 'Fluxo de Chamados — Triagem à Baixa', section: 'Operação de Campo',
+    objetivo: 'Garantir o ciclo completo e correto de uma Ordem de Serviço, desde a entrada no portal até o encerramento auditado no sistema.',
+    escopo: 'Analistas de Atribuição (01), Gestão (02), Baixa (03), SAC (04) e técnicos de campo.',
+    responsaveis: [
+      ['Triagem e Atribuição','Analista AÇÃO 01'],
+      ['Gestão e SLA','Analista AÇÃO 02'],
+      ['Baixa e Auditoria','Analista AÇÃO 03'],
+      ['Prazo de Atribuição','Até 5 minutos'],
+      ['Prazo de Baixa','Até 3 minutos'],
+    ],
+    fluxo: [
+      {desc:'Cliente abre chamado no portal DocWeb com Série/Patrimônio obrigatório. Se for impressora, + foto do relatório do contador.'},
+      {desc:'Analista de Atribuição valida as informações no LOC1. Se incompleto, recusa o chamado e entra em contato com cliente via ligação, WhatsApp ou e-mail.'},
+      {desc:'Analista consulta tabela de técnicos por contrato e atribui o técnico correto no LOC1.'},
+      {desc:'Analista lança a OS no Contele em até 5 minutos, seguindo critério: (1) Antiguidade, (2) Rota, (3) SLA/Crítico.'},
+      {desc:'Técnico recebe OS no tablet, executa check-in (obrigatório em raio de 600m), preenche laudo, tira 4 fotos e faz check-out.'},
+      {desc:'OS retorna ao back-office. Analista de Baixa audita laudo, fotos e numerador em até 3 minutos.'},
+      {desc:'OS aprovada: lançada no LOC1, atualizada no GLPI e na plataforma do cliente.'},
+      {desc:'OS reprovada: devolvida ao técnico com justificativa para correção imediata.'},
+    ],
+    criterios: [
+      'OS atribuída em até 5 minutos após recebimento no LOC1.',
+      'Fotos presentes, nítidas e correspondentes ao tipo exigido.',
+      'Laudo no padrão: Problema + Causa + Solução — sem campos genéricos.',
+      'Check-in realizado dentro do raio de 600m do cliente.',
+      'Numerador coerente com os relatórios do equipamento.',
+    ],
+    contingencias: [
+      ['OS duplicada','Analista cancela uma, registrando que o atendimento ocorre na outra.'],
+      ['Técnico não disponível','Redistribuir para técnico volante consultando tabela de cobertura.'],
+      ['Check-in bloqueado (fora de 600m)','Técnico aciona CTO para check-in forçado após confirmação presencial.'],
+      ['Laudo reprovado 2x','Escalar para N2 para orientação técnica ao técnico.'],
+    ]
+  },
+
+  pop06: {
+    code: 'POP-06', title: 'Programação Diária de Técnicos', section: 'Operação de Campo',
+    objetivo: 'Padronizar o processo de programação diária de técnicos, garantindo agilidade, critério correto de atribuição e rastreabilidade.',
+    escopo: 'Analista de Atribuição (AÇÃO 01). Sistemas: LOC1, Contele, GLPI.',
+    responsaveis: [
+      ['Responsável','Analista AÇÃO 01 (N1)'],
+      ['Tempo máximo','5 minutos após recebimento no LOC1'],
+      ['Sistemas','LOC1, Contele, GLPI'],
+    ],
+    fluxo: [
+      {desc:'Receber o chamado no LOC1 e validar: Série/Patrimônio correto e foto do contador presente.'},
+      {desc:'Verificar na tabela de técnicos por contrato qual técnico é responsável pelo cliente.'},
+      {desc:'Avaliar disponibilidade e localização do técnico no Contele.'},
+      {desc:'Atribuir o técnico no LOC1 seguindo critério: Antiguidade > Rota > SLA/Crítico.'},
+      {desc:'Lançar a OS no Contele em até 5 minutos do recebimento.'},
+      {desc:'Atualizar o status no GLPI ao encerrar o processo de atribuição.'},
+      {desc:'Em caso de atribuição errada: corrigir diretamente no sistema.'},
+    ],
+    criterios: [
+      'Tempo de atribuição: máximo 5 minutos.',
+      'Técnico atribuído conforme tabela de contratos.',
+      'GLPI atualizado imediatamente após a atribuição.',
+      'Zero chamados parados na fila sem atribuição por mais de 15 minutos.',
+    ],
+    contingencias: [
+      ['Técnico fixo indisponível','Consultar tabela de cobertura e atribuir técnico volante disponível.'],
+      ['Atribuição errada realizada','Corrigir no Contele e atribuir corretamente.'],
+      ['LOC1 indisponível','Comunicar Líder/Gestor CTO. Registrar no GLPI. Comunicar técnicos e líderes.'],
+    ]
+  },
+
+  pop07: {
+    code: 'POP-07', title: 'Atribuição de Chamados', section: 'Operação de Campo',
+    objetivo: 'Padronizar o processo de atribuição de OS aos técnicos no LOC1 e Contele, garantindo agilidade, critério correto e rastreabilidade.',
+    escopo: 'Analista de Atribuição (AÇÃO 01). Sistemas: LOC1, Contele.',
+    responsaveis: [
+      ['Responsável','Analista AÇÃO 01 (N1)'],
+      ['Tempo máximo','5 minutos após recebimento no LOC1'],
+      ['Sistemas','LOC1, Contele'],
+    ],
+    fluxo: [
+      {desc:'Receber o chamado no LOC1 e validar: Série/Patrimônio correto e foto do contador presente.'},
+      {desc:'Atribuir no LOC1: Status → Atribuído ao técnico | Técnico → selecionar | LOC1 → Ação item → Pré-Manutenção.'},
+      {desc:'Verificar patrimônio: LOC1 → Estoque → Detalhes de nº série → copiar nome do local em "localização".'},
+      {desc:'Abrir o Contele → Calendário → Planejamento/Agendar → buscar técnico → clicar no + ao lado do nome.'},
+      {desc:'Colar o nome copiado do LOC1 no campo LOCAIS. Clicar duas vezes no nome correto.'},
+      {desc:'Rolar até embaixo → clicar no local → Cód. OS Personalizado → colar informações do LOC1 → Salvar.'},
+      {desc:'Verificar: LOC1 com pré-manutenção ativa, técnico correto, Contele com local e OS corretos.'},
+    ],
+    criterios: [
+      'OS atribuída no LOC1 com status "Atribuído ao técnico" e pré-manutenção habilitada.',
+      'Local correto no Contele — atenção ao prefixo PAÇO para OS de insumos.',
+      'Número da OS e informações do equipamento incluídos no Contele.',
+      'Atribuição concluída em até 5 minutos do recebimento.',
+    ],
+    contingencias: [
+      ['Local não encontrado no Contele','Pesquisar partes menores do nome. Espaço ou traço diferente impede a busca.'],
+      ['Local com prefixo PAÇO','PAÇO = insumos (técnico do site). OS corretiva usa o nome real sem PAÇO.'],
+      ['Técnico fixo indisponível','Consultar tabela de cobertura e atribuir técnico volante disponível.'],
+    ]
+  },
+
+  pop08: {
+    code: 'POP-08', title: 'Execução em Campo', section: 'Operação de Campo',
+    objetivo: 'Garantir que o técnico execute o atendimento em campo com qualidade, registros corretos e dentro dos requisitos de auditoria.',
+    escopo: 'Técnicos de campo (fixos e volantes).',
+    responsaveis: [
+      ['Responsável','Técnico de campo'],
+      ['Supervisão','Analista AÇÃO 02 / Líder/Gestor CTO e Gestor de Sites'],
+      ['Equipamento','Tablet fornecido pela empresa'],
+    ],
+    fluxo: [
+      {desc:'Receber a OS no Contele no tablet fornecido pela empresa.'},
+      {desc:'Deslocar-se ao endereço do cliente. Ao chegar, realizar check-in no Contele dentro do raio de 600m.'},
+      {desc:'Executar o serviço conforme tipo de assistência definido na OS.'},
+      {desc:'Preencher o laudo no padrão: Problema + Causa + Solução.'},
+      {desc:'Registrar fotos obrigatórias: Série/Patrimônio e Relatório com Contador (reprográficos).'},
+      {desc:'Registrar fotos conforme assistência: Peça Velha, Peça Nova, Toner Velho, Toner Novo, evidências de defeitos e local.'},
+      {desc:'Coletar assinatura do cliente na OS quando aplicável.'},
+      {desc:'Realizar check-out no Contele ao finalizar o atendimento.'},
+      {desc:'Em caso de inconformidade (local errado, equipamento não encontrado): informar back-office imediatamente.'},
+    ],
+    criterios: [
+      'Check-in realizado dentro de 600m.',
+      'Laudo preenchido com Problema + Causa + Solução completos.',
+      'Fotos tiradas, nítidas e correspondentes ao tipo exigido.',
+      'Check-out realizado logo após o encerramento.',
+    ],
+    contingencias: [
+      ['Check-in bloqueado fora de 600m','Acionar CTO imediatamente. Apenas CTO autoriza check-in forçado.'],
+      ['Tablet sem bateria','Usar carregador do kit. Se impossível, usar celular pessoal provisoriamente.'],
+      ['Operação offline (sem internet)','Contele permite preenchimento offline. Sincronizar ao reconectar.'],
+      ['Técnico não consegue resolver','Registrar tentativa na OS, solicitar suporte ao Lab/CTO.'],
+    ]
+  },
+
+  pop09: {
+    code: 'POP-09', title: 'Baixa e Auditoria de OS', section: 'Operação de Campo',
+    objetivo: 'Garantir a conferência técnica e documental de todas as OS encerradas, assegurando qualidade de laudo, fotos e dados antes do lançamento no sistema.',
+    escopo: 'Analista de Baixa (AÇÃO 03). Sistemas: Contele, LOC1, GLPI.',
+    responsaveis: [
+      ['Responsável','Analista AÇÃO 03 (N1)'],
+      ['Prazo de auditoria','Até 3 minutos por OS'],
+      ['Sistemas','Contele, LOC1, GLPI'],
+    ],
+    fluxo: [
+      {desc:'Receber a OS encerrada no Contele.'},
+      {desc:'Verificar se o laudo está no padrão Problema + Causa + Solução.'},
+      {desc:'Conferir as fotos: Série, Contador, entre outras conforme tipo de assistência — todas nítidas e corretas.'},
+      {desc:'Comparar o numerador e série no formulário com relatório anexo (foto) — deve ser coerente.'},
+      {desc:'OS aprovada: lançar no LOC1, atualizar no GLPI e/ou plataforma do cliente.'},
+      {desc:'OS reprovada: devolver ao técnico no Contele com justificativa clara da reprovação.'},
+      {desc:'Registrar solicitação de peças no Kanban do LOC1 quando necessário.'},
+    ],
+    criterios: [
+      '100% das OS auditadas antes do lançamento no LOC1.',
+      'Tempo de auditoria: máximo 3 minutos por OS.',
+      'Laudo rejeitado sempre com justificativa escrita para o técnico.',
+      'Nenhuma OS lançada no LOC1 com foto ruim ou laudo incompleto.',
+    ],
+    contingencias: [
+      ['Técnico não corrige OS reprovada','Escalar para Líder/Gestor CTO após 2 devoluções sem correção.'],
+      ['Numerador incompatível com histórico','Solicitar foto correta. Investigar o ocorrido e formalizar com novo chamado. Cancelar o errado.'],
+      ['Foto impossível de obter','Registrar justificativa na OS e aprovar com exceção documentada.'],
+    ]
+  },
+
+  pop12: {
+    code: 'POP-12', title: 'Troca Técnica de Equipamento', section: 'Equipamentos',
+    objetivo: 'Padronizar o processo de substituição física de equipamentos, garantindo aprovação, rastreabilidade e que o cliente nunca fique sem atendimento.',
+    escopo: 'Analistas N1/N2, CTO, Contratos, Laboratório e Logística.',
+    responsaveis: [
+      ['Identificação','Técnico de campo / Analista AÇÃO 03'],
+      ['Aprovação','CTO (N2)'],
+      ['Validação contratual','Departamento de Contratos'],
+      ['Execução','Laboratório + Logística'],
+    ],
+    fluxo: [
+      {desc:'Técnico identifica necessidade de troca técnica e registra na OS com descrição detalhada.'},
+      {desc:'Analista de Baixa identifica a necessidade durante a auditoria e escala para o N2.'},
+      {desc:'N2 solicita aprovação formal ao CTO com justificativa técnica.'},
+      {desc:'CTO aprova e encaminha para o Departamento de Contratos para validação contratual.'},
+      {desc:'Contratos confirma que a troca não altera objeto ou valores do contrato.'},
+      {desc:'Laboratório prepara o equipamento substituto revisado (ver POP-14).'},
+      {desc:'Logística agenda a entrega. Em alguns casos a troca pode ser simultânea com técnico.'},
+      {desc:'Técnico realiza a troca simultânea: entrega o novo antes de retirar o original.'},
+      {desc:'Técnico preenche formulário e Back-office transcreve para o sistema.'},
+      {desc:'Contratos realiza a movimentação sistêmica do equipamento.'},
+    ],
+    criterios: [
+      'Aprovação do CTO documentada antes de qualquer movimentação física.',
+      'Troca sempre simultânea — proibido retirar o equipamento antes de entregar o substituto.',
+      'E-mail a Contratos enviado antes e após a troca.',
+      'Equipamento substituto obrigatoriamente revisado pelo laboratório antes de ir a campo.',
+    ],
+    contingencias: [
+      ['CTO não disponível para aprovação','Aguardar aprovação. Nenhuma troca ocorre sem aprovação formal.'],
+      ['Equipamento substituto reprovado na revisão','Preparar outro equipamento. Informar cliente do atraso.'],
+      ['Cliente recusa o equipamento substituto','Acionar Gestor/Contratos para tratativa comercial.'],
+      ['N2 esqueceu de enviar e-mail a Contratos','Enviar imediatamente. Risco de SLA estourado e punição contratual.'],
+    ]
+  },
+
+  pop14: {
+    code: 'POP-14', title: 'Revisão de Equipamentos no Laboratório', section: 'Equipamentos',
+    objetivo: 'Garantir que todo equipamento disponível para campo seja revisado, testado e aprovado antes de ser entregue ao cliente.',
+    escopo: 'Equipe do Laboratório (N2/N3). Todo equipamento sem uso ou retornado de contrato.',
+    responsaveis: [
+      ['Responsável pela revisão','Qualquer colaborador do Laboratório'],
+      ['Aprovação/Reprovação','Supervisor do Laboratório'],
+      ['Tempo médio','Meio período por equipamento'],
+    ],
+    fluxo: [
+      {desc:'Receber o equipamento retornado de contrato ou disponível no estoque.'},
+      {desc:'Registrar chamado de revisão no LOC1.'},
+      {desc:'Realizar inspeção visual: identificar danos físicos, sujeira, peças danificadas.'},
+      {desc:'Executar troca de peças necessárias conforme diagnóstico.'},
+      {desc:'Realizar limpeza completa interna e externa do equipamento.'},
+      {desc:'Executar teste funcional completo: rede, travamentos, wifi, impressão, conectividade, consumo de insumo.'},
+      {desc:'Supervisor avalia o resultado: Aprovado ou Reprovado.'},
+      {desc:'Aprovado: encerrar chamado no LOC1. Se solicitado via Kanban, informar como disponível.'},
+      {desc:'Reprovado: registrar justificativa e iniciar processo com outro equipamento ou pedido de compra.'},
+    ],
+    criterios: [
+      'Zero equipamentos enviados a campo sem revisão do laboratório.',
+      'Resultado da revisão registrado no Kanban do LOC1.',
+      'Aprovação sempre feita pelo supervisor — nunca autoavaliação.',
+      'Insumos de RMA funcionais usados apenas em bancada de testes — nunca retornam ao cliente.',
+    ],
+    contingencias: [
+      ['Equipamento reprovado e sem substituto','Informar Líder/Gestor. Sugerir alternativa compatível aprovada pelas áreas.'],
+      ['Laboratório sobrecarregado','Priorizar por SLA do cliente ou urgência sinalizada pelo Líder/Gestor CTO.'],
+      ['Peça necessária indisponível','Verificar Mezanino e outros estoques antes de abrir pedido de compra.'],
+    ]
+  },
+
+  pop15: {
+    code: 'POP-15', title: 'Gestão de Peças e Insumos', section: 'Equipamentos',
+    objetivo: 'Garantir o controle preciso do estoque de peças e insumos, evitando desabastecimento que impacte os atendimentos.',
+    escopo: 'Laboratório N2/N3, SAC, técnicos de campo.',
+    responsaveis: [
+      ['Controle de estoque','Laboratório N2/N3'],
+      ['Solicitação de insumos','SAC'],
+      ['Solicitação de peças','N2 via Kanban LOC1'],
+    ],
+    fluxo: [
+      {desc:'Técnico identifica necessidade de peça ou insumo durante atendimento e registra na OS.'},
+      {desc:'Analista de baixa registra a solicitação no Kanban do LOC1.'},
+      {desc:'Laboratório verifica estoque disponível e prepara o item solicitado.'},
+      {desc:'Para toner/insumos: SAC gerencia a entrega conforme tipo (reposição de kit ou atendimento direto).'},
+      {desc:'Para peças: N2 verifica estoque. Se indisponível, abre pedido de compra.'},
+      {desc:'Peça/insumo separado: documentar saída no Kanban com número do chamado.'},
+      {desc:'Logística ou técnico realiza a entrega ao cliente ou ao técnico de campo.'},
+      {desc:'Após entrega: registrar baixa no sistema e fechar o chamado de insumos.'},
+    ],
+    criterios: [
+      'Nenhum item separado sem documentação de saída no Kanban com chamado.',
+      'Estoque mínimo monitorado semanalmente para evitar desabastecimento.',
+      'Pedido de compra aberto imediatamente ao identificar item abaixo do mínimo.',
+      'Kanban zerado ao final do turno ou com justificativa para pendências.',
+    ],
+    contingencias: [
+      ['Peça indisponível em estoque','Verificar Mezanino e outros estoques antes de abrir pedido de compra.'],
+      ['Insumo urgente para cliente crítico','Priorizar separação. Comunicar Líder CTO sobre o caso.'],
+      ['Entrega errada ao técnico','Corrigir imediatamente. Registrar ocorrência para análise.'],
+    ]
+  },
+
+  pop16: {
+    code: 'POP-16', title: 'Transferência Patrimonial', section: 'Equipamentos',
+    objetivo: 'Padronizar a movimentação de equipamentos patrimoniados entre locais, garantindo autorização, rastreabilidade e registro sistêmico correto.',
+    escopo: 'Analistas N1/N2, CTO, Contratos. Todo equipamento com patrimônio cadastrado no sistema.',
+    responsaveis: [
+      ['Solicitação','Analista N1 / CTO'],
+      ['Aprovação','CTO + Contratos'],
+      ['Execução','Técnico de campo / Logística'],
+      ['Registro sistêmico','Contratos'],
+    ],
+    fluxo: [
+      {desc:'Identificar necessidade de transferência de equipamento entre locais ou contratos.'},
+      {desc:'Solicitar aprovação ao CTO com justificativa técnica e destino do equipamento.'},
+      {desc:'CTO valida e encaminha para Contratos para confirmação contratual.'},
+      {desc:'Contratos confirma que a movimentação está dentro das cláusulas contratuais de ambos os contratos.'},
+      {desc:'Técnico ou logística realiza a movimentação física do equipamento.'},
+      {desc:'Preencher formulário de transferência com: nº de série, patrimônio, origem, destino e data.'},
+      {desc:'Contratos realiza a movimentação sistêmica no LOC1.'},
+      {desc:'Registrar a transferência no GLPI e atualizar a tabela de patrimônio.'},
+    ],
+    criterios: [
+      'Nenhuma movimentação física sem aprovação prévia documentada do CTO.',
+      'Contratos sempre comunicado antes e após a movimentação.',
+      'Formulário de transferência preenchido e assinado.',
+      'Atualização sistêmica no LOC1 realizada no mesmo dia da movimentação.',
+    ],
+    contingencias: [
+      ['Movimentação sem autorização detectada','Registrar ocorrência. Escalar para gestão e Contratos.'],
+      ['Contratos não responde em tempo hábil','Escalar para Líder/Gestor CTO. Nunca executar sem confirmação.'],
+      ['Equipamento movimentado errado','Registrar e reverter imediatamente. Comunicar CTO e Contratos.'],
+    ]
+  },
+
+  pop17: {
+    code: 'POP-17', title: 'Gestão de Suprimentos e RMA', section: 'Equipamentos',
+    objetivo: 'Garantir o controle preciso de vida útil de insumos, acionando o processo de RMA no momento correto para evitar interrupção no atendimento.',
+    escopo: 'Técnicos de campo (identificação), Analistas N1 (validação), SAC (gestão de suprimentos).',
+    responsaveis: [
+      ['Identificação','Técnico de campo'],
+      ['Validação','Analista N1 / SAC'],
+      ['Solicitação de RMA','SAC / N2'],
+      ['Acompanhamento','SAC'],
+    ],
+    fluxo: [
+      {desc:'Técnico identifica insumo com vida útil próxima do fim ou com defeito durante o atendimento.'},
+      {desc:'Registrar na OS o insumo identificado com necessidade de RMA.'},
+      {desc:'Analista N1 valida a necessidade e registra solicitação no sistema.'},
+      {desc:'SAC abre o processo de RMA junto ao fornecedor/fabricante.'},
+      {desc:'Acompanhar o prazo de retorno do RMA. Atualizar o status no sistema semanalmente.'},
+      {desc:'Insumo retornado do RMA: testar em bancada antes de enviar ao cliente.'},
+      {desc:'Insumos reprovados no RMA: abrir pedido de compra para reposição.'},
+    ],
+    criterios: [
+      'Processo de RMA aberto no mesmo dia da identificação do problema.',
+      'Acompanhamento semanal do status do RMA registrado no sistema.',
+      'Insumo retornado do RMA testado antes de retornar ao cliente.',
+      'Estoque mínimo mantido para cobrir período de RMA sem impacto ao cliente.',
+    ],
+    contingencias: [
+      ['Fabricante nega o RMA','Escalar para Líder CTO. Abrir pedido de compra para reposição imediata.'],
+      ['RMA com prazo muito longo','Manter suprimento alternativo no cliente durante o período.'],
+      ['Insumo retornado com mesmo defeito','Reabrir o processo de RMA imediatamente com documentação.'],
+    ]
+  },
+
+  pop18: {
+    code: 'POP-18', title: 'Reembolso de Quilometragem (KM)', section: 'Gestão',
+    objetivo: 'Garantir o cálculo correto, registro e pagamento do reembolso de quilometragem dos técnicos de campo dentro dos prazos estabelecidos.',
+    escopo: 'Técnicos de campo e Analista KM (AÇÃO 06). Sistema: Contele.',
+    responsaveis: [
+      ['Registro automático','Sistema Contele (check-in/check-out)'],
+      ['Fechamento e controle','Analista KM (AÇÃO 06)'],
+      ['Assinatura','Técnico + Gestor via GOV.BR'],
+    ],
+    fluxo: [
+      {desc:'KM calculado automaticamente pelo Contele a cada check-in e check-out — menor rota entre pontos A e B.'},
+      {desc:'Técnico NÃO precisa registrar manualmente — o processo é automático.'},
+      {desc:'Analista KM filtra visitas remotas: Contele → Reembolso → Ignorar visitas → Selecionar remotas manualmente.'},
+      {desc:'Analista KM consolida os relatórios no Contele nos dias de fechamento (15 e 30).'},
+      {desc:'Auditar divergências: deslocamentos superiores a 200km na mesma cidade → validar com Google Maps.'},
+      {desc:'Corrigir geolocalização incorreta: Configurações → Locais → Pesquisar → Editar → Salvar.'},
+      {desc:'Gerar relatório de KM por técnico e enviar para assinatura via GOV.BR.'},
+      {desc:'Técnico e Gestor assinam digitalmente via GOV.BR. Fechamento dia 15 → pagamento dia 30.'},
+    ],
+    criterios: [
+      'Todos os check-outs realizados no mesmo dia do atendimento.',
+      'Visitas remotas filtradas antes de processar o reembolso.',
+      'Relatório gerado, assinado e encaminhado dentro do prazo de fechamento.',
+      'Assinatura dupla (técnico + gestor) via GOV.BR sem exceções.',
+    ],
+    contingencias: [
+      ['Técnico esqueceu o check-out','Técnico aciona CTO imediatamente. KM perdido sem intervenção no mesmo dia.'],
+      ['GOV.BR indisponível no fechamento','Registrar e tentar no dia seguinte. Comunicar financeiro sobre atraso.'],
+      ['KM calculado incorretamente','Analista KM solicita revisão no Contele. Escalar para CTO se necessário.'],
+      ['Divergência acima de 200km','Validar com Google Maps. Se incorreto, corrigir geolocalização no Contele.'],
+    ]
+  },
+
+  pop19: {
+    code: 'POP-19', title: 'Gestão do Técnico de Campo', section: 'Gestão',
+    objetivo: 'Garantir que os técnicos de campo operem com equipamentos adequados, suporte técnico disponível e dentro das regras de cobertura e responsabilidade.',
+    escopo: 'Técnicos fixos e volantes, Analistas de contrato, Laboratório.',
+    responsaveis: [
+      ['Gestão do técnico','Analista do contrato / Líder CTO'],
+      ['Suporte técnico','Laboratório N2/N3 + CTO'],
+      ['Controle de ferramentas','CTO'],
+    ],
+    fluxo: [
+      {desc:'Consultar tabela de técnicos por contrato para identificar se o técnico é fixo ou volante.'},
+      {desc:'Em caso de ausência do técnico fixo: acionar qualquer técnico disponível via tabela de cobertura.'},
+      {desc:'Técnico recebe tablet corporativo configurado com Contele — uso exclusivo profissional.'},
+      {desc:'Problema com tablet: técnico aciona CTO para análise e possível troca.'},
+      {desc:'Dúvida técnica em campo: técnico pode acionar laboratório ou CTO diretamente.'},
+      {desc:'Após 4 tentativas sem resolução: N3 acompanha o técnico ao cliente presencialmente.'},
+      {desc:'Se N3 também não resolver: acionar processo de Troca Técnica (ver POP-12).'},
+      {desc:'Ferramenta do kit perdida ou quebrada: desconto em folha e reposição pelo técnico.'},
+    ],
+    criterios: [
+      'Técnico sempre com tablet funcionando antes de iniciar atendimentos.',
+      'Kit de ferramentas padrão completo conferido periodicamente.',
+      'Cobertura de técnico fixo ausente realizada no mesmo dia sem impacto ao cliente.',
+      'Suporte N3 acionado sempre na 4ª tentativa sem resolução.',
+    ],
+    contingencias: [
+      ['Técnico recusa chamado','Técnico deve justificar formalmente. CTO redireciona para outro técnico.'],
+      ['Tablet com problema em campo','Usar celular pessoal provisoriamente. Acionar CTO para substituição.'],
+      ['Técnico sem ferramentas adequadas','Não iniciar o atendimento. Acionar CTO para providenciar o kit.'],
+    ]
+  },
+
+  pop20: {
+    code: 'POP-20', title: 'SAC — Atendimento ao Cliente', section: 'Gestão',
+    objetivo: 'Garantir o atendimento padronizado, ágil e eficiente a clientes e usuários, canalizando todas as solicitações para os fluxos corretos.',
+    escopo: 'Analista SAC (AÇÃO 04/05). Todos os canais: e-mail, telefone e WhatsApp.',
+    responsaveis: [
+      ['Responsável','Analista SAC (N1)'],
+      ['Escalamento','Analista do contrato responsável'],
+      ['Sistemas','E-mail, WhatsApp, GLPI, LOC1, Contele'],
+    ],
+    fluxo: [
+      {desc:'Monitorar continuamente e-mail, telefone e WhatsApp durante horário comercial (08h07–18h).'},
+      {desc:'Para abertura de chamado: orientar o cliente a acessar o portal DocWeb com as informações obrigatórias.'},
+      {desc:'Chamados recebidos por WhatsApp ou telefone: NÃO aceitar — orientar uso do DocWeb.'},
+      {desc:'Reclamação sobre chamado em aberto: identificar o contrato e acionar o analista responsável.'},
+      {desc:'Resposta padrão de e-mail: enviar manualmente com orientações de abertura de chamado.'},
+      {desc:'Após encerramento de OS: atualizar a plataforma do cliente junto com o analista de baixa.'},
+      {desc:'Gestão de suprimentos: monitorar estoque de toner e papel por cliente conforme demanda.'},
+    ],
+    criterios: [
+      'Nenhum chamado aceito fora do portal DocWeb.',
+      'Toda reclamação repassada ao analista responsável no mesmo dia.',
+      'Plataforma do cliente atualizada após cada OS encerrada.',
+      'Zero clientes sem resposta no mesmo dia útil.',
+    ],
+    contingencias: [
+      ['Cliente insiste em abrir chamado por WhatsApp','Manter orientação do portal. Registrar recorrência para o gestor.'],
+      ['Analista responsável indisponível','Escalar para Líder CTO imediatamente.'],
+      ['Fora do horário comercial','Não há plantão. Registrar para atendimento no próximo dia útil.'],
+    ]
+  },
+
+  pop21: {
+    code: 'POP-21', title: 'Gestão de SLA e Indicadores', section: 'Gestão',
+    objetivo: 'Garantir o monitoramento contínuo dos prazos de atendimento e indicadores operacionais, prevenindo estouro de SLA e acionando alertas no tempo correto.',
+    escopo: 'Todos os analistas e Líder CTO.',
+    responsaveis: [
+      ['Monitoramento diário','Todos os analistas'],
+      ['Gestão de indicadores','Líder CTO'],
+      ['Revisão semanal','Reunião presencial — todos os analistas'],
+    ],
+    fluxo: [
+      {desc:'Ao iniciar o turno, verificar no LOC1/BI todos os chamados com indicador laranja (SLA próximo).'},
+      {desc:'Priorizar IMEDIATAMENTE todos os chamados em status laranja.'},
+      {desc:'Comunicar o técnico e gestor sobre chamados críticos no WhatsApp.'},
+      {desc:'Acompanhar no BI (atualizado a cada 30 min) o painel de chamados em aberto.'},
+      {desc:'Na reunião semanal presencial (15 min): revisar métricas — tempo de atribuição, chamados em aberto e reprovações.'},
+      {desc:'Analista fora da meta recebe orientação do gestor no mesmo dia.'},
+      {desc:'Técnico com muitas OS reprovadas: CTO comunica gestor de base para providências.'},
+    ],
+    criterios: [
+      'Tempo de atribuição: máximo 9 minutos.',
+      'Tempo de baixa/auditoria: máximo 3 minutos.',
+      'Zero chamados com SLA estourado por negligência — apenas por causas externas.',
+      'BI consultado pelo menos 3 vezes por turno.',
+    ],
+    contingencias: [
+      ['SLA prestes a vencer sem técnico disponível','Acionar técnico volante imediatamente. Comunicar cliente.'],
+      ['Chamado crítico estourou SLA','Registrar ocorrência, acionar Líder CTO e preparar justificativa para cliente.'],
+      ['BI indisponível','Usar LOC1 diretamente para monitoramento manual de chamados em aberto.'],
+    ]
+  },
+
+  pop22: {
+    code: 'POP-22', title: 'Gestão do Laboratório', section: 'Gestão',
+    objetivo: 'Garantir o funcionamento eficiente do laboratório, com controle de fila, priorização correta e qualidade no suporte aos técnicos de campo.',
+    escopo: 'Equipe do Laboratório N2/N3. Horário: 08h12 às 18h00.',
+    responsaveis: [
+      ['Gestão da fila','Laboratório N2/N3 via Kanban LOC1'],
+      ['Priorização','SLA do cliente ou urgência sinalizada'],
+      ['Suporte remoto','Via WhatsApp ou AnyDesk'],
+    ],
+    fluxo: [
+      {desc:'Iniciar o turno verificando a fila do Kanban digital no LOC1.'},
+      {desc:'Priorizar itens por: (1) SLA do cliente, (2) urgência sinalizada pelo analista.'},
+      {desc:'Executar separação e documentação de peças solicitadas.'},
+      {desc:'Realizar revisões e reparos de equipamentos conforme fila (ver POP-14).'},
+      {desc:'Atender suporte remoto aos técnicos via WhatsApp ou AnyDesk.'},
+      {desc:'Acionar e acompanhar processos de garantia junto ao fabricante.'},
+      {desc:'Emitir protocolos de entrega/retirada para itens sem cadastro.'},
+      {desc:'Realizar coberturas pontuais em clientes quando solicitado pelo CTO.'},
+    ],
+    criterios: [
+      'Nenhum item separado sem documentação de saída no Kanban com chamado.',
+      'Fila do Kanban zerada ao final do turno ou com justificativa para pendências.',
+      'Suporte remoto atendido com prioridade durante o turno.',
+      'Coberturas de férias programadas com antecedência mínima de 5 dias úteis.',
+    ],
+    contingencias: [
+      ['Laboratório sobrecarregado','Comunicar Líder CTO para repriorização ou reforço de equipe.'],
+      ['Peça solicitada indisponível em estoque','Verificar Mezanino e outros estoques antes de abrir pedido de compra.'],
+      ['Técnico em campo sem suporte remoto','Laboratório prioriza atendimento imediato. Escalar para N3 se necessário.'],
+    ]
+  },
+
+  pop23: {
+    code: 'POP-23', title: 'Encerramento de Contrato', section: 'Gestão',
+    objetivo: 'Garantir o encerramento organizado de contratos, com recolhimento dos equipamentos, gestão de pendências e sem responsabilidade residual para o CTO.',
+    escopo: 'CTO, técnicos de campo, Contratos, Jurídico.',
+    responsaveis: [
+      ['Comunicação ao CTO','Comercial / Contratos'],
+      ['Recolhimento','Técnico de campo'],
+      ['Pendências legais','Jurídico / Contratos'],
+    ],
+    fluxo: [
+      {desc:'Comercial ou Contratos comunica o CTO sobre o encerramento com data e cliente.'},
+      {desc:'CTO bloqueia novos chamados para o contrato no sistema — informar analistas para NÃO atribuir.'},
+      {desc:'Técnico agendado para recolher todos os equipamentos no cliente.'},
+      {desc:'Equipamentos recolhidos passam por revisão no laboratório (ver POP-14) antes de realocação.'},
+      {desc:'Verificar se o cliente devolveu todos os equipamentos patrimoniados.'},
+      {desc:'Equipamentos não devolvidos: Contratos/Jurídico inicia notificação formal ao cliente.'},
+      {desc:'CTO encerra o contrato no sistema após confirmação de Contratos.'},
+      {desc:'Registrar lições aprendidas para contratos futuros similares.'},
+    ],
+    criterios: [
+      'Nenhum novo chamado atribuído após comunicação de encerramento.',
+      'Todos os equipamentos patrimoniados verificados e recolhidos ou formalmente notificados.',
+      'CTO não possui responsabilidade sobre equipamentos após encerramento formal.',
+      'Revisão de laboratório feita em todos os equipamentos recolhidos.',
+    ],
+    contingencias: [
+      ['Cliente não devolve equipamentos','Contratos/Jurídico emite notificação formal. CTO não é responsável após encerramento.'],
+      ['Chamado recebido de contrato encerrado','NÃO atribuir. Acionar gestor imediatamente.'],
+      ['Equipamento extraviado durante recolhimento','Registrar boletim de ocorrência. Acionar Contratos/Jurídico.'],
+    ]
+  },
+
+
+  pop10: {
+    code: 'POP-10', title: 'OS com Necessidade de Retorno', section: 'Operação de Campo',
+    objetivo: 'Definir como registrar, baixar no sistema e tratar cada tipo de OS que necessita de retorno, com fluxo completo desde o campo até o agendamento, com responsabilidades claras por área conforme o motivo identificado.',
+    escopo: 'Todas as OS não concluídas na primeira visita: peça necessária, toner necessário, local fechado ou atendimento não concluído.',
+    responsaveis: [
+      ['Técnico de Campo', 'Identificar o motivo, registrar na OS e comunicar o supervisor'],
+      ['Supervisor', 'Validar o motivo e autorizar o reagendamento'],
+      ['Backoffice', 'Registrar a baixa no sistema, acionar as áreas e agendar o retorno'],
+      ['N1', 'Analisar a OS e encaminhar para N2 (peça) ou SAC (toner)'],
+      ['N2', 'Solicitar a peça ao estoque/fornecedor e acompanhar entrega'],
+      ['SAC', 'Solicitar o toner e acompanhar entrega pela logística'],
+      ['Logística', 'Realizar a entrega da peça ou toner ao destino correto'],
+    ],
+    fluxo: [
+      {bloco: 'REGRA GERAL — BAIXA OBRIGATÓRIA NO SISTEMA'},
+      {desc: 'OBRIGATÓRIO: Todo retorno deve ser baixado no sistema antes de seguir as tratativas. A baixa deve conter: motivo · o que foi feito · o que está pendente · status do equipamento (Parado/Precário/Funcionando) · evidências.'},
+      {bloco: 'MOTIVO 1 — PEÇA NECESSÁRIA → Backoffice baixa → N1 → N2 solicita → Logística entrega → agendar após entrega'},
+      {desc: 'Preencher OS: motivo (peça), nome/código da peça, status do equipamento, defeito e o que foi feito. Equipamento parado = comunicar supervisor com URGÊNCIA.'},
+      {desc: 'Backoffice registra a baixa. N1 encaminha para N2 com peça e urgência. N2 solicita ao fornecedor. Logística entrega. Após entrega: agendar retorno e notificar cliente.'},
+      {bloco: 'MOTIVO 2 — TONER NECESSÁRIO → Backoffice baixa → N1 → SAC solicita → Logística entrega → agendar após entrega'},
+      {desc: 'Preencher OS: motivo (toner), modelo/cor/referência, nível atual (Vazio/Crítico/Baixo), status. Equipamento parado = urgência.'},
+      {desc: 'Backoffice baixa. N1 encaminha para SAC. SAC solicita. Logística entrega. Após entrega: agendar retorno e notificar cliente.'},
+      {bloco: 'MOTIVO 3 — LOCAL FECHADO → Foto obrigatória → Backoffice baixa → DIA SEGUINTE'},
+      {desc: 'No local: registrar horário, fotografar fachada (OBRIGATÓRIO), tentar contato, buscar testemunha. Preencher OS e comunicar supervisor.'},
+      {desc: 'Backoffice registra a baixa com fotos e evidências. Agenda retorno para o DIA SEGUINTE. Notificar cliente. Se fechado novamente: escalar para Comercial.'},
+      {bloco: 'MOTIVO 4 — NÃO CONCLUÍDO → Registrar pendência → Backoffice baixa → DIA SEGUINTE'},
+      {desc: 'Registrar na OS: motivo, o que foi feito, o que falta, status. Incluir: "Necessário retorno para conclusão." Comunicar supervisor antes de sair.'},
+      {desc: 'Backoffice baixa. Supervisor valida. Retorno para o DIA SEGUINTE. Cliente notificado. Se não concluir novamente: escalar para gestor.'},
+    ],
+    criterios: [
+      'Todo retorno baixado no sistema antes das tratativas — sem exceção.',
+      'Motivo registrado na OS antes de deixar o local.',
+      'Status do equipamento sempre informado (peça, toner e não conclusão).',
+      'Foto obrigatória quando o motivo for local fechado.',
+      'Fluxo correto: Peça → N1→N2→Logística | Toner → N1→SAC→Logística | Fechado/Não concluído → Backoffice.',
+      'Agendamento: Peça/Toner após entrega | Local fechado/Não concluído no dia seguinte.',
+      'Cliente sempre notificado sobre o retorno e prazo antes de encerrar o dia.',
+    ],
+    contingencias: [
+      ['Peça ou toner sem previsão de entrega', 'N2/SAC informa nova previsão. Equipamento parado = urgência máxima.'],
+      ['Local fechado pela segunda vez no retorno', 'Escalar para Comercial com histórico completo de tentativas.'],
+      ['Retorno do dia seguinte não pode ser agendado', 'Supervisor justifica e define nova data. Backoffice registra.'],
+      ['Retorno também não conclui o atendimento', 'Escalar para o gestor. Terceira visita requer aprovação gerencial.'],
+      ['Cliente recusa o reagendamento', 'Registrar na OS e acionar Comercial. Seguir POP-11 se aplicável.'],
+    ]
+  },
+
+  pop11: {
+    code: 'POP-11', title: 'Recusa de Assinatura em Atendimentos', section: 'Operação de Campo',
+    objetivo: 'Estabelecer o procedimento padrão quando o cliente se recusar a assinar qualquer documento de atendimento, garantindo a validade do registro operacional e a comunicação adequada às áreas internas.',
+    escopo: 'Todos os tipos de atendimento externos: troca técnica, manutenção, visita, instalação, coleta, vistoria.',
+    responsaveis: [
+      ['Técnico / Colaborador de Campo', 'Preencher o documento, registrar a recusa e buscar testemunha no local'],
+      ['Testemunha (se disponível)', 'Assinar o documento como testemunha da recusa do cliente'],
+      ['Supervisor / Backoffice', 'Registrar a ocorrência na baixa e comunicar Contratos e Comercial'],
+      ['Contratos e Comercial', 'Avaliar impacto contratual e adotar as providências necessárias'],
+    ],
+    fluxo: [
+      {bloco: 'NO LOCAL DO ATENDIMENTO'},
+      {desc: 'Concluir o atendimento normalmente e preencher TODOS os campos do documento (tipo de serviço, equipamento, data, hora, descrição).'},
+      {desc: 'Solicitar ao cliente a assinatura no documento de atendimento.'},
+      {desc: 'Em caso de recusa, registrar nas OBSERVAÇÕES:\n• Nome completo do cliente\n• "O Sr(a). [NOME COMPLETO] recusou-se a assinar o presente documento."\n• Data e hora da recusa'},
+      {desc: 'Procurar uma testemunha presente no local (morador, funcionário, vizinho) e solicitar sua assinatura.'},
+      {desc: 'Se nenhuma testemunha aceitar: registrar "Sem testemunhas disponíveis no local." Técnico assina sozinho com nome legível e matrícula.'},
+      {desc: 'Fotografar o documento preenchido e assinado antes de encerrar o atendimento.'},
+      {bloco: 'NA BAIXA DO ATENDIMENTO — INTERNO'},
+      {desc: 'Registrar nas observações da OS: "Cliente recusou assinar — [com/sem] testemunha. Documento fotografado."'},
+      {desc: 'Comunicar formalmente Contratos e Comercial informando: nº do atendimento, nome do cliente, tipo de serviço, registro de recusa e se houve testemunha.'},
+      {desc: 'Contratos e Comercial avaliam e adotam as providências necessárias.'},
+    ],
+    criterios: [
+      'Todos os campos do documento preenchidos antes do registro de recusa.',
+      'Nome do cliente e declaração de recusa constam nas observações.',
+      'Testemunha assina quando disponível; quando não, técnico registra ausência e assina sozinho.',
+      'Documento fotografado e salvo antes de encerrar o atendimento.',
+      'Recusa registrada no campo de observações da OS no sistema.',
+      'Contratos e Comercial comunicados na mesma data da baixa.',
+    ],
+    contingencias: [
+      ['Cliente fica agressivo', 'Não insistir. Registrar a recusa educadamente e acionar o supervisor imediatamente.'],
+      ['Técnico esquece de fotografar', 'Registrar no sistema, informar supervisor e escanear o físico assim que possível.'],
+      ['Nenhuma testemunha aceita', 'Registrar ausência nas observações. Técnico assina sozinho com nome e matrícula.'],
+      ['Sistema fora do ar na baixa', 'Enviar e-mail ao supervisor. Lançar no sistema ao restabelecer.'],
+      ['Contratos/Comercial não retornam', 'Escalar para o gestor da área. Registrar tentativas de comunicação.'],
+    ]
+  },
+
+  pop13: {
+    code: 'POP-13', title: 'Garantia de Equipamentos', section: 'Equipamentos',
+    objetivo: 'Garantir o acionamento correto da garantia do fabricante, com atendimento on site completo antes do acionamento, assegurando continuidade no atendimento ao cliente via troca técnica simultânea.',
+    escopo: 'Todos os equipamentos dentro do prazo de garantia do fabricante, atendidos por técnicos de campo (on site) e pelo Laboratório N2/N3.',
+    responsaveis: [
+      ['Técnico de Campo (N1)', 'Atendimento on site: diagnóstico, confirmação de garantia e comunicação ao N2'],
+      ['Laboratório N2/N3', 'Confirmação da garantia, abertura do processo junto ao fabricante'],
+      ['Cobertura do cliente', 'Troca técnica simultânea — cliente nunca fica sem equipamento (POP-12)'],
+      ['Contratos / Comercial', 'Acionados quando fabricante nega garantia ou prazo é excessivo'],
+      ['Logística', 'Envio ao fabricante e recebimento do retorno'],
+    ],
+    fluxo: [
+      {bloco: 'BLOCO A — ATENDIMENTO ON SITE (CAMPO)'},
+      {desc: 'Técnico vai ao cliente e realiza o diagnóstico do equipamento com defeito no local.'},
+      {desc: 'Consultar no sistema o cadastro do equipamento: número de série, data de aquisição e prazo de garantia.'},
+      {desc: 'Se em garantia: NÃO realizar nenhuma manutenção — qualquer intervenção invalida a garantia. Informar o cliente.'},
+      {desc: 'Acionar imediatamente a troca técnica simultânea: levar equipamento substituto para que o cliente não fique sem atendimento (ver POP-12).'},
+      {desc: 'Registrar na OS: nº de série, defeito, confirmação de garantia ativa, que nenhuma manutenção foi realizada. Fotografar antes de retirar.'},
+      {desc: 'Coletar assinatura do cliente na OS de retirada. Se recusar, seguir POP-11.'},
+      {desc: 'Transportar o equipamento ao laboratório com segurança e embalagem adequada.'},
+      {bloco: 'BLOCO B — LABORATÓRIO (N2/N3)'},
+      {desc: 'Laboratório recebe, confirma o diagnóstico e valida a situação de garantia no sistema.'},
+      {desc: 'Abrir o processo de garantia junto ao fabricante no mesmo dia com: nº de série, descrição do defeito, data de aquisição e fotos.'},
+      {desc: 'Encaminhar ao fabricante conforme protocolo (nota fiscal de remessa, embalagem, seguro de transporte).'},
+      {desc: 'Registrar no sistema: nº do processo, data de envio e prazo estimado de retorno.'},
+      {bloco: 'BLOCO C — ACOMPANHAMENTO E RETORNO'},
+      {desc: 'Acompanhar semanalmente o prazo junto ao fabricante. Atualizar status no sistema.'},
+      {desc: 'Manter a troca técnica no cliente durante todo o período, independente do prazo.'},
+      {desc: 'Ao receber o equipamento: laboratório reavalia e testa antes de disponibilizar para campo.'},
+      {desc: 'Após aprovação: agendar retorno ao cliente para desfazer a troca técnica e devolver o equipamento reparado.'},
+      {desc: 'Registrar encerramento no sistema com data, resultado e técnico responsável.'},
+    ],
+    criterios: [
+      'Nenhuma manutenção realizada em equipamento em garantia — sem exceções.',
+      'Troca técnica simultânea sempre executada: cliente nunca fica sem equipamento.',
+      'OS de retirada preenchida e assinada (ou recusa registrada) antes de sair do cliente.',
+      'Processo de garantia aberto junto ao fabricante no mesmo dia do recebimento no laboratório.',
+      'Nº do processo de garantia e prazo estimado registrados no sistema.',
+      'Acompanhamento semanal do status junto ao fabricante registrado no sistema.',
+      'Equipamento retornado testado e aprovado pelo laboratório antes de ir a campo.',
+    ],
+    contingencias: [
+      ['Fabricante nega a garantia', 'Escalar para Líder CTO e Contratos para definir responsabilidade e próximo passo.'],
+      ['Prazo de garantia muito longo', 'Manter troca técnica no cliente durante todo o período. Informar Comercial.'],
+      ['Equipamento extraviado no envio', 'Acionar seguro de transporte. Notificar CTO, Contratos e cliente imediatamente.'],
+      ['Cliente recusa devolver o substituto', 'Acionar Comercial e Contratos. Registrar a recusa formalmente.'],
+      ['Fabricante retorna com mesmo defeito', 'Laboratório documenta e reabre o processo imediatamente.'],
+      ['Equipamento fora da garantia identificado on site', 'Técnico informa o cliente, registra na OS e aciona fluxo normal de manutenção.'],
+    ]
+  },
+
+  pop24: {
+    code: 'POP-24', title: 'Protocolo de Mau Uso', section: 'Gestão',
+    objetivo: 'Garantir a acurácia e padronização do atendimento nas tratativas de Mau Uso de equipamentos, assegurando que o processo seja executado de forma correta, documentada e alinhada às obrigações contratuais.',
+    escopo: 'Todos os equipamentos disponibilizados contratualmente ao cliente que sejam danificados por ação interna ou externa inadequada.',
+    responsaveis: [
+      ['Cliente', 'Abre o chamado no LOC1 solicitando atendimento para o equipamento com problema'],
+      ['CTO', 'Processa o chamado e atribui ao técnico via Contele'],
+      ['Técnico de Campo', 'Diagnóstico no local, declaração de mau uso na OS e coleta de assinatura'],
+      ['CTO (N1)', 'Realiza a baixa, verifica informações e comunica a liderança'],
+      ['Técnico Chefe do Lab.', 'Análise técnica e parecer sobre os danos identificados'],
+      ['Gestão de Contratos', 'Tratativa com a diretoria e notificação formal ao cliente'],
+    ],
+    fluxo: [
+      {desc: 'Cliente abre o chamado no LOC1 solicitando atendimento técnico para o equipamento com problema.'},
+      {desc: 'CTO processa o chamado e atribui ao técnico de campo via Contele.'},
+      {desc: 'Técnico vai ao local, inspeciona o equipamento e, constatando dano por mau uso, declara a ocorrência na OS.'},
+      {desc: 'Técnico preenche a OS com: descrição detalhada, a expressão "CLIENTE CIENTE DE MAU USO", fotos do equipamento danificado, patrimônio e local de instalação. Cliente assina a OS.'},
+      {desc: 'CTO realiza a baixa da OS, verifica as informações e comunica a liderança confirmando se o processo pode prosseguir.'},
+      {desc: 'CTO envia e-mail ao Técnico Chefe do Laboratório com todas as informações da OS, solicitando análise técnica.'},
+      {desc: 'Técnico Chefe do Lab. analisa e responde ao CTO com o parecer técnico detalhado.'},
+      {desc: 'CTO envia e-mail ao setor de Gestão de Contratos e Comercial com o parecer para tratativa com a diretoria.'},
+      {desc: 'Gestão de Contratos leva à diretoria, define as medidas e envia notificação formal ao gestor do contrato (cliente).'},
+    ],
+    criterios: [
+      'Descrição clara e detalhada do ocorrido na OS.',
+      'A expressão "CLIENTE CIENTE DE MAU USO" nas observações da OS.',
+      'Fotografias do equipamento danificado, patrimônio e local de instalação.',
+      'Assinatura do cliente na OS consentindo com o que foi descrito.',
+      'Parecer técnico do laboratório antes de qualquer comunicação ao cliente.',
+      'Toda tratativa aprovada pela diretoria antes de comunicar o cliente.',
+    ],
+    contingencias: [
+      ['Cliente recusa assinar a OS de mau uso', 'Seguir POP-11 (Recusa de Assinatura). Registrar testemunhas e fotografias.'],
+      ['Cliente contesta a declaração de mau uso', 'Escalar para Gestão de Contratos com todo o histórico documentado.'],
+      ['Laboratório não confirma o mau uso', 'Revisar o caso com Gestão de Contratos e definir próximos passos.'],
+      ['Cliente sem cobertura contratual', 'Acionar Comercial para análise e definição de cobrança ou tratativa especial.'],
+    ]
+  },
+};
+const MANUAIS = {
+  abertura: {
+    title: 'Manual de Abertura de Chamado',
+    sistema: 'Portal DOC WEB (LOC1)',
+    link: 'https://doc.loc1.com.br/help/login',
+    intro: 'Para realizar a abertura de chamados, utilizamos o portal DOC WEB. Siga os passos abaixo para cadastrar um novo chamado.',
+    steps: [
+      { title: 'Acessar o Portal', body: 'Abra o navegador e acesse: <a class="manual-link" href="https://doc.loc1.com.br/help/login" target="_blank">🔗 doc.loc1.com.br/help/login</a>' },
+      { title: 'Realizar o Login', body: 'Informe o e-mail corporativo e senha fornecidos previamente. Ex: limeira.adm@doctecnologia.com.br' },
+      { title: 'Cadastrar Novo Chamado', body: 'Na tela inicial, clique em <strong>"CADASTRAR NOVO CHAMADO"</strong>. O botão aparece em dois locais na tela.' },
+      { title: 'Localizar o Equipamento', body: 'Para apontar o equipamento correto, você precisará do <strong>número de patrimônio</strong> ou <strong>número de série</strong> (localizado na parte traseira do equipamento). Clique na lupa no campo N° de série e pesquise.' },
+      { title: 'Confirmar o Equipamento', body: 'Após a pesquisa, confirme as informações do equipamento. Estando correto, clique em <strong>SELECIONAR</strong>.' },
+      { title: 'Selecionar o Tipo de Problema', body: 'Informe o tipo: <strong>CORRETIVA</strong> (equipamento com defeito como atolamento de papel) ou <strong>ENTREGA DE INSUMOS</strong> (necessidade de papel ou toner).' },
+      { title: 'Descrever o Problema', body: 'Escreva resumidamente o assunto e depois a descrição detalhada do problema.' },
+      { title: 'Cadastrar', body: 'Clique em <strong>CADASTRAR</strong>. Sua solicitação será encaminhada para a fila de atendimento do CTO.' },
+    ],
+    notes: ['O número de patrimônio fica na etiqueta na parte traseira do equipamento.', 'Para INSUMOS: selecione "Entrega de Insumos" no tipo de problema.']
+  },
+
+  atribuicao: {
+    title: 'Manual de Atribuição de Chamados no Contele',
+    sistema: 'LOC1 + Contele',
+    intro: 'Processo para atribuir chamados do LOC1 ao técnico correto e incluir a OS na agenda do Contele.',
+    steps: [
+      { title: 'Localizar o Chamado no LOC1', body: 'Menu Principal → Serviços → Chamado de serviço. Identificar chamados em aberto (cor <strong style="color:#b45309">amarela</strong>). Analisar se é Corretiva, Insumos, Instalação ou Desinstalação.' },
+      { title: 'Preencher o Chamado', body: '<strong>Status:</strong> Atribuído ao técnico | <strong>Técnico:</strong> Selecionar o responsável | <strong>LOC1:</strong> Ação item → Pré-Manutenção' },
+      { title: 'Verificar o Patrimônio', body: 'Em nova guia do LOC1: Estoque → Detalhes de nº série. Inserir o patrimônio da OS e copiar o nome do local no campo <strong>localização</strong>.' },
+      { title: 'Abrir o Contele', body: 'Abra o Contele e acesse o calendário (menu esquerdo). Selecione o calendário <strong>"Planejamento/Agendar"</strong>.' },
+      { title: 'Buscar o Técnico', body: 'Clique em "buscar usuário", escreva o nome do técnico e clique no botão <strong>+</strong> ao lado do nome.' },
+      { title: 'Adicionar o Local', body: 'Cole o nome copiado do LOC1 no campo <strong>LOCAIS</strong>. Localize e clique duas vezes no nome do local. <div class="manual-note">⚠️ Locais com prefixo PAÇO (Embu das Artes, Taboão) são para OS de INSUMOS — o técnico do site fica nesses locais e pode dar check-in/out. OS de corretiva usam o nome real do local, sem PAÇO.</div>' },
+      { title: 'Adicionar o Código da OS', body: 'Role a página até embaixo, clique no local adicionado → botão <strong>Cód. OS Personalizado</strong> → Cole as informações copiadas do LOC1.' },
+      { title: 'Salvar', body: 'Clique em <strong>Salvar</strong>. A OS foi adicionada na agenda do técnico com local, nº de série e necessidade do cliente.' },
+    ],
+    notes: ['No LOC1: deixar a OS como "Atribuído ao técnico", selecionar o técnico e habilitar pré-manutenção.', 'No Contele: dados do local correto, nº da OS e atribuição ao técnico e dia correto são fundamentais.']
+  },
+
+  insumos: {
+    title: 'Manual de Atendimento de Insumos',
+    sistema: 'LOC1',
+    intro: 'Como filtrar e atender OS de insumos no LOC1. Estas OS são atribuídas ao técnico SAC.',
+    steps: [
+      { title: 'Filtrar OS de Insumos no LOC1', body: 'Menu Principal → Serviços → Chamado de serviço. No campo <strong>Técnico</strong>, filtrar por <strong>SAC, SAC</strong>.' },
+      { title: 'Selecionar a OS', body: 'Clicar na OS que será atendida.' },
+      { title: 'Validar as Informações', body: 'Verificar na resolução o que precisa ser entregue (ex: 1 Toner Preto). Conferir as informações contidas na OS para validar o que terá que atender.' },
+      { title: 'Registrar o Atendimento', body: 'Após realizar o atendimento, registrar na resolução o que foi entregue com detalhes (quantidade, modelo).' },
+      { title: 'Baixar a OS', body: 'Realizar a baixa da OS no sistema com todas as informações preenchidas.' },
+    ],
+    notes: ['OS de insumos são identificadas pelo técnico SAC, SAC no filtro.', 'Sempre conferir o item da resolução antes de preparar o material.']
+  },
+
+  liberacao: {
+    title: 'Manual de Liberação de Insumos/Material',
+    sistema: 'LOC1',
+    intro: 'Como criar OS de liberação de insumos e materiais para o cliente no LOC1.',
+    steps: [
+      { title: 'Criar Nova OS', body: 'Menu Principal → Serviços → Chamado de serviço → Clique em <strong>Adicionar</strong>.' },
+      { title: 'Preencher os Dados', body: '<strong>Cliente:</strong> Pesquisar qual cliente será atendido | <strong>Status:</strong> Reposição de Kit | <strong>Assunto:</strong> Liberação de Insumo/material | <strong>Tipo:</strong> Entrega de Insumos' },
+      { title: 'Campo Endereço/Obs', body: 'Informar para qual departamento precisa entregar e o que o cliente está solicitando (ex: Toner M408 Monocromático, 30 unidades; Toner E524S Monocromático, 15 unidades).' },
+      { title: 'Salvar a OS', body: 'Salvar a OS. Ela ficará na fila para atendimento.' },
+      { title: 'Atender o Insumo', body: 'Separar o material solicitado, realizar a entrega e baixar a OS com registro completo do que foi entregue.' },
+    ],
+    notes: ['Status deve ser "Reposição de Kit" para liberação de insumos.', 'Informar detalhadamente o material no campo Endereço/Obs.']
+  },
+
+  mauuso: {
+    title: 'Protocolo de Mau Uso de Equipamentos',
+    sistema: 'LOC1 + Contele + E-mail',
+    intro: 'Quando um equipamento é danificado por uso inadequado, o ocorrido é classificado como Mau Uso. Siga o protocolo abaixo.',
+    steps: [
+      { title: 'Abertura do Chamado', body: 'Cliente abre o chamado no LOC1 solicitando atendimento técnico.' },
+      { title: 'Atribuição ao Técnico', body: 'CTO processa o chamado no LOC1 e atribui ao técnico no Contele.' },
+      { title: 'Atendimento e Diagnóstico', body: 'Técnico vai ao local, inspeciona e, constatando mau uso, declara na OS.' },
+      { title: 'Preenchimento da OS', body: 'A OS deve conter: descrição detalhada, a expressão <strong>"CLIENTE CIENTE DE MAU USO"</strong>, fotos do equipamento danificado, do patrimônio e do local. <strong>O cliente deve assinar a OS.</strong>' },
+      { title: 'Baixa e Comunicação Interna', body: 'CTO realiza a baixa, verifica as informações e comunica a liderança.' },
+      { title: 'E-mail ao Laboratório', body: 'CTO envia e-mail ao Técnico Chefe do Laboratório com todas as informações da OS, solicitando análise e parecer técnico.' },
+      { title: 'Parecer Técnico', body: 'Técnico Chefe responde com o parecer técnico detalhado dos danos.' },
+      { title: 'Encaminhamento a Contratos', body: 'CTO envia e-mail ao setor de Gestão de Contratos e Comercial com o parecer.' },
+      { title: 'Notificação ao Cliente', body: 'Gestão de Contratos leva à diretoria, define medidas e envia notificação formal ao gestor do contrato.' },
+    ],
+    notes: ['A expressão "CLIENTE CIENTE DE MAU USO" é OBRIGATÓRIA na OS.', 'Nenhuma comunicação ao cliente antes da aprovação da diretoria.', 'Fotos são obrigatórias: equipamento danificado, patrimônio e local de instalação.']
+  },
+
+  km: {
+    title: 'Manual de Reembolso de Quilometragem',
+    sistema: 'Contele',
+    intro: 'Guia para auditoria e validação das visitas técnicas quinzenais para cálculo do reembolso de KM.',
+    steps: [
+      { title: 'Monitoramento das Visitas', body: 'O responsável por cada contrato deve garantir que os técnicos realizem o <strong>Check-in e Check-out</strong> corretamente no Contele em cada visita. Visitas sem check-in/out não são contabilizadas.' },
+      { title: 'Triagem de Atendimentos', body: 'Filtrar o que é deslocamento real e o que é remoto. Visitas sem deslocamento físico devem ser ignoradas. Para ignorar: Contele → Reembolso → <strong>Ignorar visitas</strong>.' },
+      { title: 'Verificação Inicial', body: 'Certificar que todas as visitas da quinzena foram registradas no sistema antes de processar o reembolso.' },
+      { title: 'Acesso ao Relatório', body: 'Acesse o Contele → Relatórios → <strong>Reembolso</strong>. Selecione o nome do Técnico e o período da Quinzena (ex: 01/04 a 15/04).' },
+      { title: 'Entender a Composição do Custo', body: '<strong>Custo Fixo:</strong> deslocamentos casa→primeiro site e última visita→casa. <strong>Custo Variável:</strong> deslocamentos entre o primeiro e último atendimento do dia.' },
+      { title: 'Auditoria de Divergências', body: 'Identificar inconsistências. Ex: deslocamento superior a 200km para visita na mesma cidade. Validar com Google Maps. Se divergente, corrigir a geolocalização no Contele.' },
+      { title: 'Corrigir Geolocalização', body: 'Se endereço incorreto: Contele → Configurações → Locais → Pesquisar → Editar → Inserir endereço correto → Salvar Alterações.' },
+    ],
+    notes: ['Check-in e check-out são obrigatórios para contabilização das visitas.', 'Visitas remotas devem ser ignoradas antes de processar o reembolso.', 'Divergências acima de 200km na mesma cidade devem ser auditadas obrigatoriamente.']
+  }
+};
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ORDEM E SIDEBAR
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+var popOrder = JSON.parse(localStorage.getItem('cto_order')||'null');
+
+function orderedKeys(){
+  var keys = Object.keys(POPS);
+  if(!popOrder) return keys;
+  var extra = keys.filter(function(k){ return popOrder.indexOf(k)<0; });
+  return popOrder.filter(function(k){ return keys.indexOf(k)>=0; }).concat(extra);
+}
+
+var SEC_META = {
+  'Pré-Operação':      {sb:'sb-pre',  color:'#1A4A7A', bg:'#DEEAF1'},
+  'Operação de Campo': {sb:'sb-campo',color:'#856404', bg:'#FFF3CD'},
+  'Equipamentos':      {sb:'sb-equip',color:'#4A148C', bg:'#EDE7F6'},
+  'Gestão':            {sb:'sb-gestao',color:'#1E6B3C',bg:'#E8F5EE'}
+};
+
+function buildSidebar(){
+  ['sb-pre','sb-campo','sb-equip','sb-gestao'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.innerHTML='';
+  });
+  orderedKeys().forEach(function(id){
+    var p=POPS[id]; if(!p) return;
+    var sm=SEC_META[p.section]; if(!sm) return;
+    var c=document.getElementById(sm.sb); if(!c) return;
+    var el=document.createElement('div');
+    el.className='sbi';
+    el.innerHTML='<span class="sbi-code">'+p.code+'</span><span style="font-size:12px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+p.title+'</span>';
+    el.onclick=(function(k){ return function(){ showPOP(k); }; })(id);
+    c.appendChild(el);
+  });
+  // Manuais
+  var mc=document.getElementById('sb-manuais');
+  if(mc){
+    mc.innerHTML='';
+    Object.entries(MANUAIS).forEach(function(entry){
+      var id=entry[0], m=entry[1];
+      var el=document.createElement('div');
+      el.className='sbi';
+      var shortTitle=m.title.replace(/Manual de |Manual Para /gi,'');
+      el.innerHTML='<span style="font-size:11px;flex-shrink:0">📄</span><span style="font-size:12px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+shortTitle+'</span><span class="sbi-badge">M</span>';
+      el.onclick=(function(k){ return function(){ showManual(k); }; })(id);
+      mc.appendChild(el);
+    });
+  }
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CARDS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+var CMETA = {
+  pop01:{cats:'pop pre',tags:[['gestao','Gestão'],['op','N1/N2']]},
+  pop02:{cats:'pop pre',tags:[['op','Contratos']]},
+  pop03:{cats:'pop pre',tags:[['op','Contratos'],['g','Comercial']]},
+  pop04:{cats:'pop pre',tags:[['op','N1'],['c','Diário']]},
+  pop05:{cats:'pop campo',tags:[['op','N1'],['s','LOC1']]},
+  pop06:{cats:'pop campo',tags:[['c','Campo'],['s','Contele']]},
+  pop07:{cats:'pop campo',tags:[['s','LOC1'],['s','Contele']]},
+  pop08:{cats:'pop campo',tags:[['c','Campo']]},
+  pop09:{cats:'pop campo',tags:[['op','N1'],['s','LOC1']]},
+  pop10:{cats:'pop campo',tags:[['c','Campo'],['e','Insumos']]},
+  pop11:{cats:'pop campo',tags:[['c','Campo'],['op','Contratos']]},
+  pop12:{cats:'pop equip',tags:[['e','Equip.'],['c','Campo']]},
+  pop13:{cats:'pop equip',tags:[['e','Garantia'],['c','On Site']]},
+  pop14:{cats:'pop equip',tags:[['e','Lab'],['op','N2/N3']]},
+  pop15:{cats:'pop equip',tags:[['e','Insumos']]},
+  pop16:{cats:'pop equip',tags:[['e','Patrimônio']]},
+  pop17:{cats:'pop equip',tags:[['e','RMA']]},
+  pop18:{cats:'pop gestao',tags:[['g','KM'],['s','Contele']]},
+  pop19:{cats:'pop gestao',tags:[['g','RH']]},
+  pop20:{cats:'pop gestao',tags:[['g','SAC']]},
+  pop21:{cats:'pop gestao',tags:[['g','SLA']]},
+  pop22:{cats:'pop gestao',tags:[['e','Lab']]},
+  pop23:{cats:'pop gestao',tags:[['op','Contratos']]},
+  pop24:{cats:'pop gestao',tags:[['op','Contratos'],['g','Comercial']]}
+};
+var TAG_C={'op':'tag-op','c':'tag-c','e':'tag-e','g':'tag-g','s':'tag-s','gestao':'tag-g'};
+
+function buildCards(){
+  var grid=document.getElementById('grid');
+  grid.innerHTML='';
+  document.getElementById('stat-n').textContent=Object.keys(POPS).length;
+
+  orderedKeys().forEach(function(id){
+    var p=POPS[id]; if(!p) return;
+    var cm=CMETA[id]||{cats:'pop',tags:[]};
+    var tagsHtml=(cm.tags||[]).map(function(t){ return '<span class="tag '+TAG_C[t[0]]+'">'+t[1]+'</span>'; }).join('');
+    var el=document.createElement('div');
+    el.className='card'; el.dataset.cat=cm.cats;
+    var desc=(p.objetivo||'').slice(0,85)+((p.objetivo||'').length>85?'...':'');
+    el.innerHTML='<span class="cbadge cbadge-p">'+p.code+'</span><div class="ctitle">'+p.title+'</div><div class="cdesc">'+desc+'</div><div class="ctags">'+tagsHtml+'</div>';
+    el.onclick=(function(k){ return function(){ showPOP(k); }; })(id);
+    grid.appendChild(el);
+  });
+
+  Object.entries(MANUAIS).forEach(function(entry){
+    var id=entry[0], m=entry[1];
+    var el=document.createElement('div');
+    el.className='card'; el.dataset.cat='manual';
+    var desc=(m.intro||'').slice(0,85)+'...';
+    el.innerHTML='<span class="cbadge cbadge-m">MANUAL</span><div class="ctitle">'+m.title+'</div><div class="cdesc">'+desc+'</div><div class="ctags"><span class="tag tag-s">'+(m.sistema||'CTO')+'</span></div>';
+    el.onclick=(function(k){ return function(){ showManual(k); }; })(id);
+    grid.appendChild(el);
+  });
+}
+
+function filterCards(cat, el){
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  el.classList.add('active');
+  document.querySelectorAll('.card').forEach(function(c){
+    c.style.display=(cat==='all'||(c.dataset.cat||'').indexOf(cat)>=0)?'block':'none';
+  });
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// RENDER POP
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function renderPOP(p){
+  var sn=0;
+  var rows=(p.fluxo||[]).map(function(f){
+    if(f.bloco) return '<tr class="bloco"><td colspan="2" style="background:var(--bl);font-weight:800;color:var(--accent);padding:10px 14px;font-size:12px;text-transform:uppercase">'+f.bloco+'</td></tr>';
+    sn++;
+    var o=sn%2===1;
+    var desc=(f.desc||'').replace(/\n/g,'<br>');
+    return '<tr><td class="sn">'+sn+'</td><td style="background:var(--' + (o?'navy2':'gray') + ')">'+desc+'</td></tr>';
+  }).join('');
+
+  var rr=(p.responsaveis||[]).map(function(r,i){
+    var o=i%2===0;
+    return '<tr><td class="'+(o?'rc-o':'rc-e')+'" style="background:var(--bl)">'+r[0]+'</td><td style="background:var(--' + (o?'navy2':'gray') + ')">'+r[1]+'</td></tr>';
+  }).join('');
+
+  var cr=(p.criterios||[]).map(function(c,i){
+    var bg = i%2===0 ? 'var(--bg-alt)' : 'var(--bg)';
+    return '<tr><td class="ck" style="background:'+bg+'">✔</td><td style="background:'+bg+'">'+c+'</td></tr>';
+  }).join('');
+
+  var cor=(p.contingencias||[]).map(function(c,i){
+    var bg = isDark ? (i%2===0?'rgba(204,0,0,0.05)':'rgba(204,0,0,0.02)') : (i%2===0?'#FEF0E7':'#FDE9D9');
+    return '<tr><td class="st" style="background:'+bg+'">'+c[0]+'</td><td style="background:'+bg+'">'+c[1]+'</td></tr>';
+  }).join('');
+
+  return '<div class="dochdr"><div class="dochdr-code">'+p.code+'</div><h2>'+p.title+'</h2>'
+    +'<div class="dochdr-meta"><span>Seção: <strong>'+p.section+'</strong></span><span>Versão: <strong>18</strong></span><span>Ano: <strong>2026</strong></span></div></div>'
+    +'<div class="docbody">'
+    +'<div class="dshdr">OBJETIVO</div><div class="dsbody">'+(p.objetivo||'')+'</div>'
+    +'<div class="dshdr">ESCOPO</div><div class="dsbody">'+(p.escopo||'')+'</div>'
+    +'<div class="dshdr">RESPONSÁVEIS</div><div class="dsbody" style="padding:0">'
+    +'<table class="pt"><tr><th style="width:42%">Papel</th><th>Responsável</th></tr>'+rr+'</table></div>'
+    +'<div class="dshdr">FLUXO PASSO A PASSO</div><div class="dsbody" style="padding:0">'
+    +'<table class="pt"><tr><th style="width:42px;text-align:center">Passo</th><th>Descrição</th></tr>'+rows+'</table></div>'
+    +'<div class="dshdr dshdr-g">CRITÉRIOS DE QUALIDADE</div><div class="dsbody" style="padding:0">'
+    +'<table class="ct"><tr><th style="width:32px">✔</th><th>Critério de Qualidade</th></tr>'+cr+'</table></div>'
+    +'<div class="dshdr dshdr-o">CONTINGÊNCIAS</div><div class="dsbody" style="padding:0">'
+    +'<table class="ct2"><tr><th style="width:40%">Situação</th><th>Ação</th></tr>'+cor+'</table></div>'
+    +'</div>';
+}
+
+function renderManual(m){
+  var steps=(m.steps||[]).map(function(s,i){
+    return '<div style="display:flex;gap:13px;padding:11px 0;border-bottom:1px solid #f5f5f5">'
+      +'<div style="min-width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">'+(i+1)+'</div>'
+      +'<div><strong style="display:block;font-size:13px;margin-bottom:2px;color:var(--navy)">'+s.title+'</strong>'
+      +'<p style="font-size:13px;color:var(--txt2);line-height:1.5">'+s.body+'</p></div></div>';
+  }).join('');
+  var notes=(m.notes||[]).map(function(n){
+    return '<div style="background:#fffbeb;border-left:3px solid #f59e0b;padding:8px 12px;border-radius:0 5px 5px 0;margin:5px 0;font-size:13px;color:#78350f">ℹ️ '+n+'</div>';
+  }).join('');
+  var lnk=m.link?'<p style="margin-bottom:9px">Acesse: <a href="'+m.link+'" target="_blank" style="color:var(--navy2);font-weight:600">'+m.link+'</a></p>':'';
+  return '<div class="dochdr"><div class="dochdr-code">MANUAL · '+(m.sistema||'CTO')+'</div><h2>'+m.title+'</h2></div>'
+    +'<div class="docbody">'
+    +'<div class="dshdr">INTRODUÇÃO</div><div class="dsbody">'+lnk+(m.intro||'')+'</div>'
+    +'<div class="dshdr">PASSO A PASSO</div><div class="dsbody">'+steps+'</div>'
+    +(notes?'<div class="dshdr" style="background:#fffbeb;color:#92400e;border-left-color:#f59e0b">OBSERVAÇÕES</div><div class="dsbody">'+notes+'</div>':'')
+    +'</div>';
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// NAVEGAÇÃO
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+var curView='home', curPOP=null, curMAN=null;
+
+function showView(id){
+  document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active','pm'); });
+  var v=document.getElementById('view-'+id);
+  if(v){ v.classList.add('active'); v.classList.add('pm'); }
+  curView=id;
+  window.scrollTo(0,0);
+  if(id==='reorder') buildReorder();
+  if(id==='users') buildUsers();
+  
+  // Limpa seleção do sidebar se não for POP/Manual
+  if(id !== 'pop' && id !== 'manual') {
+    document.querySelectorAll('.sbi').forEach(function(el){ el.classList.remove('active'); });
+    if(id === 'home') {
+       const homeBtn = Array.from(document.querySelectorAll('.sbi')).find(el => el.getAttribute('onclick') === 'goHome()');
+       if(homeBtn) homeBtn.classList.add('active');
+    }
+  }
+}
+
+function goHome(){ showView('home'); }
+
+function showPOP(id){
+  var p=POPS[id]; if(!p) return;
+  curPOP=id; curMAN=null;
+  document.getElementById('bc-sec').textContent=p.section;
+  document.getElementById('bc-title').textContent=p.title;
+  document.getElementById('pop-content').innerHTML=renderPOP(p);
+  showView('pop');
+  
+  // Atualiza seleção do sidebar
+  document.querySelectorAll('.sbi').forEach(function(el){
+    var sc=el.querySelector('.sbi-code');
+    el.classList.toggle('active', sc && sc.textContent === p.code);
+  });
+}
+
+function showManual(id){
+  var m=MANUAIS[id]; if(!m) return;
+  curMAN=id; curPOP=null;
+  document.getElementById('bc-manual').textContent=m.title;
+  document.getElementById('manual-content').innerHTML=renderManual(m);
+  showView('manual');
+  
+  // Atualiza seleção do sidebar para manuais
+  document.querySelectorAll('.sbi').forEach(function(el){
+    var titleEl = el.querySelector('span:not(.sbi-badge):not(.sbi-code)');
+    var isManual = el.querySelector('.sbi-badge');
+    var shortTitle = m.title.replace(/Manual de |Manual Para /gi,'');
+    el.classList.toggle('active', isManual && titleEl && titleEl.textContent === shortTitle);
+  });
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// EDITOR
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+var editId=null, editType='pop';
+var rowC={resp:0,step:0,crit:0,cont:0,mst:0,nte:0};
+
+function openEditor(id){
+  requireEdit(function(){
+    editId=id||null;
+    if(id && POPS[id]){ loadPOPtoEditor(id); }
+    else if(id && MANUAIS[id]){ loadMANtoEditor(id); }
+    else { clearEditor(); }
+    showView('editor');
+  });
+}
+
+function editPOP(){
+  if(!curPOP) return;
+  requireEdit(function(){ loadPOPtoEditor(curPOP); showView('editor'); });
+}
+
+function editManual(){
+  if(!curMAN) return;
+  requireEdit(function(){ loadMANtoEditor(curMAN); showView('editor'); });
+}
+
+function clearEditor(){
+  editId=null; editType='pop';
+  document.getElementById('ed-type').value='pop';
+  document.getElementById('ed-code').value='';
+  document.getElementById('ed-title').value='';
+  document.getElementById('ed-obj').value='';
+  document.getElementById('ed-esc').value='';
+  document.getElementById('ed-int').value='';
+  document.getElementById('ed-sis').value='';
+  document.getElementById('ed-area').value='CTO – Operações de Campo';
+  document.getElementById('ed-data').value='Abril / 2026';
+  document.getElementById('ed-sec').value='Operação de Campo';
+  ['r-resp','r-step','r-crit','r-cont','r-mst','r-nte'].forEach(function(id){ document.getElementById(id).innerHTML=''; });
+  document.getElementById('ed-preview').innerHTML='';
+  document.getElementById('btn-del').style.display='none';
+  toggleEditorType();
+}
+
+function loadPOPtoEditor(id){
+  var p=POPS[id];
+  editId=id; editType='pop';
+  document.getElementById('ed-type').value='pop';
+  document.getElementById('ed-code').value=p.code||'';
+  document.getElementById('ed-title').value=p.title||'';
+  document.getElementById('ed-obj').value=p.objetivo||'';
+  document.getElementById('ed-esc').value=p.escopo||'';
+  document.getElementById('ed-area').value=p.section||'';
+  document.getElementById('ed-data').value='Abril / 2026';
+  document.getElementById('ed-sec').value=p.section||'Operação de Campo';
+  ['r-resp','r-step','r-crit','r-cont'].forEach(function(id){ document.getElementById(id).innerHTML=''; });
+  (p.responsaveis||[]).forEach(function(r){ addRow('resp',r[0],r[1]); });
+  (p.fluxo||[]).forEach(function(f){ f.bloco?addRow('bloco',f.bloco):addRow('step',f.desc||''); });
+  (p.criterios||[]).forEach(function(c){ addRow('crit',c); });
+  (p.contingencias||[]).forEach(function(c){ addRow('cont',c[0],c[1]); });
+  document.getElementById('ed-preview').innerHTML='';
+  document.getElementById('btn-del').style.display=isAdmin()?'inline-flex':'none';
+  toggleEditorType();
+}
+
+function loadMANtoEditor(id){
+  var m=MANUAIS[id];
+  editId=id; editType='manual';
+  document.getElementById('ed-type').value='manual';
+  document.getElementById('ed-code').value=id;
+  document.getElementById('ed-title').value=m.title||'';
+  document.getElementById('ed-int').value=m.intro||'';
+  document.getElementById('ed-sis').value=m.sistema||'';
+  ['r-mst','r-nte'].forEach(function(id){ document.getElementById(id).innerHTML=''; });
+  (m.steps||[]).forEach(function(s){ addRow('mst',s.title,s.body); });
+  (m.notes||[]).forEach(function(n){ addRow('nte',n); });
+  document.getElementById('ed-preview').innerHTML='';
+  document.getElementById('btn-del').style.display=isAdmin()?'inline-flex':'none';
+  toggleEditorType();
+}
+
+function toggleEditorType(){
+  var t=document.getElementById('ed-type').value;
+  editType=t;
+  var ip=t==='pop';
+  document.getElementById('ed-obj-w').style.display=ip?'':'none';
+  document.getElementById('ed-esc-w').style.display=ip?'':'none';
+  document.getElementById('ed-int-w').style.display=ip?'none':'';
+  document.getElementById('ed-sis-w').style.display=ip?'none':'';
+  document.getElementById('ed-resp-s').style.display=ip?'':'none';
+  document.getElementById('ed-flx-s').style.display=ip?'':'none';
+  document.getElementById('ed-crit-s').style.display=ip?'':'none';
+  document.getElementById('ed-cont-s').style.display=ip?'':'none';
+  document.getElementById('ed-mst-s').style.display=ip?'none':'';
+  document.getElementById('ed-nte-s').style.display=ip?'none':'';
+}
+
+function addRow(type, v1, v2){
+  v1=v1||''; v2=v2||'';
+  var cid=++rowC[type]||++rowC['resp'];
+  var cont={'resp':'r-resp','step':'r-step','bloco':'r-step','crit':'r-crit','cont':'r-cont','mst':'r-mst','nte':'r-nte'}[type];
+  var el=document.createElement('div');
+  el.className='ri'; el.dataset.rtype=type;
+  el.draggable=true;
+
+  var esc=function(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); };
+
+  if(type==='resp'){
+    el.innerHTML='<span class="ri-drag">⠿</span>'
+      +'<input type="text" placeholder="Papel / Cargo" value="'+esc(v1)+'" style="flex:1">'
+      +'<input type="text" placeholder="Responsável" value="'+esc(v2)+'" style="flex:1.5">'
+      +'<button class="ri-del" onclick="this.parentElement.remove()">✕</button>';
+  } else if(type==='step'){
+    var n=document.querySelectorAll('#r-step .ri[data-rtype=step]').length+1;
+    el.innerHTML='<span class="ri-drag">⠿</span><div class="ri-n">'+n+'</div>'
+      +'<textarea placeholder="Descrição do passo..." rows="2" style="flex:1">'+esc(v1)+'</textarea>'
+      +'<button class="ri-del" onclick="this.parentElement.remove();renumSteps()">✕</button>';
+  } else if(type==='bloco'){
+    el.dataset.rtype='bloco';
+    el.style.background='var(--bm)';
+    el.innerHTML='<span class="ri-drag">⠿</span><div class="ri-bloco">📌 BLOCO</div>'
+      +'<input type="text" placeholder="Nome do bloco..." value="'+esc(v1)+'" style="flex:1;font-weight:600">'
+      +'<button class="ri-del" onclick="this.parentElement.remove()">✕</button>';
+  } else if(type==='crit'){
+    el.innerHTML='<span class="ri-drag">⠿</span><span style="color:var(--green);font-weight:700;flex-shrink:0">✔</span>'
+      +'<input type="text" placeholder="Critério..." value="'+esc(v1)+'" style="flex:1">'
+      +'<button class="ri-del" onclick="this.parentElement.remove()">✕</button>';
+  } else if(type==='cont'){
+    el.innerHTML='<span class="ri-drag">⠿</span>'
+      +'<input type="text" placeholder="Situação" value="'+esc(v1)+'" style="flex:1">'
+      +'<input type="text" placeholder="Ação corretiva" value="'+esc(v2)+'" style="flex:1.5">'
+      +'<button class="ri-del" onclick="this.parentElement.remove()">✕</button>';
+  } else if(type==='mst'){
+    el.innerHTML='<span class="ri-drag">⠿</span>'
+      +'<input type="text" placeholder="Título do passo" value="'+esc(v1)+'" style="flex:1">'
+      +'<textarea placeholder="Descrição..." rows="2" style="flex:2">'+esc(v2)+'</textarea>'
+      +'<button class="ri-del" onclick="this.parentElement.remove()">✕</button>';
+  } else if(type==='nte'){
+    el.innerHTML='<span class="ri-drag">⠿</span>'
+      +'<input type="text" placeholder="Texto da observação..." value="'+esc(v1)+'" style="flex:1">'
+      +'<button class="ri-del" onclick="this.parentElement.remove()">✕</button>';
+  }
+
+  // Drag within list
+  el.addEventListener('dragstart',function(e){ e.dataTransfer.effectAllowed='move'; el._dragging=true; el.classList.add('dragging'); });
+  el.addEventListener('dragend',function(){ el._dragging=false; el.classList.remove('dragging'); el.parentElement && el.parentElement.querySelectorAll('.ri').forEach(function(r){ r.classList.remove('over'); }); });
+  el.addEventListener('dragover',function(e){ e.preventDefault(); el.classList.add('over'); });
+  el.addEventListener('dragleave',function(){ el.classList.remove('over'); });
+  el.addEventListener('drop',function(e){
+    e.preventDefault(); el.classList.remove('over');
+    var src=el.parentElement.querySelector('.ri[style*="opacity"]') || Array.from(el.parentElement.querySelectorAll('.ri')).find(function(r){ return r._dragging; });
+    if(src && src!==el){ el.parentElement.insertBefore(src, el); renumSteps(); }
+  });
+
+  document.getElementById(cont).appendChild(el);
+}
+
+function renumSteps(){
+  var n=0;
+  document.querySelectorAll('#r-step .ri[data-rtype=step] .ri-n').forEach(function(el){ el.textContent=++n; });
+}
+
+function collectEditor(){
+  var type=document.getElementById('ed-type').value;
+  if(type==='manual'){
+    var steps=[]; var notes=[];
+    document.querySelectorAll('#r-mst .ri').forEach(function(r){
+      var ins=r.querySelectorAll('input,textarea');
+      if(ins[0]&&ins[0].value) steps.push({title:ins[0].value, body:ins[1]?ins[1].value:''});
+    });
+    document.querySelectorAll('#r-nte .ri input').forEach(function(i){ if(i.value) notes.push(i.value); });
+    return {_type:'manual',_id:editId||(document.getElementById('ed-code').value||'m'+Date.now()),
+      title:document.getElementById('ed-title').value,
+      sistema:document.getElementById('ed-sis').value,
+      intro:document.getElementById('ed-int').value,
+      steps:steps, notes:notes};
+  }
+  var resp=[],fluxo=[],crit=[],cont=[];
+  document.querySelectorAll('#r-resp .ri').forEach(function(r){
+    var ins=r.querySelectorAll('input');
+    if(ins[0]&&ins[0].value) resp.push([ins[0].value,ins[1]?ins[1].value:'']);
+  });
+  document.querySelectorAll('#r-step .ri').forEach(function(r){
+    if(r.dataset.rtype==='bloco'){ var v=r.querySelector('input'); if(v&&v.value) fluxo.push({bloco:v.value}); }
+    else { var ta=r.querySelector('textarea'); if(ta&&ta.value) fluxo.push({desc:ta.value}); }
+  });
+  document.querySelectorAll('#r-crit .ri input').forEach(function(i){ if(i.value) crit.push(i.value); });
+  document.querySelectorAll('#r-cont .ri').forEach(function(r){
+    var ins=r.querySelectorAll('input');
+    if(ins[0]&&ins[0].value) cont.push([ins[0].value,ins[1]?ins[1].value:'']);
+  });
+  var code=document.getElementById('ed-code').value;
+  return {_type:'pop',
+    _id:editId||(code?code.toLowerCase().replace(/[^a-z0-9]/g,'_'):'pop'+Date.now()),
+    code:code,title:document.getElementById('ed-title').value,
+    section:document.getElementById('ed-sec').value,
+    objetivo:document.getElementById('ed-obj').value,
+    escopo:document.getElementById('ed-esc').value,
+    responsaveis:resp,fluxo:fluxo,criterios:crit,contingencias:cont};
+}
+
+function saveDoc(){
+  requireEdit(function(){
+    var d=collectEditor();
+    if(!d.title){ toast('Informe o título','err'); return; }
+    if(d._type==='pop'){
+      POPS[d._id]={code:d.code,title:d.title,section:d.section,objetivo:d.objetivo,escopo:d.escopo,responsaveis:d.responsaveis,fluxo:d.fluxo,criterios:d.criterios,contingencias:d.contingencias};
+      localStorage.setItem('cto_pops',JSON.stringify(POPS));
+    } else {
+      MANUAIS[d._id]={title:d.title,sistema:d.sistema,intro:d.intro,steps:d.steps,notes:d.notes};
+      localStorage.setItem('cto_manuais',JSON.stringify(MANUAIS));
+    }
+    editId=d._id;
+    document.getElementById('btn-del').style.display=isAdmin()?'inline-flex':'none';
+    buildIdx(); buildSidebar(); buildCards();
+    toast(editId?'Salvo com sucesso!':'Criado com sucesso!','ok');
+  });
+}
+
+function previewDoc(){
+  var d=collectEditor();
+  var html=d._type==='pop'?renderPOP(d):renderManual(d);
+  var pv=document.getElementById('ed-preview');
+  pv.innerHTML='<div style="margin-top:14px"><div style="font-size:11px;font-weight:700;color:var(--txt2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px">Pré-visualização</div>'+html+'</div>';
+  pv.scrollIntoView({behavior:'smooth'});
+  toast('Pré-visualização gerada');
+}
+
+function deleteDoc(){
+  if(!isAdmin()){ toast('Apenas admins podem excluir','err'); return; }
+  if(!editId) return;
+  confirm2('Excluir documento','Tem certeza? Esta ação não pode ser desfeita.',function(){
+    if(POPS[editId]){ delete POPS[editId]; localStorage.setItem('cto_pops',JSON.stringify(POPS)); }
+    else if(MANUAIS[editId]){ delete MANUAIS[editId]; localStorage.setItem('cto_manuais',JSON.stringify(MANUAIS)); }
+    editId=null; buildIdx(); buildSidebar(); buildCards(); goHome(); toast('Excluído','ok');
+  });
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// REORDER
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+var roDragSrc=null;
+function buildReorder(){
+  var list=document.getElementById('dl'); list.innerHTML='';
+  orderedKeys().forEach(function(id){
+    var p=POPS[id]; if(!p) return;
+    var sm=SEC_META[p.section]||{color:'#666',bg:'#f5f5f5'};
+    var el=document.createElement('div');
+    el.className='dli'; el.draggable=true; el.dataset.id=id;
+    el.innerHTML='<span class="dli-handle">⠿</span><span class="dli-code">'+p.code+'</span><span class="dli-title">'+p.title+'</span>'
+      +'<span class="dli-sec" style="background:'+sm.bg+';color:'+sm.color+'">'+p.section+'</span>';
+    el.addEventListener('dragstart',function(){ roDragSrc=el; el.classList.add('dragging'); });
+    el.addEventListener('dragend',function(){ el.classList.remove('dragging'); list.querySelectorAll('.dli').forEach(function(i){ i.classList.remove('over'); }); });
+    el.addEventListener('dragover',function(e){ e.preventDefault(); el.classList.add('over'); });
+    el.addEventListener('dragleave',function(){ el.classList.remove('over'); });
+    el.addEventListener('drop',function(e){
+      e.preventDefault(); el.classList.remove('over');
+      if(roDragSrc && roDragSrc!==el){ list.insertBefore(roDragSrc,el); }
+    });
+    list.appendChild(el);
+  });
+}
+function saveOrder(){
+  var order=[].map.call(document.querySelectorAll('#dl .dli'),function(el){ return el.dataset.id; });
+  popOrder=order; localStorage.setItem('cto_order',JSON.stringify(order));
+  buildSidebar(); buildCards(); toast('Ordem salva!','ok');
+}
+function resetOrder(){ popOrder=null; localStorage.removeItem('cto_order'); buildReorder(); buildSidebar(); buildCards(); toast('Ordem restaurada'); }
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// USERS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+var editUID=null;
+function buildUsers(){
+  var g=document.getElementById('ugrid'); g.innerHTML='';
+  USERS.forEach(function(u){
+    var ac=u.role==='admin'?'uav-a':u.role==='editor'?'uav-e':'uav-v';
+    var rc=u.role==='admin'?'ur-a':u.role==='editor'?'ur-e':'ur-v';
+    var rl=u.role==='admin'?'Admin':u.role==='editor'?'Editor':'Visualizador';
+    var el=document.createElement('div'); el.className='ucard';
+    el.innerHTML='<div class="uav-big '+ac+'">'+u.name[0]+'</div>'
+      +'<div class="uinfo"><div class="uname">'+u.name+'</div><div class="ulogin">@'+u.login+'</div><span class="urole '+rc+'">'+rl+'</span></div>'
+      +'<div class="uacts">'
+      +'<button class="btn" style="padding:4px 7px;font-size:11px" onclick="editUser(\''+u.id+'\')">✏️</button>'
+      +(u.id!=='u1'?'<button class="btn btn-d" style="padding:4px 7px;font-size:11px" onclick="delUser(\''+u.id+'\')">🗑</button>':'')
+      +'</div>';
+    g.appendChild(el);
+  });
+}
+function showAddUser(){ editUID=null; document.getElementById('mtitle-user').textContent='Novo Usuário'; document.getElementById('u-name').value=''; document.getElementById('u-login').value=''; document.getElementById('u-pass').value=''; document.getElementById('u-role').value='viewer'; showModal('mdl-user'); }
+function editUser(id){ var u=USERS.find(function(u){ return u.id===id; }); if(!u) return; editUID=id; document.getElementById('mtitle-user').textContent='Editar Usuário'; document.getElementById('u-name').value=u.name; document.getElementById('u-login').value=u.login; document.getElementById('u-pass').value=u.pass; document.getElementById('u-role').value=u.role; showModal('mdl-user'); }
+function saveUser(){ var n=document.getElementById('u-name').value.trim(),l=document.getElementById('u-login').value.trim(),p=document.getElementById('u-pass').value,r=document.getElementById('u-role').value; if(!n||!l||!p){ toast('Preencha todos os campos','err'); return; } if(editUID){ var u=USERS.find(function(u){ return u.id===editUID; }); if(u){u.name=n;u.login=l;u.pass=p;u.role=r;} } else { USERS.push({id:'u'+Date.now(),name:n,login:l,pass:p,role:r}); } saveUsers(); closeModal('mdl-user'); buildUsers(); toast(editUID?'Usuário atualizado!':'Usuário criado!','ok'); }
+function delUser(id){ if(id==='u1'){ toast('Não é possível excluir o admin principal','err'); return; } confirm2('Excluir usuário','Tem certeza?',function(){ USERS=USERS.filter(function(u){ return u.id!==id; }); saveUsers(); buildUsers(); toast('Usuário excluído','ok'); }); }
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// DOWNLOAD / PRINT
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function pdfCurrent(){ if(!curPOP){ toast('Abra um POP primeiro','err'); return; } openPrintWindow([curPOP], POPS[curPOP].code+'.pdf'); }
+function dlAllPDF(){ closeModal('mdl-dl'); toast('Abrindo janela de impressão...'); setTimeout(function(){ openPrintWindow(orderedKeys().filter(function(id){ return POPS[id]; }),'POPs_CTO_V18.pdf'); },200); }
+function dlCurrentPDF(){ closeModal('mdl-dl'); pdfCurrent(); }
+function dlJSON(){ closeModal('mdl-dl'); var d={pops:POPS,manuais:MANUAIS,order:orderedKeys(),date:new Date().toISOString()}; var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'}); var a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='CTO_backup_'+new Date().toISOString().slice(0,10)+'.json'; a.click(); toast('Exportado!','ok'); }
+
+function openPrintWindow(ids, title){
+  var content = ids.map(function(id){
+    var p=POPS[id]; if(!p) return '';
+    return renderPOP(p);
+  }).join('<div style="page-break-before:always"></div>');
+
+  var css = [
+    /* Forçar impressão colorida em todos os browsers */
+    '* { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }',
+    'body { font-family: Arial, sans-serif; font-size: 11.5px; color: #1a2533; margin: 0; padding: 16px; background: #fff; }',
+    /* Header do POP - fundo navy */
+    '.dochdr { background: #0D2137 !important; color: #fff !important; padding: 14px 18px; border-radius: 6px 6px 0 0; margin-bottom: 0; page-break-after: avoid; }',
+    '.dochdr-code { font-family: monospace; font-size: 9px; color: #C9A84C !important; margin-bottom: 3px; }',
+    '.dochdr h2 { font-size: 15px; font-weight: 700; margin: 0; color: #fff !important; }',
+    '.dochdr-meta { display: flex; gap: 14px; margin-top: 7px; }',
+    '.dochdr-meta span { font-size: 10px; color: rgba(255,255,255,.55) !important; }',
+    '.dochdr-meta strong { color: rgba(255,255,255,.85) !important; }',
+    /* Corpo do doc */
+    '.docbody { background: #fff; border: 1px solid #C8D8E8; border-top: none; border-radius: 0 0 6px 6px; overflow: hidden; margin-bottom: 8px; }',
+    /* Seções - barra lateral azul */
+    '.dshdr { background: #D6E8F7 !important; border-left: 4px solid #2E75B6 !important; padding: 6px 13px; font-weight: 700; font-size: 10.5px; color: #1A4A7A !important; page-break-after: avoid; }',
+    '.dshdr-g { background: #E8F5EE !important; color: #1E6B3C !important; border-left-color: #1E6B3C !important; }',
+    '.dshdr-o { background: #FEF0E7 !important; color: #C55A11 !important; border-left-color: #C55A11 !important; }',
+    '.dsbody { padding: 7px 13px 10px; font-size: 11px; line-height: 1.6; }',
+    /* Tabelas gerais */
+    'table { width: 100%; border-collapse: collapse; font-size: 10.5px; }',
+    'th { background: #0D2137 !important; color: #fff !important; padding: 6px 9px; font-weight: 700; text-align: left; }',
+    'td { padding: 6px 9px; border: 1px solid #C8D8E8; vertical-align: top; }',
+    /* Fluxo - alternância */
+    '.sn { text-align: center; font-weight: 700; color: #1A4A7A !important; width: 34px; min-width: 34px; }',
+    '.sn-o { background: #D6E8F7 !important; }',
+    '.sn-e { background: #EEF5FB !important; }',
+    'tr:nth-child(odd) td { background: #F4F6F9 !important; }',
+    'tr:nth-child(even) td { background: #fff !important; }',
+    '.rc-o { background: #D6E8F7 !important; font-weight: 600; color: #1A4A7A !important; }',
+    '.rc-e { background: #EEF5FB !important; font-weight: 600; color: #1A4A7A !important; }',
+    '.bloco td { background: #D6E8F7 !important; font-weight: 700; color: #1A4A7A !important; padding: 6px 9px; }',
+    /* Critérios - verde */
+    'table.ct th { background: #1E6B3C !important; color: #fff !important; }',
+    'table.ct tr:nth-child(odd) td { background: #E8F5EE !important; }',
+    'table.ct tr:nth-child(even) td { background: #E2F0E8 !important; }',
+    '.ck { text-align: center; color: #1E6B3C !important; font-weight: 700; width: 28px; }',
+    /* Contingências - laranja */
+    'table.ct2 th { background: #C55A11 !important; color: #fff !important; }',
+    'table.ct2 tr:nth-child(odd) td { background: #FEF0E7 !important; }',
+    'table.ct2 tr:nth-child(even) td { background: #FDE9D9 !important; }',
+    '.st { font-weight: 700; color: #C55A11 !important; }',
+    /* Layout de impressão */
+    '@media print { @page { size: A4; margin: 12mm 10mm } body { padding: 0 } .dochdr { border-radius: 0 } .print-close { display: none !important } }',
+    '@media screen { body { max-width: 880px; margin: 0 auto; padding: 20px; } }'
+  ].join('\n');
+    +'.print-close{position:fixed;top:16px;right:16px;background:#0D2137;color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;z-index:9999;font-family:sans-serif}'
+    +'.print-close:hover{background:#1A4A7A}';
+
+  // Criar overlay de impressão dentro da própria página
+  var overlay = document.getElementById('print-overlay');
+  if(!overlay){
+    overlay = document.createElement('div');
+    overlay.id = 'print-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:#fff;z-index:9990;overflow-y:auto;display:none';
+    // Adicionar style específico para impressão
+    var styleEl = document.createElement('style');
+    styleEl.id = 'print-overlay-style';
+    styleEl.textContent = '@media print { #hdr,#sb,#main,#toast,#login-ov { display:none !important } #print-overlay { display:block !important; position:static !important; z-index:1 !important; } .print-close { display:none !important } }';
+    document.head.appendChild(styleEl);
+    document.body.appendChild(overlay);
+  }
+
+  overlay.innerHTML = '<button class="print-close" onclick="closePrintOverlay()">✕ Fechar</button>'
+    + '<div style="padding:24px;max-width:860px;margin:0 auto"><style>'+css+'</style>'
+    + content + '</div>';
+
+  overlay.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+
+  // Dar um frame para renderizar e então imprimir
+  setTimeout(function(){
+    window.print();
+  }, 400);
+}
+
+function closePrintOverlay(){
+  var o = document.getElementById('print-overlay');
+  if(o) o.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+
+function printCurrent(){
+  var v=document.querySelector('.view.active');
+  if(!v) return;
+  v.classList.add('pm');
+  window.print();
+  setTimeout(function(){ v.classList.remove('pm'); },500);
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// SEARCH
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+var IDX=[];
+function buildIdx(){
+  IDX=[];
+  Object.entries(POPS).forEach(function(e){
+    var id=e[0],p=e[1];
+    var txt=[p.title,p.objetivo,p.escopo].concat((p.fluxo||[]).map(function(f){return f.desc||f.bloco||'';})).concat(p.criterios||[]).concat((p.contingencias||[]).map(function(c){return c[0]+' '+c[1];})).join(' ');
+    IDX.push({id:id,type:'POP',title:p.title,code:p.code,section:p.section,txt:txt,fn:function(){ showPOP(id); }});
+  });
+  Object.entries(MANUAIS).forEach(function(e){
+    var id=e[0],m=e[1];
+    var txt=[m.title,m.intro].concat((m.steps||[]).map(function(s){return s.title+' '+s.body;})).join(' ');
+    IDX.push({id:id,type:'Manual',title:m.title,code:m.sistema||'CTO',section:'Manuais',txt:txt,fn:function(){ showManual(id); }});
+  });
+}
+
+var si2=document.getElementById('srch-inp'), sd2=document.getElementById('sdrop');
+si2.addEventListener('input',function(){
+  var q=this.value.trim().toLowerCase();
+  if(q.length<2){ sd2.style.display='none'; return; }
+  var matches=IDX.filter(function(i){ return i.title.toLowerCase().indexOf(q)>=0||i.code.toLowerCase().indexOf(q)>=0||i.txt.toLowerCase().indexOf(q)>=0; }).slice(0,8);
+  if(!matches.length){ sd2.style.display='none'; return; }
+  sd2.innerHTML=matches.map(function(m,i){
+    var idx=m.txt.toLowerCase().indexOf(q);
+    var snip=idx>=0?'...'+m.txt.slice(Math.max(0,idx-30),idx+60).replace(new RegExp(q,'gi'),function(s){ return '<mark>'+s+'</mark>'; })+'...':'';
+    return '<div class="sdi" data-i="'+i+'"><div class="sdi-t">'+m.title.replace(new RegExp(q,'gi'),function(s){ return '<mark>'+s+'</mark>'; })+'</div>'
+      +'<div class="sdi-m">'+m.type+' · '+m.code+' · '+m.section+'</div>'
+      +(snip?'<div class="sdi-s">'+snip+'</div>':'')+'</div>';
+  }).join('');
+  sd2.querySelectorAll('.sdi').forEach(function(el,i){
+    el.onclick=function(){ matches[i].fn(); si2.value=''; sd2.style.display='none'; };
+  });
+  sd2.style.display='block';
+});
+document.addEventListener('click',function(e){ if(!e.target.closest('#srch')) sd2.style.display='none'; });
+si2.addEventListener('keydown',function(e){ if(e.key==='Escape'){ sd2.style.display='none'; si2.value=''; } });
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// MODALS & TOAST
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function showModal(id){ document.getElementById(id).style.display='flex'; }
+function closeModal(id){ document.getElementById(id).style.display='none'; }
+function confirm2(title,msg,fn){ document.getElementById('mc-title').textContent=title; document.getElementById('mc-msg').textContent=msg; document.getElementById('mc-ok').onclick=function(){ closeModal('mdl-confirm'); fn(); }; showModal('mdl-confirm'); }
+var toastT2;
+function toast(msg,type){ var t=document.getElementById('toast'); t.textContent=msg; t.className='show'+(type?' '+type:''); clearTimeout(toastT2); toastT2=setTimeout(function(){ t.className=''; },3000); }
+
+// Login com Enter
+document.getElementById('lu').addEventListener('keydown',function(e){ if(e.key==='Enter') doLogin(); });
+document.getElementById('lp').addEventListener('keydown',function(e){ if(e.key==='Enter') doLogin(); });
+document.getElementById('login-ov').addEventListener('click',function(e){ if(e.target===this) closeLogin(); });
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// INIT
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+(function init(){
+  // Carregar dados salvos (sobrescreve os padrões se existirem)
+  var sp=localStorage.getItem('cto_pops');
+  var sm=localStorage.getItem('cto_manuais');
+  if(sp){ try{ var d=JSON.parse(sp); Object.keys(d).forEach(function(k){ POPS[k]=d[k]; }); }catch(e){} }
+  if(sm){ try{ var d=JSON.parse(sm); Object.keys(d).forEach(function(k){ MANUAIS[k]=d[k]; }); }catch(e){} }
+  buildIdx();
+  buildSidebar();
+  buildCards();
+  applyRole();
+})();
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// SISTEMA DE TEMAS (idêntico ao portal)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function setAccent(color, el) {
+  document.documentElement.style.setProperty('--accent', color);
+  document.documentElement.style.setProperty('--gold', color);
+  document.documentElement.style.setProperty('--orange', color);
+  document.querySelectorAll('.color-dot').forEach(function(d){ d.classList.remove('active'); });
+  el.classList.add('active');
+  localStorage.setItem('nexus-accent', color);
+}
+function updateThemeIcon() {
+  var isDark = document.documentElement.dataset.theme === 'dark';
+  var icon = document.getElementById('themeIcon');
+  if (icon) { icon.setAttribute('data-lucide', isDark ? 'sun' : 'moon'); if(window.lucide) lucide.createIcons(); }
+}
+function setupTheme() {
+  var savedAccent = localStorage.getItem('nexus-accent') || '#CC0000';
+  document.documentElement.style.setProperty('--accent', savedAccent);
+  document.documentElement.style.setProperty('--gold', savedAccent);
+  document.documentElement.style.setProperty('--orange', savedAccent);
+  document.querySelectorAll('.color-dot').forEach(function(d) {
+    d.classList.toggle('active', d.getAttribute('style').includes(savedAccent.toUpperCase()) || d.getAttribute('style').includes(savedAccent.toLowerCase()));
+  });
+  var savedTheme = localStorage.getItem('nexus-theme') || 'dark';
+  document.documentElement.dataset.theme = savedTheme;
+  updateThemeIcon();
+  document.getElementById('btnTheme').addEventListener('click', function() {
+    var isDark = document.documentElement.dataset.theme === 'dark';
+    document.documentElement.dataset.theme = isDark ? 'light' : 'dark';
+    localStorage.setItem('nexus-theme', document.documentElement.dataset.theme);
+    updateThemeIcon();
+  });
+}
+setupTheme();
+if(window.lucide) lucide.createIcons();
+setInterval(function() {
+  var c = document.getElementById('cto-clock');
+  if(c) c.textContent = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+}, 1000);
+
+</script>
+</body>
+</html>
