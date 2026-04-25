@@ -174,13 +174,13 @@ body{font-family:var(--font);background:#F4F5F7;color:var(--txt);font-size:13.5p
   font-size: 10px; font-weight: 800; text-transform: uppercase; 
   color: var(--txt2); margin: 24px 0 8px 20px; letter-spacing: 0.1em; 
 }
-.tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
-.tab{padding:8px 16px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:600;border:1px solid var(--bdr);background:var(--navy2);color:var(--txt2);transition:all 0.2s}
-.tab:hover{background:var(--bl);color:var(--txt)}
-.tab.active{background:var(--accent);color:#000;border-color:var(--accent);box-shadow:0 8px 20px -5px var(--accent)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
-.card{background:var(--navy2);border-radius:20px;padding:24px;cursor:pointer;transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);border:1px solid var(--bdr);display:flex;flex-direction:column;gap:4px;height:100%}
-.card:hover{transform:translateY(-5px);box-shadow:0 12px 30px rgba(0,0,0,.15);border-color:var(--accent)}
+.tabs{display:flex;gap:12px;margin-bottom:40px;flex-wrap:wrap}
+.tab{padding:10px 20px;border-radius:14px;cursor:pointer;font-size:14px;font-weight:700;border:1px solid var(--bdr);background:var(--navy2);color:var(--txt2);transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1)}
+.tab:hover{background:var(--bl);color:var(--txt);transform:translateY(-2px)}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 10px 25px -5px rgba(var(--accent-rgb), 0.5)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:32px;padding-bottom:60px}
+.card{background:var(--navy2);border-radius:24px;padding:28px;cursor:pointer;transition:all 0.4s cubic-bezier(0.4, 0, 0.2, 1);border:1px solid var(--bdr);display:flex;flex-direction:column;gap:8px;position:relative}
+.card:hover{transform:translateY(-8px);box-shadow:0 20px 40px rgba(0,0,0,0.12);border-color:var(--accent)}
 .cbadge{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;padding:2px 7px;border-radius:4px;display:inline-block;margin-bottom:7px}
 .cbadge-p{color:var(--accent);background:rgba(var(--surface-rgb), 0.05);border: 1px solid var(--bdr)}
 .cbadge-m{color:var(--green);background:var(--gl);border: 1px solid rgba(0,200,83,0.2)}
@@ -1789,9 +1789,10 @@ function buildCards(){
 
 function filterCards(cat, el){
   document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
-  el.classList.add('active');
+  if(el) el.classList.add('active');
   document.querySelectorAll('.card').forEach(function(c){
-    c.style.display=(cat==='all'||(c.dataset.cat||'').indexOf(cat)>=0)?'block':'none';
+    var show = (cat==='all' || (c.dataset.cat||'').indexOf(cat)>=0);
+    c.style.display = show ? '' : 'none';
   });
 }
 
