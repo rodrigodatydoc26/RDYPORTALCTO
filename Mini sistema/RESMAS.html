@@ -411,15 +411,16 @@
       display: grid; place-items: center; color: #000; flex-shrink: 0;
       box-shadow: 0 4px 12px var(--accent);
     }
-    .topbar-title { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 900; color: var(--text); text-transform: uppercase; letter-spacing: -0.02em; }
+    .topbar-title { font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 900; color: var(--text); text-transform: uppercase; letter-spacing: -0.02em; }
     .topbar-title span { font-weight: 400; color: var(--text-faint); }
     .btn-back {
       display: flex; align-items: center; gap: 8px; text-decoration: none;
-      color: var(--accent); font-size: 0.8rem; font-weight: 800;
-      padding: 8px 14px; border-radius: 10px; transition: all 0.2s;
+      color: var(--accent); font-size: 0.75rem; font-weight: 800;
+      padding: 10px 18px; border-radius: 12px; transition: all 0.2s;
       border: 1px solid var(--outline-variant); background: var(--surface-h);
+      text-transform: uppercase; letter-spacing: 0.05em;
     }
-    .btn-back:hover { border-color: var(--accent); background: var(--surface); }
+    .btn-back:hover { border-color: var(--accent); background: var(--surface); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.15); }
 
     /* ── MAIN CANVAS ── */
     .main-canvas {

@@ -81,7 +81,9 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); font-family:
 }
 .topbar-left { display: flex; align-items: center; gap: 24px; flex: 1; }
 .topbar-right { display: flex; align-items: center; gap: 24px; flex-shrink: 0; }
-.topbar-brand { flex-shrink: 0; width: 42px; height: 42px; border-radius: 12px; background: var(--accent); display: grid; place-items: center; font-weight: 900; color: #000; box-shadow: 0 4px 12px var(--accent); margin-left: 6px; }
+.topbar-title { font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 900; color: var(--text); text-transform: uppercase; letter-spacing: -0.02em; }
+.topbar-title span { font-weight: 400; color: var(--text-faint); }
+
 .topbar-search { flex: 1; max-width: 600px; position: relative; }
 .topbar-search input {
   width: 100%; padding: 14px 24px 14px 52px;
@@ -176,7 +178,7 @@ html, body { height: 100%; overflow: hidden; background: var(--bg); font-family:
   <main class="main">
     <div class="topbar">
       <div class="topbar-left">
-        <div class="topbar-brand"><i data-lucide="zap"></i></div>
+        <h1 class="topbar-title">DOC <span>CTO</span></h1>
         <div class="topbar-search">
           <i data-lucide="search" class="search-icon"></i>
           <input type="text" id="mainSearch" placeholder="Buscar ferramentas, links..." autocomplete="off">
