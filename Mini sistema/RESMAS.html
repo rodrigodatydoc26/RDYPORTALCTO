@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br" data-theme="dark">
+<html lang="pt-br" data-theme="light">
 
 <head>
   <meta charset="UTF-8">
@@ -243,8 +243,6 @@
       background: rgba(255,255,255,0.08) !important;
       color: #FFF !important; 
       opacity: 1;
-      box-shadow: 0 15px 35px -10px rgba(var(--accent-rgb), 0.5);
-      border: 1px solid rgba(var(--accent-rgb), 0.2);
     }
     .sidebar-link.active i { color: var(--accent) !important; }
     
@@ -2509,7 +2507,7 @@
   <div class="topbar">
     <div class="topbar-left">
       <h1 class="topbar-title">DOC <span>RESMAS</span></h1>
-      <a href="../portal.html" class="btn-back">
+      <a href="javascript:void(0)" onclick="if(window.history.length > 1) { history.back(); } setTimeout(() => { window.close(); window.location.href = '../portal.html'; }, 200);" class="btn-back">
         <i data-lucide="layout-grid" style="width:14px"></i> VOLTA PARA PORTAL
       </a>
     </div>
@@ -8899,7 +8897,7 @@
     document.querySelectorAll('.color-dot').forEach(function(d) {
       d.classList.toggle('active', d.getAttribute('style').includes(savedAccent.toUpperCase()) || d.getAttribute('style').includes(savedAccent.toLowerCase()));
     });
-    var savedTheme = localStorage.getItem('nexus-theme') || 'dark';
+    var savedTheme = localStorage.getItem('nexus-theme') || 'light';
     document.documentElement.dataset.theme = savedTheme;
     updateThemeIcon();
     document.getElementById('btnTheme').addEventListener('click', function() {

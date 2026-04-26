@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +13,7 @@
     --navy:#F4F5F7;--navy2:#FFFFFF;--bl:#F9FAFB;--bm:#F4F5F7;
     --green:#00C853;--gl:rgba(0,200,83,0.1);--orange:#FFD700;--ol:rgba(255,215,0,0.1);
     --gray:#F0F2F5;--bdr:rgba(0,0,0,0.1);--txt:#000000;--txt2:rgba(0,0,0,0.7);
-    --gold:#CC0000;--red:#FF1744;--sw:80px;--sw-expanded:220px;--hh:80px;
+    --gold:#CC0000;--red:#FF1744;--sw:0px;--sw-expanded:0px;--hh:80px;
     --accent: #CC0000;
     --accent-rgb: 204, 0, 0;
     --font: 'Outfit', sans-serif;
@@ -457,7 +457,7 @@ table.ct td, table.ct2 td { padding:10px 12px; border:1px solid var(--bdr); }
 <div id="hdr">
   <div class="topbar-left">
     <h1 class="topbar-title">DOC <span>POPs</span></h1>
-    <a href="../portal.html" class="btn-back">
+    <a href="javascript:void(0)" onclick="if(window.history.length > 1) { history.back(); } setTimeout(() => { window.close(); window.location.href = '../portal.html'; }, 200);" class="btn-back">
       <i data-lucide="layout-grid" style="width:14px"></i> VOLTA PARA PORTAL
     </a>
     <div id="srch">
@@ -486,29 +486,7 @@ table.ct td, table.ct2 td { padding:10px 12px; border:1px solid var(--bdr); }
   </div>
 </div>
 
-<!-- SIDEBAR -->
-<div id="sb" style="padding-top: 24px;">
-  <div class="sb-sec" style="padding:0">
-    <div class="sb-lbl">Menu</div>
-    <div class="sbi" onclick="goHome()"><i data-lucide="home"></i> <span>Início</span></div>
-    <div class="sbi" id="sb-ed" onclick="openEditor(null)" style="display:none"><i data-lucide="edit-3"></i> <span>Novo POP/Manual</span></div>
-    <div class="sbi" id="sb-ro" onclick="showView('reorder')" style="display:none"><i data-lucide="move-vertical"></i> <span>Reorganizar</span></div>
-    <div class="sbi" id="sb-us" onclick="showView('users')" style="display:none"><i data-lucide="users"></i> <span>Usuários</span></div>
-  </div>
-  <div class="sb-div"></div>
-  <div class="sb-sec"><div class="sb-lbl">📋 Pré-Operação</div><div id="sb-pre"></div></div>
-  <div class="sb-div"></div>
-  <div class="sb-sec"><div class="sb-lbl">🚗 Campo</div><div id="sb-campo"></div></div>
-  <div class="sb-div"></div>
-  <div class="sb-sec"><div class="sb-lbl">🖨 Equipamentos</div><div id="sb-equip"></div></div>
-  <div class="sb-div"></div>
-  <div class="sb-sec"><div class="sb-lbl">📊 Gestão</div><div id="sb-gestao"></div></div>
-  <div class="sb-div"></div>
-  <div class="sb-sec"><div class="sb-lbl">📖 Manuais</div><div id="sb-manuais"></div></div>
-</div>
-<div class="sb-toggle" onclick="document.getElementById('sb').classList.toggle('expanded'); if(window.lucide) lucide.createIcons();">
-  <i data-lucide="chevron-right" style="width:16px;height:16px"></i>
-</div>
+<!-- SIDEBAR REMOVED -->
 
 <!-- MAIN -->
 <div id="main">
@@ -2407,7 +2385,7 @@ function setupTheme() {
   document.querySelectorAll('.color-dot').forEach(function(d) {
     d.classList.toggle('active', d.getAttribute('style').includes(savedAccent.toUpperCase()) || d.getAttribute('style').includes(savedAccent.toLowerCase()));
   });
-  var savedTheme = localStorage.getItem('nexus-theme') || 'dark';
+  var savedTheme = localStorage.getItem('nexus-theme') || 'light';
   document.documentElement.dataset.theme = savedTheme;
   updateThemeIcon();
   document.getElementById('btnTheme').addEventListener('click', function() {

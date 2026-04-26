@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -188,7 +188,7 @@
 <div class="topbar">
   <div class="topbar-left">
     <h1 class="topbar-title">DOC <span>KM</span></h1>
-    <a href="../portal.html" class="btn-back">
+    <a href="javascript:void(0)" onclick="if(window.history.length > 1) { history.back(); } setTimeout(() => { window.close(); window.location.href = '../portal.html'; }, 200);" class="btn-back">
       <i data-lucide="layout-grid" style="width:14px"></i> VOLTA PARA PORTAL
     </a>
   </div>
@@ -390,7 +390,7 @@
       d.classList.toggle('active', d.getAttribute('style').includes(savedAccent.toUpperCase()) || d.getAttribute('style').includes(savedAccent.toLowerCase()));
     });
 
-    const savedTheme = localStorage.getItem('nexus-theme') || 'dark';
+    const savedTheme = localStorage.getItem('nexus-theme') || 'light';
     document.documentElement.dataset.theme = savedTheme;
     updateThemeIcon();
 
