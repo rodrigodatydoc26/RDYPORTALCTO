@@ -378,7 +378,7 @@
     const isDark = document.documentElement.dataset.theme === 'dark';
     const icon = document.getElementById('themeIcon');
     if (icon) {
-      icon.setAttribute('data-lucide', isDark ? 'moon' : 'sun');
+      icon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
       if (window.lucide) lucide.createIcons();
     }
   }
@@ -409,6 +409,12 @@
 
   setupTheme();
   lucide.createIcons();
+  
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'nexus-theme' || e.key === 'nexus-accent') {
+      setupTheme();
+    }
+  });
 </script>
 </body>
 </html>

@@ -469,7 +469,7 @@ table.ct td, table.ct2 td { padding:10px 12px; border:1px solid var(--bdr); }
   <div class="hacts">
     <button class="hbtn hbtn-gold" onclick="showModal('mdl-dl')"><i data-lucide="download"></i> Baixar POPs</button>
     <button class="hbtn hbtn-login" id="btn-login" onclick="openLogin()"><i data-lucide="lock"></i> Entrar</button>
-    <div id="hdr-user" style="display:none;align-items:center;gap:7px;font-size:12px;padding:4px 9px;border-radius:6px;border:1px solid var(--bdr);color:var(--txt2)">
+    <div id="hdr-user" style="display:none; align-items:center; gap:7px; font-size:12px; padding:4px 9px; border-radius:6px; border:1px solid var(--bdr); color:var(--txt2)">
       <div class="uav" id="uav">?</div><span id="uname-hdr">--</span>
     </div>
     <button class="hbtn hbtn-out" id="btn-out" onclick="doLogout()" style="display:none"><i data-lucide="log-out"></i> Sair</button>
@@ -482,7 +482,7 @@ table.ct td, table.ct2 td { padding:10px 12px; border:1px solid var(--bdr); }
       </div>
       <div class="mode-toggle" id="btnTheme"><i data-lucide="moon" id="themeIcon"></i></div>
     </div>
-    <span class="cto-clock" id="cto-clock">--:--</span>
+    <span class="cto-clock" id="cto-clock" style="font-family:'Outfit',monospace; font-weight:700">--:--</span>
   </div>
 </div>
 
@@ -696,11 +696,11 @@ function doLogin(){
   if(!u){ document.getElementById('lerr').style.display='block'; return; }
   CU = u;
   closeLogin();
-  document.getElementById('uav').textContent = u.name[0].toUpperCase();
-  document.getElementById('uname-hdr').textContent = u.name.split(' ')[0];
-  document.getElementById('hdr-user').style.display = 'flex';
-  document.getElementById('btn-login').style.display = 'none';
-  document.getElementById('btn-out').style.display = 'flex';
+  var elUav = document.getElementById('uav'); if(elUav) elUav.textContent = u.name[0].toUpperCase();
+  var elUname = document.getElementById('uname-hdr'); if(elUname) elUname.textContent = u.name.split(' ')[0];
+  var elHdrU = document.getElementById('hdr-user'); if(elHdrU) elHdrU.style.display = 'flex';
+  var elBtnL = document.getElementById('btn-login'); if(elBtnL) elBtnL.style.display = 'none';
+  var elBtnO = document.getElementById('btn-out'); if(elBtnO) elBtnO.style.display = 'flex';
   applyRole();
   toast('Bem-vindo, ' + u.name.split(' ')[0] + '!', 'ok');
   if(pendingFn){ var fn=pendingFn; pendingFn=null; fn(); }
@@ -708,9 +708,9 @@ function doLogin(){
 
 function doLogout(){
   CU = null;
-  document.getElementById('hdr-user').style.display = 'none';
-  document.getElementById('btn-login').style.display = 'flex';
-  document.getElementById('btn-out').style.display = 'none';
+  var elHdrU = document.getElementById('hdr-user'); if(elHdrU) elHdrU.style.display = 'none';
+  var elBtnL = document.getElementById('btn-login'); if(elBtnL) elBtnL.style.display = 'flex';
+  var elBtnO = document.getElementById('btn-out'); if(elBtnO) elBtnO.style.display = 'none';
   applyRole();
   toast('Sessão encerrada');
 }
@@ -725,12 +725,13 @@ function requireEdit(fn){
 
 function applyRole(){
   var e = canEdit(), a = isAdmin();
-  document.getElementById('sb-ed').style.display = e?'flex':'none';
-  document.getElementById('sb-ro').style.display = e?'flex':'none';
-  document.getElementById('sb-us').style.display = a?'flex':'none';
-  document.getElementById('btn-ed-pop').style.display = e?'inline-flex':'none';
-  document.getElementById('btn-ed-man').style.display = e?'inline-flex':'none';
-  document.getElementById('btn-del').style.display = (a && editId)?'inline-flex':'none';
+  var elEd = document.getElementById('sb-ed'); if(elEd) elEd.style.display = e?'flex':'none';
+  var elRo = document.getElementById('sb-ro'); if(elRo) elRo.style.display = e?'flex':'none';
+  var elUs = document.getElementById('sb-us'); if(elUs) elUs.style.display = a?'flex':'none';
+  
+  var btnEdPop = document.getElementById('btn-ed-pop'); if(btnEdPop) btnEdPop.style.display = e?'inline-flex':'none';
+  var btnEdMan = document.getElementById('btn-ed-man'); if(btnEdMan) btnEdMan.style.display = e?'inline-flex':'none';
+  var btnDel = document.getElementById('btn-del'); if(btnDel) btnDel.style.display = (a && editId)?'inline-flex':'none';
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1779,6 +1780,7 @@ function filterCards(cat, el){
 // RENDER POP
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function renderPOP(p){
+  var isDark = document.documentElement.dataset.theme === 'dark';
   var sn=0;
   var rows=(p.fluxo||[]).map(function(f){
     if(f.bloco) return '<tr class="bloco"><td colspan="2" style="background:var(--bl);font-weight:800;color:var(--accent);padding:10px 14px;font-size:12px;text-transform:uppercase">'+f.bloco+'</td></tr>';
@@ -2356,7 +2358,7 @@ document.getElementById('login-ov').addEventListener('click',function(e){ if(e.t
   if(sp){ try{ var d=JSON.parse(sp); Object.keys(d).forEach(function(k){ POPS[k]=d[k]; }); }catch(e){} }
   if(sm){ try{ var d=JSON.parse(sm); Object.keys(d).forEach(function(k){ MANUAIS[k]=d[k]; }); }catch(e){} }
   buildIdx();
-  buildSidebar();
+  // buildSidebar(); // Sidebar removed
   buildCards();
   applyRole();
 })();
@@ -2397,6 +2399,12 @@ function setupTheme() {
 }
 setupTheme();
 if(window.lucide) lucide.createIcons();
+
+window.addEventListener('storage', (e) => {
+  if (e.key === 'nexus-theme' || e.key === 'nexus-accent') {
+    setupTheme();
+  }
+});
 setInterval(function() {
   var c = document.getElementById('cto-clock');
   if(c) c.textContent = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});

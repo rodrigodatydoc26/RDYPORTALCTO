@@ -422,17 +422,12 @@
 
     /* ── MAIN CANVAS ── */
     .main-canvas {
-      margin-left: var(--sidebar-w);
+      margin-left: 0;
       margin-top: var(--header-h);
       flex: 1;
       height: calc(100vh - var(--header-h));
       overflow-y: auto;
       padding: 32px 36px 60px;
-      transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .sidebar.expanded ~ .main-canvas {
-      margin-left: var(--sidebar-expanded-w);
     }
 
     /* ── PAGE TITLE ── */
@@ -2470,38 +2465,7 @@
 
 <body>
 
-  <!-- ── SIDEBAR ── -->
-  <aside class="sidebar" id="sidebar">
-    <nav class="sidebar-nav" style="padding-top: 24px;">
-
-      <div class="sidebar-label">Menu</div>
-      <div class="sidebar-link active" onclick="trocarTab('analise')" id="nav-analise"><i data-lucide="bar-chart-3"></i> <span>Análise</span></div>
-      <div class="sidebar-link" onclick="trocarTab('kpis')" id="nav-kpis"><i data-lucide="trending-up"></i> <span>Rankings</span></div>
-      <div class="sidebar-link" onclick="trocarTab('estoque')" id="nav-estoque"><i data-lucide="box"></i> <span>Estoque</span></div>
-      <div class="sidebar-link" onclick="trocarTab('historico')" id="nav-historico"><i data-lucide="history"></i> <span>Histórico</span></div>
-
-      <!-- Grupo: Comparativos -->
-      <div class="sidebar-group" style="margin-top:4px">
-        <button class="sidebar-group-header open" id="grp-comparativos" onclick="toggleGrupo('comparativos')">
-          <i data-lucide="arrow-left-right"></i>
-          <span>Comparativos</span>
-          <i data-lucide="chevron-down"></i>
-        </button>
-        <div class="sidebar-submenu open" id="sub-comparativos">
-          <button class="sidebar-sublink" onclick="trocarTab('comparacao')" id="nav-comparacao">
-            <i data-lucide="file-text" style="width:14px;height:14px"></i> Comparação
-          </button>
-          <button class="sidebar-sublink" onclick="trocarTab('km')" id="nav-km">
-            <i data-lucide="route" style="width:14px;height:14px"></i> Comparação KM
-          </button>
-        </div>
-      </div>
-
-    </nav>
-  </aside>
-  <div class="sidebar-toggle" onclick="toggleSidebar()">
-    <i data-lucide="chevron-right"></i>
-  </div>
+  <!-- Sidebar removed as requested -->
 
   <!-- ── TOPBAR ── -->
   <div class="topbar">
@@ -2533,12 +2497,14 @@
       <p>Carregue os arquivos CSV para visualizar entregas, estoque e histórico por cidade.</p>
     </div>
 
-    <!-- TABS (hidden — navegação pela sidebar) -->
-    <div class="tabs-wrap" style="display:none">
-      <button class="tab active" onclick="trocarTab('entregas')">KPIS LOC1</button>
-      <button class="tab" onclick="trocarTab('kpis')">KPIs</button>
-      <button class="tab" onclick="trocarTab('estoque')">Estoque por Cidade</button>
-      <button class="tab" onclick="trocarTab('historico')">Histórico</button>
+    <!-- TABS (navigação principal agora por aqui) -->
+    <div class="tabs-wrap" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px;">
+      <button class="tab active" id="btn-tab-analise" onclick="trocarTab('analise')">Análise</button>
+      <button class="tab" id="btn-tab-kpis" onclick="trocarTab('kpis')">Rankings</button>
+      <button class="tab" id="btn-tab-estoque" onclick="trocarTab('estoque')">Estoque</button>
+      <button class="tab" id="btn-tab-historico" onclick="trocarTab('historico')">Histórico</button>
+      <button class="tab" id="btn-tab-comparacao" onclick="trocarTab('comparacao')">Comparação</button>
+      <button class="tab" id="btn-tab-km" onclick="trocarTab('km')">Comparação KM</button>
     </div>
 
     <!-- ==================== TAB ENTREGAS ==================== -->
@@ -4322,16 +4288,21 @@
     }
 
     function trocarTab(id) {
-      // Remove 'active' de todos os links (principais e sublinks)
-      document.querySelectorAll('.sidebar-link, .sidebar-sublink').forEach(el => el.classList.remove('active'));
+      // Remove 'active' de todos os links e botões de tab
+      document.querySelectorAll('.sidebar-link, .sidebar-sublink, .tab').forEach(el => el.classList.remove('active'));
       
-      // Adiciona 'active' ao item selecionado (usando o ID nav-id)
+      // Adiciona 'active' ao item selecionado se existir no DOM
       const target = document.getElementById('nav-' + id);
       if (target) target.classList.add('active');
+      
+      const tabBtn = document.getElementById('btn-tab-' + id);
+      if (tabBtn) tabBtn.classList.add('active');
+
       const ht = document.getElementById('header-title');
       if (ht) ht.textContent = tabTitles[id] || id;
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-      document.getElementById('tab-' + id).classList.add('active');
+      var panel = document.getElementById('tab-' + id);
+      if (panel) panel.classList.add('active');
       // Abre o grupo correspondente automaticamente
       if (['entregas', 'kpis', 'estoque', 'historico', 'analise'].includes(id)) {
         document.getElementById('sub-resmas')?.classList.add('open');
@@ -8909,6 +8880,12 @@
   }
   setupTheme();
   if(window.lucide) lucide.createIcons();
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'nexus-theme' || e.key === 'nexus-accent') {
+      setupTheme();
+    }
+  });
   setInterval(function() {
     var c = document.getElementById('resmas-clock');
     if(c) c.textContent = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
