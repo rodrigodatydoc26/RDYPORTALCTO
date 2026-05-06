@@ -272,9 +272,22 @@ function calcularKm() {
 
 // ── EXPORTAR EXCEL ───────────────────────────────────────────────────────────
 
+const XLSX_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+
 function exportarExcel(tabelaId, nome) {
     const table = UI.$(tabelaId);
     if (!table) return;
+    if (window.XLSX) {
+        _doExport(table, nome);
+    } else {
+        const s = document.createElement('script');
+        s.src = XLSX_CDN;
+        s.onload = () => _doExport(table, nome);
+        document.head.appendChild(s);
+    }
+}
+
+function _doExport(table, nome) {
     const wb = XLSX.utils.table_to_book(table);
     XLSX.writeFile(wb, `${nome}_${new Date().toISOString().split('T')[0]}.xlsx`);
 }
