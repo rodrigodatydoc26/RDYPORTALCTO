@@ -1279,6 +1279,7 @@
       font-weight: 500;
       color: var(--on-surface);
       transition: background .1s;
+      -webkit-user-select: none;
       user-select: none;
     }
 
@@ -2745,42 +2746,42 @@
           <div class="dates-row">
             <div class="dates-row-title">Data de Criação</div>
             <div class="dates-inner">
-              <div class="control-group" style="flex:1"><label>De</label><input type="date" id="cri-ini"
+              <div class="control-group u-flex1"><label>De</label><input type="date" id="cri-ini"
                   onchange="filtrar()"></div>
-              <div class="control-group" style="flex:1"><label>Até</label><input type="date" id="cri-fim"
+              <div class="control-group u-flex1"><label>Até</label><input type="date" id="cri-fim"
                   onchange="filtrar()"></div>
             </div>
           </div>
           <div class="dates-row">
             <div class="dates-row-title">Data de Fechamento</div>
             <div class="dates-inner">
-              <div class="control-group" style="flex:1"><label>De</label><input type="date" id="fec-ini"
+              <div class="control-group u-flex1"><label>De</label><input type="date" id="fec-ini"
                   onchange="filtrar()"></div>
-              <div class="control-group" style="flex:1"><label>Até</label><input type="date" id="fec-fim"
+              <div class="control-group u-flex1"><label>Até</label><input type="date" id="fec-fim"
                   onchange="filtrar()"></div>
             </div>
           </div>
           <div class="dates-row">
             <div class="dates-row-title">Início Programado</div>
             <div class="dates-inner">
-              <div class="control-group" style="flex:1"><label>De</label><input type="date" id="iprog-ini"
+              <div class="control-group u-flex1"><label>De</label><input type="date" id="iprog-ini"
                   onchange="filtrar()"></div>
-              <div class="control-group" style="flex:1"><label>Até</label><input type="date" id="iprog-fim"
+              <div class="control-group u-flex1"><label>Até</label><input type="date" id="iprog-fim"
                   onchange="filtrar()"></div>
             </div>
           </div>
           <div class="dates-row">
             <div class="dates-row-title">Término Programado</div>
             <div class="dates-inner">
-              <div class="control-group" style="flex:1"><label>De</label><input type="date" id="tprog-ini"
+              <div class="control-group u-flex1"><label>De</label><input type="date" id="tprog-ini"
                   onchange="filtrar()"></div>
-              <div class="control-group" style="flex:1"><label>Até</label><input type="date" id="tprog-fim"
+              <div class="control-group u-flex1"><label>Até</label><input type="date" id="tprog-fim"
                   onchange="filtrar()"></div>
             </div>
           </div>
         </div>
 
-        <div class="controls-grid" style="margin-bottom:0;margin-top:14px">
+        <div class="controls-grid u-mb0-mt14">
           <div class="control-group">
             <label>Patrimônio — mínimo de resmas</label>
             <input type="number" id="ent-min-resmas" min="0" value="0" placeholder="Ex: 7" oninput="filtrar()">
@@ -2882,7 +2883,7 @@
 
       <!-- FILTROS KPI -->
       <div class="block" style="padding:20px 24px;margin-bottom:24px">
-        <div class="block-title" style="margin-bottom:16px;padding-bottom:12px">Filtros</div>
+        <div class="block-title u-mb16-pb12">Filtros</div>
         <div class="controls-grid" style="margin-bottom:16px">
           <div class="control-group">
             <label>Cidade (Estoque)</label>
@@ -2947,15 +2948,15 @@
             </select>
           </div>
         </div>
-        <div class="dates-block" style="margin-bottom:0">
+        <div class="dates-block u-mb0">
           <div class="dates-row">
             <div class="dates-row-title">Data de Criação</div>
             <div class="dates-inner">
-              <div class="control-group" style="flex:1">
+              <div class="control-group u-flex1">
                 <label>Início</label>
                 <input type="date" id="kpi-cri-ini" onchange="renderKpisVisuais()">
               </div>
-              <div class="control-group" style="flex:1">
+              <div class="control-group u-flex1">
                 <label>Fim</label>
                 <input type="date" id="kpi-cri-fim" onchange="renderKpisVisuais()">
               </div>
@@ -2964,11 +2965,11 @@
           <div class="dates-row">
             <div class="dates-row-title">Data de Encerramento</div>
             <div class="dates-inner">
-              <div class="control-group" style="flex:1">
+              <div class="control-group u-flex1">
                 <label>Início</label>
                 <input type="date" id="kpi-fec-ini" onchange="renderKpisVisuais()">
               </div>
-              <div class="control-group" style="flex:1">
+              <div class="control-group u-flex1">
                 <label>Fim</label>
                 <input type="date" id="kpi-fec-fim" onchange="renderKpisVisuais()">
               </div>
@@ -3049,7 +3050,7 @@
 
       <!-- FILTRO DATA ESTOQUE -->
       <div class="block" style="padding:20px 24px;margin-bottom:20px">
-        <div class="block-title" style="margin-bottom:16px;padding-bottom:12px">Filtrar por Data de Entrada</div>
+        <div class="block-title u-mb16-pb12">Filtrar por Data de Entrada</div>
         <div style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap">
           <div class="control-group" style="min-width:160px">
             <label>Início</label>
@@ -3081,8 +3082,8 @@
 
       <!-- FILTROS -->
       <div class="block" style="padding:20px 24px;margin-bottom:18px">
-        <div class="block-title" style="margin-bottom:16px;padding-bottom:12px">Filtros</div>
-        <div class="controls-grid" style="margin-bottom:14px">
+        <div class="block-title u-mb16-pb12">Filtros</div>
+        <div class="controls-grid u-mb14">
           <div class="control-group">
             <label>Cliente</label>
             <div class="ms-wrap" id="ms-wrap-hist-local">
@@ -3101,13 +3102,13 @@
           <div class="control-group">
             <label>Técnico</label>
             <div class="ms-wrap" id="ms-wrap-hist-tec">
-              <button class="ms-trigger" type="button" onclick="toggleMs('hist-tec')" id="ms-btn-hist-tec">
+              <button class="ms-trigger" type="button" onclick="toggleMs('hist-tec')" id="ms-btn-hist-tec" title="Filtrar por Técnico" aria-label="Filtrar por Técnico">
                 <span class="ms-trigger-label" id="ms-label-hist-tec">Todos os técnicos</span>
                 <span class="ms-trigger-arrow">▼</span>
               </button>
               <div class="ms-dropdown" id="ms-drop-hist-tec">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-hist-tec" checked onclick="msToggleAll('hist-tec', event)"> Todos os
+                  <input type="checkbox" id="ms-all-hist-tec" checked onclick="msToggleAll('hist-tec', event)" aria-label="Selecionar todos os técnicos"> Todos os
                   técnicos
                 </label>
               </div>
@@ -3117,13 +3118,13 @@
           <div class="control-group">
             <label>Motivo</label>
             <div class="ms-wrap" id="ms-wrap-hist-motivo">
-              <button class="ms-trigger" type="button" onclick="toggleMs('hist-motivo')" id="ms-btn-hist-motivo">
+              <button class="ms-trigger" type="button" onclick="toggleMs('hist-motivo')" id="ms-btn-hist-motivo" title="Filtrar por Motivo" aria-label="Filtrar por Motivo">
                 <span class="ms-trigger-label" id="ms-label-hist-motivo">Todos os motivos</span>
                 <span class="ms-trigger-arrow">▼</span>
               </button>
               <div class="ms-dropdown" id="ms-drop-hist-motivo">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-hist-motivo" checked onclick="msToggleAll('hist-motivo', event)">
+                  <input type="checkbox" id="ms-all-hist-motivo" checked onclick="msToggleAll('hist-motivo', event)" aria-label="Selecionar todos os motivos">
                   Todos os motivos
                 </label>
               </div>
@@ -3133,13 +3134,13 @@
           <div class="control-group">
             <label>Tipo de Chamado</label>
             <div class="ms-wrap" id="ms-wrap-hist-tipo">
-              <button class="ms-trigger" type="button" onclick="toggleMs('hist-tipo')" id="ms-btn-hist-tipo">
+              <button class="ms-trigger" type="button" onclick="toggleMs('hist-tipo')" id="ms-btn-hist-tipo" title="Filtrar por Tipo de Chamado" aria-label="Filtrar por Tipo de Chamado">
                 <span class="ms-trigger-label" id="ms-label-hist-tipo">Todos os tipos</span>
                 <span class="ms-trigger-arrow">▼</span>
               </button>
               <div class="ms-dropdown" id="ms-drop-hist-tipo">
                 <label class="ms-option all-opt">
-                  <input type="checkbox" id="ms-all-hist-tipo" checked onclick="msToggleAll('hist-tipo', event)"> Todos
+                  <input type="checkbox" id="ms-all-hist-tipo" checked onclick="msToggleAll('hist-tipo', event)" aria-label="Selecionar todos os tipos de chamado"> Todos
                   os tipos
                 </label>
               </div>
@@ -3160,22 +3161,22 @@
             <input type="number" id="hist-min-resmas" min="0" value="0" placeholder="Ex: 7" oninput="renderHistorico()">
           </div>
         </div>
-        <div class="dates-block" style="margin-bottom:0">
+        <div class="dates-block u-mb0">
           <div class="dates-row">
             <div class="dates-row-title">Data de Criação</div>
             <div class="dates-inner">
-              <div class="control-group" style="flex:1"><label>Início</label><input type="date" id="hist-cri-ini"
+              <div class="control-group u-flex1"><label>Início</label><input type="date" id="hist-cri-ini"
                   onchange="renderHistorico()"></div>
-              <div class="control-group" style="flex:1"><label>Fim</label><input type="date" id="hist-cri-fim"
+              <div class="control-group u-flex1"><label>Fim</label><input type="date" id="hist-cri-fim"
                   onchange="renderHistorico()"></div>
             </div>
           </div>
           <div class="dates-row">
             <div class="dates-row-title">Data de Encerramento</div>
             <div class="dates-inner">
-              <div class="control-group" style="flex:1"><label>Início</label><input type="date" id="hist-fec-ini"
+              <div class="control-group u-flex1"><label>Início</label><input type="date" id="hist-fec-ini"
                   onchange="renderHistorico()"></div>
-              <div class="control-group" style="flex:1"><label>Fim</label><input type="date" id="hist-fec-fim"
+              <div class="control-group u-flex1"><label>Fim</label><input type="date" id="hist-fec-fim"
                   onchange="renderHistorico()"></div>
             </div>
           </div>
@@ -3219,7 +3220,7 @@
           <div>
             <div class="section-label" style="margin-bottom:8px">CSV de Chamados (OS)</div>
             <div class="upload-zone" id="zone-os">
-              <input type="file" id="fileOS" accept=".csv">
+              <input type="file" id="fileOS" accept=".csv" aria-label="Carregar CSV de Chamados (OS)">
               <div class="upload-icon">📋</div>
               <div class="upload-text">
                 <div class="upload-title" id="label-os">Selecionar arquivo CSV</div>
@@ -3230,7 +3231,7 @@
           <div>
             <div class="section-label" style="margin-bottom:8px">CSV de Estoque (ESTOQUE_GERAL)</div>
             <div class="upload-zone" id="zone-est">
-              <input type="file" id="fileEstoque" accept=".csv">
+              <input type="file" id="fileEstoque" accept=".csv" aria-label="Carregar CSV de Estoque (ESTOQUE_GERAL)">
               <div class="upload-icon">📦</div>
               <div class="upload-text">
                 <div class="upload-title" id="label-est">Selecionar arquivo CSV</div>
@@ -3244,7 +3245,7 @@
       <!-- FILTROS (compartilhados entre sub-abas) -->
       <div class="analise-chart-wrap" style="margin-bottom:20px">
         <div class="analise-chart-title">Filtros da Análise</div>
-        <div class="controls-grid" style="margin-bottom:14px">
+        <div class="controls-grid u-mb14">
           <div class="control-group">
             <label>Cliente</label>
             <div class="ms-wrap" id="ms-wrap-an-cliente">
@@ -3321,28 +3322,28 @@
             </div>
           </div>
         </div>
-        <div class="dates-block" style="margin-bottom:14px">
+        <div class="dates-block u-mb14">
           <div class="dates-row">
             <div class="dates-row-title">Data de Criação</div>
             <div class="dates-inner">
-              <div class="control-group" style="flex:1"><label>Início</label><input type="date" id="an-cri-ini"
+              <div class="control-group u-flex1"><label>Início</label><input type="date" id="an-cri-ini"
                   onchange="renderAnalise()" title="Data Inicial de Criação"></div>
-              <div class="control-group" style="flex:1"><label>Fim</label><input type="date" id="an-cri-fim"
+              <div class="control-group u-flex1"><label>Fim</label><input type="date" id="an-cri-fim"
                   onchange="renderAnalise()" title="Data Final de Criação"></div>
             </div>
           </div>
           <div class="dates-row">
             <div class="dates-row-title">Data de Encerramento</div>
             <div class="dates-inner">
-              <div class="control-group" style="flex:1"><label>Início</label><input type="date" id="an-fec-ini"
+              <div class="control-group u-flex1"><label>Início</label><input type="date" id="an-fec-ini"
                   onchange="renderAnalise()" title="Data Inicial de Encerramento"></div>
-              <div class="control-group" style="flex:1"><label>Fim</label><input type="date" id="an-fec-fim"
+              <div class="control-group u-flex1"><label>Fim</label><input type="date" id="an-fec-fim"
                   onchange="renderAnalise()" title="Data Final de Encerramento"></div>
             </div>
           </div>
         </div>
 
-        <div class="controls-grid" style="margin-bottom:0;margin-top:14px">
+        <div class="controls-grid u-mb0-mt14">
           <div class="control-group">
             <label>Situação</label>
             <select id="an-situacao" onchange="renderAnalise()" title="Selecionar Situação">
@@ -3363,7 +3364,7 @@
           <div class="control-group"></div>
         </div>
 
-        <div class="btn-row" style="margin-bottom:0;margin-top:14px">
+        <div class="btn-row u-mb0-mt14">
           <button type="button" class="btn btn-primary" onclick="renderAnalise()">Aplicar filtros</button>
           <button type="button" class="btn btn-secondary" onclick="limparFiltrosAnalise()">Limpar filtros</button>
         </div>
@@ -3427,7 +3428,7 @@
             </select>
           </div>
         </div>
-        <button class="btn-exec-export" onclick="executarExportacao()">
+        <button type="button" class="btn-exec-export" onclick="executarExportacao()">
           <span class="material-symbols-outlined">download</span> Gerar Arquivo
         </button>
       </div>
@@ -3466,14 +3467,14 @@
 
         <!-- DONUTS: TIPO + STATUS -->
         <div class="analise-two">
-          <div class="analise-chart-wrap" style="margin-bottom:0">
+          <div class="analise-chart-wrap u-mb0">
             <div class="analise-chart-title">Distribuição por Tipo</div>
             <div class="donut-flex">
               <canvas id="an-chart-tipo" width="110" height="110" style="flex-shrink:0"></canvas>
               <div class="donut-legend" id="an-legend-tipo"></div>
             </div>
           </div>
-          <div class="analise-chart-wrap" style="margin-bottom:0">
+          <div class="analise-chart-wrap u-mb0">
             <div class="analise-chart-title">Distribuição por Status</div>
             <div class="donut-flex">
               <canvas id="an-chart-status" width="110" height="110" style="flex-shrink:0"></canvas>
@@ -3495,7 +3496,7 @@
                   <th>Motivo</th>
                   <th class="td-center">Total</th>
                   <th class="td-center">% do Total</th>
-                  <th style="width:100px"></th>
+                  <th class="u-w100" aria-label="Barra de distribuição"></th>
                 </tr>
               </thead>
               <tbody id="an-tbody-motivos"></tbody>
@@ -3522,7 +3523,7 @@
                   <th>Cliente</th>
                   <th class="td-center" id="an-col-label">Total</th>
                   <th class="td-center">% do Total</th>
-                  <th style="width:100px"></th>
+                  <th class="u-w100" aria-label="Barra de distribuição"></th>
                 </tr>
               </thead>
               <tbody id="an-tbody-clientes"></tbody>
@@ -3542,11 +3543,11 @@
               </div>
 
               <div class="an-rank-export-group">
-                <button class="an-rank-export-btn excel" onclick="exportarRankingPatr('excel')"
+                <button type="button" class="an-rank-export-btn excel" onclick="exportarRankingPatr('excel')"
                   title="Exportar Ranking para Excel">
                   <span class="material-symbols-outlined" style="font-size:1.2rem">description</span>
                 </button>
-                <button class="an-rank-export-btn pdf" onclick="exportarRankingPatr('pdf')"
+                <button type="button" class="an-rank-export-btn pdf" onclick="exportarRankingPatr('pdf')"
                   title="Exportar Ranking para PDF">
                   <span class="material-symbols-outlined" style="font-size:1.2rem">picture_as_pdf</span>
                 </button>
@@ -3573,7 +3574,7 @@
                    <th class="td-center" style="cursor:pointer" onclick="sortAnPatr('folha')">Folha</th>
                    <th class="td-center" style="cursor:pointer" onclick="sortAnPatr('auditoria')">Dif. Auditoria</th>
                    <th class="td-center" id="an-patr-col-label" style="cursor:pointer" onclick="sortAnPatr('metric')">% Chamados</th>
-                  <th style="width:100px"></th>
+                  <th class="u-w100" aria-label="Barra de distribuição"></th>
                 </tr>
               </thead>
               <tbody id="an-tbody-patrimonios"></tbody>
@@ -3643,7 +3644,7 @@
         </div>
 
         <!-- LISTA DE CHAMADOS -->
-        <div class="analise-rank-wrap" style="margin-bottom:14px">
+        <div class="analise-rank-wrap u-mb14">
           <div class="analise-rank-head">
             <span class="analise-rank-head-title">Chamados — Período de Atendimento</span>
             <span id="sla-total-label" style="font-size:.65rem;color:var(--outline);font-weight:600"></span>
@@ -3782,8 +3783,8 @@
 
       <!-- FILTROS -->
       <div class="block" id="cmp-filtros-wrap" style="display:none">
-        <div class="block-title" style="margin-bottom:16px;padding-bottom:12px">Filtros</div>
-        <div class="controls-grid" style="margin-bottom:14px">
+        <div class="block-title u-mb16-pb12">Filtros</div>
+        <div class="controls-grid u-mb14">
 
           <div class="control-group">
             <label>Cidade</label>
@@ -3922,8 +3923,8 @@
         </div>
 
         <div class="btn-row" style="margin-bottom:0">
-          <button class="btn btn-primary" onclick="renderComparacao()">Aplicar filtros</button>
-          <button class="btn btn-secondary" onclick="limparFiltrosCmp()">Limpar</button>
+          <button type="button" class="btn btn-primary" onclick="renderComparacao()">Aplicar filtros</button>
+          <button type="button" class="btn btn-secondary" onclick="limparFiltrosCmp()">Limpar</button>
         </div>
       </div>
 
@@ -3978,23 +3979,23 @@
               </select>
             </div>
           </div>
-          <button class="btn-exec-export" onclick="executarExportacao()">
+          <button type="button" class="btn-exec-export" onclick="executarExportacao()">
             <span class="material-symbols-outlined">download</span> Gerar Arquivo
           </button>
         </div>
 
         <!-- SUB-ABAS -->
         <div class="analise-submenu" style="margin-bottom:20px">
-          <button class="analise-subtab active" onclick="trocarSubtabCmp('comparativo',this)">Comparativo</button>
-          <button class="analise-subtab" onclick="trocarSubtabCmp('analise',this)">
+          <button type="button" class="analise-subtab active" onclick="trocarSubtabCmp('comparativo',this)">Comparativo</button>
+          <button type="button" class="analise-subtab" onclick="trocarSubtabCmp('analise',this)">
             <span
               style="background:var(--primary-container);color:#fff;border-radius:4px;padding:1px 6px;font-size:.58rem;font-weight:700;margin-right:4px">IA</span>Análise
           </button>
-          <button class="analise-subtab" onclick="trocarSubtabCmp('previsao',this)">
+          <button type="button" class="analise-subtab" onclick="trocarSubtabCmp('previsao',this)">
             <span
               style="background:#007861;color:#fff;border-radius:4px;padding:1px 6px;font-size:.58rem;font-weight:700;margin-right:4px">IA</span>Previsão
           </button>
-          <button class="analise-subtab" onclick="trocarSubtabCmp('recorrentes',this)">
+          <button type="button" class="analise-subtab" onclick="trocarSubtabCmp('recorrentes',this)">
             <span class="material-symbols-outlined"
               style="font-size:.85rem;vertical-align:middle;margin-right:3px">autorenew</span>Recorrentes
           </button>
@@ -4003,12 +4004,12 @@
         <!-- SUB-PAINEL: COMPARATIVO -->
         <div id="cmp-subpanel-comparativo" class="analise-subpanel active">
 
-          <div class="analise-chart-wrap" style="margin-bottom:14px">
+          <div class="analise-chart-wrap u-mb14">
             <div class="analise-chart-title">Comparativo de Chamados</div>
             <div id="cmp-sec-chamados"></div>
           </div>
 
-          <div class="analise-rank-wrap" style="margin-bottom:14px">
+          <div class="analise-rank-wrap u-mb14">
             <div class="analise-rank-head"><span class="analise-rank-head-title">Comparativo por Tipo de Chamado</span>
             </div>
             <div class="table-wrap analise-rank-table">
@@ -4021,7 +4022,7 @@
             </div>
           </div>
 
-          <div class="analise-rank-wrap" style="margin-bottom:14px">
+          <div class="analise-rank-wrap u-mb14">
             <div class="analise-rank-head"><span class="analise-rank-head-title">Comparativo por Motivo</span></div>
             <div class="table-wrap analise-rank-table">
               <table style="width:100%;border-collapse:collapse;table-layout:fixed">
@@ -4051,14 +4052,14 @@
         <!-- SUB-PAINEL: ANÁLISE IA -->
         <div id="cmp-subpanel-analise" class="analise-subpanel">
 
-          <div class="analise-chart-wrap" style="margin-bottom:14px">
+          <div class="analise-chart-wrap u-mb14">
             <div class="analise-chart-title">Chamados por Dia do Mês — Comparação entre Períodos</div>
             <div style="height:220px;position:relative">
               <canvas id="cmp-chart-dias"></canvas>
             </div>
           </div>
 
-          <div class="analise-chart-wrap" style="margin-bottom:0">
+          <div class="analise-chart-wrap u-mb0">
             <div class="analise-chart-title" style="display:flex;align-items:center;gap:8px">
               <span
                 style="background:var(--primary-container);color:#fff;border-radius:6px;padding:2px 8px;font-size:.6rem;font-weight:700;letter-spacing:.06em">IA</span>
@@ -4079,7 +4080,7 @@
           <div id="cmp-prev-cards" style="display:none;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px">
           </div>
 
-          <div class="analise-chart-wrap" style="margin-bottom:14px">
+          <div class="analise-chart-wrap u-mb14">
             <div class="analise-chart-title" style="display:flex;align-items:center;gap:8px">
               <span
                 style="background:#007861;color:#fff;border-radius:6px;padding:2px 8px;font-size:.6rem;font-weight:700;letter-spacing:.06em">IA</span>
@@ -4170,7 +4171,7 @@
                 <div style="font-size:1rem;font-weight:700;color:var(--on-surface)" id="cmp-rec-modal-title">Chamados do
                   Patrimônio</div>
               </div>
-              <button onclick="fecharRecModal()"
+              <button type="button" onclick="fecharRecModal()"
                 style="border:none;background:transparent;cursor:pointer;color:var(--outline);font-size:1.2rem;padding:4px">✕</button>
             </div>
             <div style="overflow:auto;flex:1;padding:4px 0">
@@ -4312,7 +4313,7 @@
               </select>
             </div>
           </div>
-          <button class="btn btn-primary" onclick="executarExportacaoKM()"
+          <button type="button" class="btn btn-primary" onclick="executarExportacaoKM()"
             style="align-self: flex-end; height: 36px; padding: 0 20px;">
             <span class="material-symbols-outlined" style="font-size: 1.1rem;">download</span>
             Exportar
@@ -4323,7 +4324,7 @@
         <div id="km-cards" style="display:grid;gap:14px;margin-bottom:20px"></div>
 
         <!-- Tabela comparativa -->
-        <div class="analise-rank-wrap" style="margin-bottom:14px">
+        <div class="analise-rank-wrap u-mb14">
           <div class="analise-rank-head">
             <span class="analise-rank-head-title">Comparativo de KM</span>
           </div>
@@ -4357,15 +4358,15 @@
           <div class="donut-modal-sub" id="donut-modal-sub">—</div>
         </div>
         <div class="donut-modal-actions">
-          <button class="btn btn-secondary" onclick="exportarModalExcel()"
+          <button type="button" class="btn btn-secondary" onclick="exportarModalExcel()"
             style="padding:4px 12px; height:32px; font-size:.7rem; border-color:#217346; color:#217346">
             <span class="material-symbols-outlined" style="font-size:1.1rem;margin-right:4px">download</span> Excel
           </button>
-          <button class="btn btn-secondary" onclick="exportarModalPDF()"
+          <button type="button" class="btn btn-secondary" onclick="exportarModalPDF()"
             style="padding:4px 12px; height:32px; font-size:.7rem; border-color:#BA1A1A; color:#BA1A1A">
             <span class="material-symbols-outlined" style="font-size:1.1rem;margin-right:4px">picture_as_pdf</span> PDF
           </button>
-          <button class="donut-modal-close" onclick="fecharModalDonut(null)">
+          <button type="button" class="donut-modal-close" onclick="fecharModalDonut(null)">
             <span class="material-symbols-outlined" style="font-size:1.1rem">close</span>
           </button>
         </div>

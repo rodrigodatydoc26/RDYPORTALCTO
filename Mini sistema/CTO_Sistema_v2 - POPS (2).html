@@ -508,14 +508,14 @@ table.ct td, table.ct2 td { padding:10px 12px; border:1px solid var(--bdr); }
     <button type="button" class="hbtn hbtn-out" id="btn-out" onclick="doLogout()"><i data-lucide="log-out"></i> Sair</button>
     <div class="theme-picker-hdr">
       <div class="accent-pill">
-        <div class="color-dot active" style="background:#CC0000" onclick="setAccent('#CC0000',this)"></div>
-        <div class="color-dot" style="background:#FFD700" onclick="setAccent('#FFD700',this)"></div>
-        <div class="color-dot" style="background:#FF007A" onclick="setAccent('#FF007A',this)"></div>
-        <div class="color-dot" style="background:#0066FF" onclick="setAccent('#0066FF',this)"></div>
+        <div class="color-dot active accent-red" data-accent="#CC0000" onclick="setAccent('#CC0000',this)"></div>
+        <div class="color-dot accent-gold" data-accent="#FFD700" onclick="setAccent('#FFD700',this)"></div>
+        <div class="color-dot accent-pink" data-accent="#FF007A" onclick="setAccent('#FF007A',this)"></div>
+        <div class="color-dot accent-blue" data-accent="#0066FF" onclick="setAccent('#0066FF',this)"></div>
       </div>
       <div class="mode-toggle" id="btnTheme"><i data-lucide="moon" id="themeIcon"></i></div>
     </div>
-    <span class="cto-clock" id="cto-clock" style="font-family:'Outfit',monospace; font-weight:700">--:--</span>
+    <span class="cto-clock clock-font" id="cto-clock">--:--</span>
   </div>
 </div>
 
@@ -527,8 +527,8 @@ table.ct td, table.ct2 td { padding:10px 12px; border:1px solid var(--bdr); }
   <!-- HOME -->
   <div id="view-home" class="view active">
     <div class="hero">
-      <h1 style="font-size: 42px;">Procedimentos Operacionais Padrão</h1>
-      <p style="letter-spacing: 0.1em; opacity: 0.6;">Centro Técnico Operacional · DocTecnologia · Versão 18 · 2026</p>
+      <h1 class="hero-title-xl">Procedimentos Operacionais Padrão</h1>
+      <p class="hero-subtitle-spaced">Centro Técnico Operacional · DocTecnologia · Versão 18 · 2026</p>
       <div class="hero-stats">
         <div><div class="hs-val" id="stat-n">24</div><div class="hs-lbl">POPs</div></div>
         <div><div class="hs-val">6</div><div class="hs-lbl">Manuais</div></div>
@@ -551,9 +551,9 @@ table.ct td, table.ct2 td { padding:10px 12px; border:1px solid var(--bdr); }
   <div class="view" id="view-pop">
     <div class="abar">
       <div class="abar-bc"><a onclick="goHome()">Início</a><span>›</span><span id="bc-sec"></span><span>›</span><span id="bc-title"></span></div>
-      <button class="btn" id="btn-ed-pop" onclick="editPOP()" style="display:none">✏️ Editar</button>
-      <button class="btn" onclick="printCurrent()">🖨 Imprimir</button>
-      <button class="btn btn-g" onclick="pdfCurrent()">⬇ PDF</button>
+      <button type="button" class="btn" id="btn-ed-pop" onclick="editPOP()">✏️ Editar</button>
+      <button type="button" class="btn" onclick="printCurrent()">🖨 Imprimir</button>
+      <button type="button" class="btn btn-g" onclick="pdfCurrent()">⬇ PDF</button>
     </div>
     <div id="pop-content"></div>
   </div>
@@ -562,8 +562,8 @@ table.ct td, table.ct2 td { padding:10px 12px; border:1px solid var(--bdr); }
   <div class="view" id="view-manual">
     <div class="abar">
       <div class="abar-bc"><a onclick="goHome()">Início</a><span>›</span><span>Manuais</span><span>›</span><span id="bc-manual"></span></div>
-      <button class="btn" id="btn-ed-man" onclick="editManual()" style="display:none">✏️ Editar</button>
-      <button class="btn" onclick="printCurrent()">🖨 Imprimir</button>
+      <button type="button" class="btn" id="btn-ed-man" onclick="editManual()">✏️ Editar</button>
+      <button type="button" class="btn" onclick="printCurrent()">🖨 Imprimir</button>
     </div>
     <div id="manual-content"></div>
   </div>
@@ -572,23 +572,23 @@ table.ct td, table.ct2 td { padding:10px 12px; border:1px solid var(--bdr); }
   <div class="view" id="view-editor">
     <div class="abar">
       <div class="abar-bc"><a onclick="goHome()">Início</a><span>›</span><span>Editor</span></div>
-      <button class="btn btn-p" onclick="saveDoc()">💾 Salvar</button>
-      <button class="btn" onclick="previewDoc()">👁 Pré-visualizar</button>
-      <button class="btn btn-d" id="btn-del" onclick="deleteDoc()" style="display:none">🗑 Excluir</button>
+      <button type="button" class="btn btn-p" onclick="saveDoc()">💾 Salvar</button>
+      <button type="button" class="btn" onclick="previewDoc()">👁 Pré-visualizar</button>
+      <button type="button" class="btn btn-d" id="btn-del" onclick="deleteDoc()">🗑 Excluir</button>
     </div>
     <div class="ewrap">
       <div class="etbar">
         <label>Tipo:</label>
-        <select id="ed-type" onchange="toggleEditorType()" style="width:95px">
+        <select id="ed-type" onchange="toggleEditorType()" class="ed-type-sel">
           <option value="pop">POP</option>
           <option value="manual">Manual</option>
         </select>
         <div class="etsep"></div>
-        <label>Código:</label><input id="ed-code" placeholder="POP-25" style="width:80px">
-        <label>Versão:</label><input id="ed-ver" value="1.0" style="width:52px">
+        <label>Código:</label><input id="ed-code" placeholder="POP-25" class="ed-code-in">
+        <label>Versão:</label><input id="ed-ver" value="1.0" class="ed-ver-in">
         <div class="etsep"></div>
         <label>Seção:</label>
-        <select id="ed-sec" style="width:155px">
+        <select id="ed-sec" class="ed-sec-sel">
           <option>Pré-Operação</option>
           <option>Operação de Campo</option>
           <option>Equipamentos</option>
@@ -599,22 +599,22 @@ table.ct td, table.ct2 td { padding:10px 12px; border:1px solid var(--bdr); }
         <div class="fg fgfull"><label>Título</label><input id="ed-title" placeholder="Nome do procedimento..."></div>
         <div class="fg fgfull" id="ed-obj-w"><label>Objetivo</label><textarea id="ed-obj" rows="2" placeholder="Descreva o objetivo..."></textarea></div>
         <div class="fg fgfull" id="ed-esc-w"><label>Escopo</label><textarea id="ed-esc" rows="2" placeholder="Quem e o que está coberto..."></textarea></div>
-        <div class="fg fgfull" id="ed-int-w" style="display:none"><label>Introdução</label><textarea id="ed-int" rows="3" placeholder="Texto introdutório..."></textarea></div>
-        <div class="fg" id="ed-sis-w" style="display:none"><label>Sistema</label><input id="ed-sis" placeholder="LOC1, Contele..."></div>
+        <div class="fg fgfull" id="ed-int-w"><label>Introdução</label><textarea id="ed-int" rows="3" placeholder="Texto introdutório..."></textarea></div>
+        <div class="fg" id="ed-sis-w"><label>Sistema</label><input id="ed-sis" placeholder="LOC1, Contele..."></div>
         <div class="fg"><label>Área / Seção</label><input id="ed-area" placeholder="CTO – Operações de Campo"></div>
         <div class="fg"><label>Data de vigência</label><input id="ed-data" placeholder="Abril / 2026"></div>
       </div>
-      <div class="rsec" id="ed-resp-s"><h4>Responsáveis</h4><div id="r-resp"></div><button class="badd" onclick="addRow('resp')">+ Responsável</button></div>
+      <div class="rsec" id="ed-resp-s"><h4>Responsáveis</h4><div id="r-resp"></div><button type="button" class="badd" onclick="addRow('resp')">+ Responsável</button></div>
       <div class="rsec" id="ed-flx-s"><h4>Fluxo Passo a Passo</h4><div id="r-step"></div>
-        <div style="display:flex;gap:6px;margin-top:4px">
-          <button class="badd" onclick="addRow('step')" style="flex:1">+ Passo</button>
-          <button class="badd badd-bloco" onclick="addRow('bloco')" style="flex:1">+ Bloco</button>
+        <div class="btn-row">
+          <button type="button" class="badd u-flex1" onclick="addRow('step')">+ Passo</button>
+          <button type="button" class="badd badd-bloco u-flex1" onclick="addRow('bloco')">+ Bloco</button>
         </div>
       </div>
-      <div class="rsec" id="ed-crit-s"><h4>Critérios de Qualidade</h4><div id="r-crit"></div><button class="badd" onclick="addRow('crit')">+ Critério</button></div>
-      <div class="rsec" id="ed-cont-s"><h4>Contingências</h4><div id="r-cont"></div><button class="badd" onclick="addRow('cont')">+ Contingência</button></div>
-      <div class="rsec" id="ed-mst-s" style="display:none"><h4>Passos do Manual</h4><div id="r-mst"></div><button class="badd" onclick="addRow('mst')">+ Passo</button></div>
-      <div class="rsec" id="ed-nte-s" style="display:none"><h4>Observações</h4><div id="r-nte"></div><button class="badd" onclick="addRow('nte')">+ Observação</button></div>
+      <div class="rsec" id="ed-crit-s"><h4>Critérios de Qualidade</h4><div id="r-crit"></div><button type="button" class="badd" onclick="addRow('crit')">+ Critério</button></div>
+      <div class="rsec" id="ed-cont-s"><h4>Contingências</h4><div id="r-cont"></div><button type="button" class="badd" onclick="addRow('cont')">+ Contingência</button></div>
+      <div class="rsec" id="ed-mst-s"><h4>Passos do Manual</h4><div id="r-mst"></div><button type="button" class="badd" onclick="addRow('mst')">+ Passo</button></div>
+      <div class="rsec" id="ed-nte-s"><h4>Observações</h4><div id="r-nte"></div><button type="button" class="badd" onclick="addRow('nte')">+ Observação</button></div>
     </div>
     <div id="ed-preview"></div>
   </div>
@@ -623,11 +623,11 @@ table.ct td, table.ct2 td { padding:10px 12px; border:1px solid var(--bdr); }
   <div class="view" id="view-reorder">
     <div class="abar">
       <div class="abar-bc"><a onclick="goHome()">Início</a><span>›</span><span>Reorganizar</span></div>
-      <button class="btn btn-s" onclick="saveOrder()">💾 Salvar Ordem</button>
-      <button class="btn" onclick="resetOrder()">↺ Padrão</button>
+      <button type="button" class="btn btn-s" onclick="saveOrder()">💾 Salvar Ordem</button>
+      <button type="button" class="btn" onclick="resetOrder()">↺ Padrão</button>
     </div>
-    <div style="background:#fff;border-radius:10px;border:1.5px solid #e8eef5;padding:18px">
-      <p style="font-size:13px;color:var(--txt2);margin-bottom:14px">🖱️ Arraste os itens para reorganizar a sequência dos POPs.</p>
+    <div class="reorder-wrap">
+      <p class="reorder-hint">🖱️ Arraste os itens para reorganizar a sequência dos POPs.</p>
       <div id="dl"></div>
     </div>
   </div>
@@ -636,7 +636,7 @@ table.ct td, table.ct2 td { padding:10px 12px; border:1px solid var(--bdr); }
   <div class="view" id="view-users">
     <div class="abar">
       <div class="abar-bc"><a onclick="goHome()">Início</a><span>›</span><span>Usuários</span></div>
-      <button class="btn btn-p" onclick="showAddUser()">+ Novo Usuário</button>
+      <button type="button" class="btn btn-p" onclick="showAddUser()">+ Novo Usuário</button>
     </div>
     <div class="ugrid" id="ugrid"></div>
   </div>
@@ -644,23 +644,23 @@ table.ct td, table.ct2 td { padding:10px 12px; border:1px solid var(--bdr); }
 </div>
 
 <!-- MODAL DOWNLOAD -->
-<div class="mov" id="mdl-dl" style="display:none">
+<div class="mov" id="mdl-dl">
   <div class="mbox">
-    <div class="mhdr"><h3>⬇ Baixar Documentos</h3><button class="mcls" onclick="closeModal('mdl-dl')">✕</button></div>
+    <div class="mhdr"><h3>⬇ Baixar Documentos</h3><button type="button" class="mcls" onclick="closeModal('mdl-dl')">✕</button></div>
     <div class="mbody">
-      <button class="dopt" onclick="dlAllPDF()"><span class="dopt-icon">📄</span><div><div class="dopt-title">Todos os POPs — Impressão/PDF</div><div class="dopt-sub">Abre janela de impressão com todos os 24 POPs</div></div></button>
-      <button class="dopt" onclick="dlCurrentPDF()"><span class="dopt-icon">📄</span><div><div class="dopt-title">POP atual — PDF</div><div class="dopt-sub">Somente o documento em visualização</div></div></button>
-      <button class="dopt" onclick="dlJSON()"><span class="dopt-icon">💾</span><div><div class="dopt-title">Exportar backup — JSON</div><div class="dopt-sub">Todos os dados para backup ou importação</div></div></button>
+      <button type="button" class="dopt" onclick="dlAllPDF()"><span class="dopt-icon">📄</span><div><div class="dopt-title">Todos os POPs — Impressão/PDF</div><div class="dopt-sub">Abre janela de impressão com todos os 24 POPs</div></div></button>
+      <button type="button" class="dopt" onclick="dlCurrentPDF()"><span class="dopt-icon">📄</span><div><div class="dopt-title">POP atual — PDF</div><div class="dopt-sub">Somente o documento em visualização</div></div></button>
+      <button type="button" class="dopt" onclick="dlJSON()"><span class="dopt-icon">💾</span><div><div class="dopt-title">Exportar backup — JSON</div><div class="dopt-sub">Todos os dados para backup ou importação</div></div></button>
     </div>
   </div>
 </div>
 
 <!-- MODAL USER -->
-<div class="mov" id="mdl-user" style="display:none">
+<div class="mov" id="mdl-user">
   <div class="mbox">
-    <div class="mhdr"><h3 id="mtitle-user">Novo Usuário</h3><button class="mcls" onclick="closeModal('mdl-user')">✕</button></div>
+    <div class="mhdr"><h3 id="mtitle-user">Novo Usuário</h3><button type="button" class="mcls" onclick="closeModal('mdl-user')">✕</button></div>
     <div class="mbody">
-      <div class="fgrid" style="padding:0">
+      <div class="fgrid fgrid-nopad">
         <div class="fg fgfull"><label>Nome completo</label><input id="u-name" placeholder="João Silva"></div>
         <div class="fg"><label>Usuário (login)</label><input id="u-login" placeholder="joao.silva"></div>
         <div class="fg"><label>Senha</label><input type="password" id="u-pass" placeholder="mínimo 4 caracteres"></div>
@@ -674,20 +674,20 @@ table.ct td, table.ct2 td { padding:10px 12px; border:1px solid var(--bdr); }
       </div>
     </div>
     <div class="mfoot">
-      <button class="btn" onclick="closeModal('mdl-user')">Cancelar</button>
-      <button class="btn btn-p" onclick="saveUser()">Salvar</button>
+      <button type="button" class="btn" onclick="closeModal('mdl-user')">Cancelar</button>
+      <button type="button" class="btn btn-p" onclick="saveUser()">Salvar</button>
     </div>
   </div>
 </div>
 
 <!-- MODAL CONFIRM -->
-<div class="mov" id="mdl-confirm" style="display:none">
-  <div class="mbox" style="max-width:360px">
-    <div class="mhdr"><h3 id="mc-title">Confirmar</h3><button class="mcls" onclick="closeModal('mdl-confirm')">✕</button></div>
-    <div class="mbody"><p id="mc-msg" style="font-size:13.5px;color:var(--txt2)"></p></div>
+<div class="mov" id="mdl-confirm">
+  <div class="mbox mbox-sm">
+    <div class="mhdr"><h3 id="mc-title">Confirmar</h3><button type="button" class="mcls" onclick="closeModal('mdl-confirm')">✕</button></div>
+    <div class="mbody"><p id="mc-msg" class="confirm-msg"></p></div>
     <div class="mfoot">
-      <button class="btn" onclick="closeModal('mdl-confirm')">Cancelar</button>
-      <button class="btn btn-d" id="mc-ok">Confirmar</button>
+      <button type="button" class="btn" onclick="closeModal('mdl-confirm')">Cancelar</button>
+      <button type="button" class="btn btn-d" id="mc-ok">Confirmar</button>
     </div>
   </div>
 </div>
