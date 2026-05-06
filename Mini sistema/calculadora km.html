@@ -181,6 +181,19 @@
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    /* ── EXTRACTED FROM INLINE STYLES ── */
+    .accent-red    { background: #CC0000; }
+    .accent-yellow { background: #FFD700; }
+    .accent-pink   { background: #FF007A; }
+    .accent-blue   { background: #0066FF; }
+    .icon-sm { width: 14px; }
+    .icon-xs { width: 13px; }
+    #clock { font-family: var(--font); font-weight: 700; font-size: 14px; }
+    .sidebar-hint { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 12px; }
+    .filter-group-top { margin-top: 14px; }
+    .filter-row-top { margin-top: 12px; }
+    .section-bottom { margin-top: auto; }
   </style>
 </head>
 <body>
@@ -189,44 +202,44 @@
   <div class="topbar-left">
     <h1 class="topbar-title">DOC <span>KM</span></h1>
     <a href="javascript:void(0)" onclick="if(window.history.length > 1) { history.back(); } setTimeout(() => { window.close(); window.location.href = '../portal.html'; }, 200);" class="btn-back">
-      <i data-lucide="layout-grid" style="width:14px"></i> VOLTA PARA PORTAL
+      <i data-lucide="layout-grid" class="icon-sm"></i> VOLTA PARA PORTAL
     </a>
   </div>
   <div class="topbar-right">
     <div class="theme-picker">
       <div class="accent-pill">
-        <div class="color-dot active" style="background:#CC0000" onclick="setAccent('#CC0000',this)"></div>
-        <div class="color-dot" style="background:#FFD700" onclick="setAccent('#FFD700',this)"></div>
-        <div class="color-dot" style="background:#FF007A" onclick="setAccent('#FF007A',this)"></div>
-        <div class="color-dot" style="background:#0066FF" onclick="setAccent('#0066FF',this)"></div>
+        <div class="color-dot active accent-red" data-accent="#CC0000" onclick="setAccent('#CC0000',this)"></div>
+        <div class="color-dot accent-yellow" data-accent="#FFD700" onclick="setAccent('#FFD700',this)"></div>
+        <div class="color-dot accent-pink" data-accent="#FF007A" onclick="setAccent('#FF007A',this)"></div>
+        <div class="color-dot accent-blue" data-accent="#0066FF" onclick="setAccent('#0066FF',this)"></div>
       </div>
       <div class="mode-toggle" id="btnTheme">
         <i data-lucide="moon" id="themeIcon"></i>
       </div>
     </div>
-    <div id="clock" style="font-family:var(--font);font-weight:700;font-size:14px">--:--</div>
+    <div id="clock">--:--</div>
   </div>
 </div>
 
 <div class="app-container">
   <aside class="sidebar">
     <div class="section">
-      <div class="section-title"><i data-lucide="upload" style="width:13px"></i> Importar Dados</div>
-      <p style="font-size:0.8rem; color:var(--text-dim); margin-bottom:12px">Selecione o arquivo Excel exportado do sistema Contele.</p>
-      <button class="btn btn-import" onclick="document.getElementById('file-input').click()">
+      <div class="section-title"><i data-lucide="upload" class="icon-xs"></i> Importar Dados</div>
+      <p class="sidebar-hint">Selecione o arquivo Excel exportado do sistema Contele.</p>
+      <button type="button" class="btn btn-import" onclick="document.getElementById('file-input').click()">
         <i data-lucide="file-up"></i> Selecionar Arquivo
       </button>
       <input type="file" id="file-input" accept=".xlsx, .xls">
     </div>
 
     <div class="section">
-      <div class="section-title"><i data-lucide="filter" style="width:13px"></i> Filtros</div>
-      <div class="filter-group" style="margin-top:14px">
+      <div class="section-title"><i data-lucide="filter" class="icon-xs"></i> Filtros</div>
+      <div class="filter-group filter-group-top">
         <label>Funcionário</label>
         <select id="filter-func" title="Selecionar Funcionário"><option value="all">(Todos)</option></select>
       </div>
       
-      <div class="filter-row" style="margin-top:12px">
+      <div class="filter-row filter-row-top">
         <div class="filter-group">
           <label>Tipo</label>
           <select id="filter-type" title="Filtrar por Tipo">
@@ -244,8 +257,8 @@
       </div>
     </div>
 
-    <div class="section" style="margin-top:auto">
-      <button class="btn btn-report" onclick="exportReport()">
+    <div class="section section-bottom">
+      <button type="button" class="btn btn-report" onclick="exportReport()">
         <i data-lucide="download"></i> Gerar Relatório
       </button>
     </div>
@@ -387,7 +400,8 @@
     const savedAccent = localStorage.getItem('nexus-accent') || '#CC0000';
     document.documentElement.style.setProperty('--accent', savedAccent);
     document.querySelectorAll('.color-dot').forEach(d => {
-      d.classList.toggle('active', d.getAttribute('style').includes(savedAccent.toUpperCase()) || d.getAttribute('style').includes(savedAccent.toLowerCase()));
+      const da = d.dataset.accent || '';
+      d.classList.toggle('active', da.toUpperCase() === savedAccent.toUpperCase());
     });
 
     const savedTheme = localStorage.getItem('nexus-theme') || 'light';

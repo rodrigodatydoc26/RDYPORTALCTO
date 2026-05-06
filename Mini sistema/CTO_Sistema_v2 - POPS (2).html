@@ -432,6 +432,39 @@ table.ct td, table.ct2 td { padding:10px 12px; border:1px solid var(--bdr); }
 .mode-toggle { width: 32px; height: 32px; border-radius: 8px; background: var(--gray); border: 1px solid var(--bdr); display: grid; place-items: center; cursor: pointer; color: var(--txt); transition: 0.2s; }
 .mode-toggle:hover { background: var(--bl); transform: translateY(-1px); }
 .cto-clock { font-family: var(--font); font-weight: 700; font-size: 13px; color: var(--txt2); margin-left: 6px; }
+
+/* ── EXTRACTED FROM INLINE STYLES ── */
+.accent-red  { background: #CC0000; }
+.accent-gold { background: #FFD700; }
+.accent-pink { background: #FF007A; }
+.accent-blue { background: #0066FF; }
+.icon-sm { width: 14px; }
+#hdr-user { display: none; align-items: center; gap: 7px; font-size: 12px; padding: 4px 9px; border-radius: 6px; border: 1px solid var(--bdr); color: var(--txt2); }
+#btn-out { display: none; }
+.clock-font { font-family: 'Outfit', monospace; font-weight: 700; }
+.hero-title-xl { font-size: 42px; }
+.hero-subtitle-spaced { letter-spacing: 0.1em; opacity: 0.6; }
+#btn-ed-pop { display: none; }
+#btn-ed-man { display: none; }
+#btn-del { display: none; }
+.ed-type-sel { width: 95px; }
+.ed-code-in { width: 80px; }
+.ed-ver-in { width: 52px; }
+.ed-sec-sel { width: 155px; }
+#ed-int-w { display: none; }
+#ed-sis-w { display: none; }
+.btn-row { display: flex; gap: 6px; margin-top: 4px; }
+.u-flex1 { flex: 1; }
+#ed-mst-s { display: none; }
+#ed-nte-s { display: none; }
+.reorder-wrap { background: #fff; border-radius: 10px; border: 1.5px solid #e8eef5; padding: 18px; }
+.reorder-hint { font-size: 13px; color: var(--txt2); margin-bottom: 14px; }
+#mdl-dl { display: none; }
+#mdl-user { display: none; }
+.fgrid-nopad { padding: 0; }
+#mdl-confirm { display: none; }
+.mbox-sm { max-width: 360px; }
+.confirm-msg { font-size: 13.5px; color: var(--txt2); }
 </style>
 </head>
 <body>
@@ -458,7 +491,7 @@ table.ct td, table.ct2 td { padding:10px 12px; border:1px solid var(--bdr); }
   <div class="topbar-left">
     <h1 class="topbar-title">DOC <span>POPs</span></h1>
     <a href="javascript:void(0)" onclick="if(window.history.length > 1) { history.back(); } setTimeout(() => { window.close(); window.location.href = '../portal.html'; }, 200);" class="btn-back">
-      <i data-lucide="layout-grid" style="width:14px"></i> VOLTA PARA PORTAL
+      <i data-lucide="layout-grid" class="icon-sm"></i> VOLTA PARA PORTAL
     </a>
     <div id="srch">
       <span class="si"><i data-lucide="search"></i></span>
@@ -467,12 +500,12 @@ table.ct td, table.ct2 td { padding:10px 12px; border:1px solid var(--bdr); }
     </div>
   </div>
   <div class="hacts">
-    <button class="hbtn hbtn-gold" onclick="showModal('mdl-dl')"><i data-lucide="download"></i> Baixar POPs</button>
-    <button class="hbtn hbtn-login" id="btn-login" onclick="openLogin()"><i data-lucide="lock"></i> Entrar</button>
-    <div id="hdr-user" style="display:none; align-items:center; gap:7px; font-size:12px; padding:4px 9px; border-radius:6px; border:1px solid var(--bdr); color:var(--txt2)">
+    <button type="button" class="hbtn hbtn-gold" onclick="showModal('mdl-dl')"><i data-lucide="download"></i> Baixar POPs</button>
+    <button type="button" class="hbtn hbtn-login" id="btn-login" onclick="openLogin()"><i data-lucide="lock"></i> Entrar</button>
+    <div id="hdr-user">
       <div class="uav" id="uav">?</div><span id="uname-hdr">--</span>
     </div>
-    <button class="hbtn hbtn-out" id="btn-out" onclick="doLogout()" style="display:none"><i data-lucide="log-out"></i> Sair</button>
+    <button type="button" class="hbtn hbtn-out" id="btn-out" onclick="doLogout()"><i data-lucide="log-out"></i> Sair</button>
     <div class="theme-picker-hdr">
       <div class="accent-pill">
         <div class="color-dot active" style="background:#CC0000" onclick="setAccent('#CC0000',this)"></div>

@@ -289,7 +289,8 @@
       text-transform: uppercase;
       color: var(--text-dim);
       cursor: pointer;
-      -webkit-user-select: none; user-select: none;
+      -webkit-user-select: none;
+      user-select: none;
       transition: all 0.2s ease;
       border: none;
       background: transparent;
@@ -1924,6 +1925,7 @@
       position: fixed;
       inset: 0;
       background: rgba(25, 28, 29, .45);
+      -webkit-backdrop-filter: blur(4px);
       backdrop-filter: blur(4px);
       z-index: 300;
       align-items: center;
@@ -1946,6 +1948,7 @@
       flex-direction: column;
       overflow: hidden;
       animation: modalIn .2s cubic-bezier(.4, 0, .2, 1);
+      will-change: transform, opacity;
     }
 
     @keyframes modalIn {
@@ -2070,6 +2073,7 @@
       margin-bottom: 24px;
       padding: 20px;
       background: rgba(255, 255, 255, 0.45);
+      -webkit-backdrop-filter: blur(12px);
       backdrop-filter: blur(12px);
       border-radius: var(--radius);
       border: 1px solid rgba(255, 255, 255, 0.4);
@@ -2395,6 +2399,110 @@
       position: relative;
     }
 
+    /* ── UTILITY CLASSES ── */
+    .u-flex1       { flex: 1; }
+    .u-color-outline { color: var(--outline); }
+    .u-mb0         { margin-bottom: 0; }
+    .u-mb8         { margin-bottom: 8px; }
+    .u-mb10        { margin-bottom: 10px; }
+    .u-mb14        { margin-bottom: 14px; }
+    .u-mb16-pb12   { margin-bottom: 16px; padding-bottom: 12px; }
+    .u-mb20        { margin-bottom: 20px; }
+    .u-mb0-mt14    { margin-bottom: 0; margin-top: 14px; }
+    .u-m-bottom10  { margin: 0 0 10px; }
+    .u-pointer     { cursor: pointer; }
+    .u-fw700       { font-weight: 700; }
+    .u-fw600       { font-weight: 600; }
+    .u-fw600-primary { font-weight: 600; color: var(--primary-container); }
+    .u-fw700-primary { font-weight: 700; color: var(--primary-container); }
+    .u-hidden      { display: none; }
+    .u-relative    { position: relative; }
+    .u-text-right  { text-align: right; }
+    .u-full-col    { grid-column: 1 / -1; }
+    .u-w36         { width: 36px; }
+    .u-w100        { width: 100px; }
+    .u-minw200     { min-width: 200px; }
+    .u-pl36        { padding-left: 36px; }
+    .u-disabled    { opacity: 0.6; pointer-events: none; }
+    .u-color-green-bold { color: #007861; font-weight: 700; }
+    .u-color-amber-bold { color: #b07800; font-weight: 700; }
+    .u-label-sm {
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--outline);
+    }
+    .u-th-label {
+      padding: 10px 16px;
+      font-size: .6rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--outline);
+      text-align: left;
+    }
+    .u-input-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: .9rem;
+      color: var(--outline);
+      pointer-events: none;
+    }
+    .u-flex-row-6 {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .u-outline-sm {
+      color: var(--outline);
+      font-size: .7rem;
+    }
+    .u-outline-xs {
+      color: var(--outline);
+      font-size: .65rem;
+    }
+    .u-table-full {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    .u-label-xs {
+      font-size: .65rem;
+      color: var(--outline);
+      margin-top: 2px;
+    }
+    .u-label-xs2 {
+      font-size: .7rem;
+      color: var(--outline);
+      margin-top: 4px;
+    }
+    .u-btn-outline-sm {
+      font-family: var(--font);
+      font-size: .72rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 8px;
+      border: 1.5px solid var(--outline-variant);
+      background: transparent;
+      color: var(--outline);
+      cursor: pointer;
+      transition: all .15s;
+    }
+    /* ── SCREEN READER ONLY ── */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
   /* ══════════════════════════════════════════
      PORTAL THEME SYSTEM
   ══════════════════════════════════════════ */
@@ -2482,16 +2590,16 @@
 
       <!-- Grupo: Comparativos -->
       <div class="sidebar-group" style="margin-top:4px">
-        <button class="sidebar-group-header open" id="grp-comparativos" onclick="toggleGrupo('comparativos')">
+        <button type="button" class="sidebar-group-header open" id="grp-comparativos" onclick="toggleGrupo('comparativos')">
           <i data-lucide="arrow-left-right"></i>
           <span>Comparativos</span>
           <i data-lucide="chevron-down"></i>
         </button>
         <div class="sidebar-submenu open" id="sub-comparativos">
-          <button class="sidebar-sublink" onclick="trocarTab('comparacao')" id="nav-comparacao">
+          <button type="button" class="sidebar-sublink" onclick="trocarTab('comparacao')" id="nav-comparacao">
             <i data-lucide="file-text" style="width:14px;height:14px"></i> Comparação
           </button>
-          <button class="sidebar-sublink" onclick="trocarTab('km')" id="nav-km">
+          <button type="button" class="sidebar-sublink" onclick="trocarTab('km')" id="nav-km">
             <i data-lucide="route" style="width:14px;height:14px"></i> Comparação KM
           </button>
         </div>
@@ -2535,10 +2643,10 @@
 
     <!-- TABS (hidden — navegação pela sidebar) -->
     <div class="tabs-wrap" style="display:none">
-      <button class="tab active" onclick="trocarTab('entregas')">KPIS LOC1</button>
-      <button class="tab" onclick="trocarTab('kpis')">KPIs</button>
-      <button class="tab" onclick="trocarTab('estoque')">Estoque por Cidade</button>
-      <button class="tab" onclick="trocarTab('historico')">Histórico</button>
+      <button type="button" class="tab active" onclick="trocarTab('entregas')">KPIS LOC1</button>
+      <button type="button" class="tab" onclick="trocarTab('kpis')">KPIs</button>
+      <button type="button" class="tab" onclick="trocarTab('estoque')">Estoque por Cidade</button>
+      <button type="button" class="tab" onclick="trocarTab('historico')">Histórico</button>
     </div>
 
     <!-- ==================== TAB ENTREGAS ==================== -->
@@ -2680,7 +2788,7 @@
         </div>
 
         <div class="btn-row">
-          <button class="btn btn-secondary" onclick="limparFiltros()">Limpar filtros</button>
+          <button type="button" class="btn btn-secondary" onclick="limparFiltros()">Limpar filtros</button>
         </div>
       </div>
 
@@ -2724,7 +2832,7 @@
             </select>
           </div>
         </div>
-        <button class="btn btn-primary" onclick="executarExportacaoEntregas()"
+        <button type="button" class="btn btn-primary" onclick="executarExportacaoEntregas()"
           style="align-self: flex-end; height: 36px; padding: 0 20px;">
           <span class="material-symbols-outlined" style="font-size: 1.1rem;">download</span>
           Exportar
@@ -2868,7 +2976,7 @@
           </div>
         </div>
         <div class="btn-row" style="margin-top:16px;margin-bottom:0">
-          <button class="btn btn-secondary" onclick="limparFiltrosKpi()">Limpar filtros</button>
+          <button type="button" class="btn btn-secondary" onclick="limparFiltrosKpi()">Limpar filtros</button>
         </div>
       </div>
 
@@ -2951,7 +3059,7 @@
             <label>Fim</label>
             <input type="date" id="est-data-fim" onchange="renderEstoque()">
           </div>
-          <button class="btn btn-secondary" onclick="limparFiltroEstoque()" style="margin-bottom:0">Limpar</button>
+          <button type="button" class="btn btn-secondary u-mb0" onclick="limparFiltroEstoque()">Limpar</button>
         </div>
         <div id="est-periodo-label" style="margin-top:10px;font-size:.78rem;color:var(--samsung-gray-4);display:none">
         </div>
@@ -3073,7 +3181,7 @@
           </div>
         </div>
         <div class="btn-row" style="margin-top:14px;margin-bottom:0">
-          <button class="btn btn-secondary" onclick="limparFiltrosHistorico()">Limpar filtros</button>
+          <button type="button" class="btn btn-secondary" onclick="limparFiltrosHistorico()">Limpar filtros</button>
         </div>
       </div>
 
@@ -3081,16 +3189,13 @@
       <div style="display:flex;gap:6px;margin-bottom:16px;align-items:center;flex-wrap:wrap">
         <span
           style="font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--outline);margin-right:4px">Exibir:</span>
-        <button class="hist-view-btn active" id="hist-btn-tudo" onclick="setHistView('tudo')"
+        <button type="button" class="hist-view-btn active" id="hist-btn-tudo" onclick="setHistView('tudo')"
           style="font-family:var(--font);font-size:.72rem;font-weight:700;padding:6px 14px;border-radius:8px;border:1.5px solid var(--primary-container);background:var(--primary-container);color:#fff;cursor:pointer;transition:all .15s">Tudo</button>
-        <button class="hist-view-btn" id="hist-btn-entregas" onclick="setHistView('entregas')"
-          style="font-family:var(--font);font-size:.72rem;font-weight:700;padding:6px 14px;border-radius:8px;border:1.5px solid var(--outline-variant);background:transparent;color:var(--outline);cursor:pointer;transition:all .15s">Só
+        <button type="button" class="hist-view-btn u-btn-outline-sm" id="hist-btn-entregas" onclick="setHistView('entregas')">Só
           Entregas</button>
-        <button class="hist-view-btn" id="hist-btn-chamados" onclick="setHistView('chamados')"
-          style="font-family:var(--font);font-size:.72rem;font-weight:700;padding:6px 14px;border-radius:8px;border:1.5px solid var(--outline-variant);background:transparent;color:var(--outline);cursor:pointer;transition:all .15s">Só
+        <button type="button" class="hist-view-btn u-btn-outline-sm" id="hist-btn-chamados" onclick="setHistView('chamados')">Só
           Chamados</button>
-        <button class="hist-view-btn" id="hist-btn-abastecimento" onclick="setHistView('abastecimento')"
-          style="font-family:var(--font);font-size:.72rem;font-weight:700;padding:6px 14px;border-radius:8px;border:1.5px solid var(--outline-variant);background:transparent;color:var(--outline);cursor:pointer;transition:all .15s">🏭
+        <button type="button" class="hist-view-btn u-btn-outline-sm" id="hist-btn-abastecimento" onclick="setHistView('abastecimento')">🏭
           Abastecimento de Estoque</button>
       </div>
 
@@ -3259,8 +3364,8 @@
         </div>
 
         <div class="btn-row" style="margin-bottom:0;margin-top:14px">
-          <button class="btn btn-primary" onclick="renderAnalise()">Aplicar filtros</button>
-          <button class="btn btn-secondary" onclick="limparFiltrosAnalise()">Limpar filtros</button>
+          <button type="button" class="btn btn-primary" onclick="renderAnalise()">Aplicar filtros</button>
+          <button type="button" class="btn btn-secondary" onclick="limparFiltrosAnalise()">Limpar filtros</button>
         </div>
       </div>
 
@@ -3328,7 +3433,7 @@
       </div>
 
       <div class="analise-submenu">
-        <button class="analise-subtab active" onclick="trocarSubtab('sla',this)">SLA</button>
+        <button type="button" class="analise-subtab active" onclick="trocarSubtab('sla',this)">SLA</button>
       </div>
 
       <!-- SUB-PAINEL: GERAL -->
@@ -3403,10 +3508,10 @@
           <div class="analise-rank-head">
             <span class="analise-rank-head-title">Ranking por Cliente</span>
             <div class="analise-rank-tabs">
-              <button class="analise-rank-tab active" onclick="switchAnTab('cli',this,'total')">Total</button>
-              <button class="analise-rank-tab" onclick="switchAnTab('cli',this,'media')">Média/dia</button>
-              <button class="analise-rank-tab" onclick="switchAnTab('cli',this,'semana')">Média/sem</button>
-              <button class="analise-rank-tab" onclick="switchAnTab('cli',this,'mes')">Média/mês</button>
+              <button type="button" class="analise-rank-tab active" onclick="switchAnTab('cli',this,'total')">Total</button>
+              <button type="button" class="analise-rank-tab" onclick="switchAnTab('cli',this,'media')">Média/dia</button>
+              <button type="button" class="analise-rank-tab" onclick="switchAnTab('cli',this,'semana')">Média/sem</button>
+              <button type="button" class="analise-rank-tab" onclick="switchAnTab('cli',this,'mes')">Média/mês</button>
             </div>
           </div>
           <div class="table-wrap analise-rank-table">
@@ -3449,10 +3554,10 @@
             </div>
 
             <div class="analise-rank-tabs" id="an-patr-tabs">
-              <button class="analise-rank-tab active" onclick="switchAnTab('patr',this,'total')">Total</button>
-              <button class="analise-rank-tab" onclick="switchAnTab('patr',this,'media')">Média/dia</button>
-              <button class="analise-rank-tab" onclick="switchAnTab('patr',this,'semana')">Média/sem</button>
-              <button class="analise-rank-tab" onclick="switchAnTab('patr',this,'mes')">Média/mês</button>
+              <button type="button" class="analise-rank-tab active" onclick="switchAnTab('patr',this,'total')">Total</button>
+              <button type="button" class="analise-rank-tab" onclick="switchAnTab('patr',this,'media')">Média/dia</button>
+              <button type="button" class="analise-rank-tab" onclick="switchAnTab('patr',this,'semana')">Média/sem</button>
+              <button type="button" class="analise-rank-tab" onclick="switchAnTab('patr',this,'mes')">Média/mês</button>
             </div>
           </div>
           <div class="table-wrap analise-rank-table">
