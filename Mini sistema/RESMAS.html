@@ -2640,6 +2640,31 @@
   .u-br0-bs-none { border-radius: 0 !important; box-shadow: none !important; }
   .u-h-32 { height: 32px !important; }
   .u-fs-07 { font-size: .7rem !important; }
+  .u-title-kpi { font-size: 1.1rem !important; font-weight: 600 !important; color: var(--samsung-black) !important; letter-spacing: -.01em !important; }
+  .u-sub-kpi { font-size: .82rem !important; color: var(--samsung-gray-4) !important; margin-top: 4px !important; }
+  .u-p-20-24-mb24 { padding: 20px 24px !important; margin-bottom: 24px !important; }
+  .u-mb16 { margin-bottom: 16px !important; }
+  .u-pl-36 { padding-left: 36px !important; }
+  .u-mt16-mb0 { margin-top: 16px !important; margin-bottom: 0 !important; }
+  .u-grid-4-fr { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; }
+  .u-mb8 { margin-bottom: 8px !important; }
+  .u-flex-gap-6 { display: flex !important; gap: 6px !important; align-items: center !important; }
+  .u-c-outline-fs-07 { color: var(--outline) !important; font-size: .7rem !important; }
+  .u-badge-ia-small { background: var(--primary-container) !important; color: #fff !important; border-radius: 4px !important; padding: 1px 6px !important; font-size: .58rem !important; font-weight: 700 !important; margin-right: 4px !important; }
+  .u-badge-ia-green { background: #007861 !important; color: #fff !important; border-radius: 4px !important; padding: 1px 6px !important; font-size: .58rem !important; font-weight: 700 !important; margin-right: 4px !important; }
+  .u-table-fixed { width: 100% !important; border-collapse: collapse !important; table-layout: fixed !important; }
+  .u-h-220-relative { height: 220px !important; position: relative !important; }
+  .u-c-variant-lh-17-p-4-0-12 { font-size: .8rem !important; color: var(--on-surface-variant) !important; line-height: 1.7 !important; padding: 4px 0 12px !important; }
+  .u-min-w-400 { min-width: 400px !important; }
+  .u-min-w-600 { min-width: 600px !important; }
+  .u-w-32 { width: 32px !important; }
+  .u-modal-overlay-custom { position: fixed !important; inset: 0 !important; background: rgba(25,28,29,.45) !important; z-index: 1000 !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+  .u-modal-content-custom { background: var(--surface-lowest) !important; border-radius: var(--radius) !important; box-shadow: 0 8px 40px rgba(0,0,0,.18) !important; width: min(900px, 96vw) !important; max-height: 85vh !important; display: flex !important; flex-direction: column !important; }
+  .u-modal-header-custom { display: flex !important; align-items: center !important; justify-content: space-between !important; padding: 16px 20px !important; border-bottom: 1px solid rgba(196,198,207,.2) !important; }
+  .u-modal-body-custom { overflow: auto !important; flex: 1 !important; padding: 4px 0 !important; }
+  .u-modal-close-custom { border: none !important; background: transparent !important; cursor: pointer !important; color: var(--outline) !important; font-size: 1.2rem !important; padding: 4px !important; }
+  .u-p-20-24-mb20 { padding: 20px 24px !important; margin-bottom: 20px !important; }
+  .u-badge-ia-red { background: var(--error) !important; color: #fff !important; border-radius: 4px !important; padding: 1px 6px !important; font-size: .58rem !important; font-weight: 700 !important; margin-right: 4px !important; }
   </style>
 </head>
 
@@ -2937,17 +2962,15 @@
     <!-- ==================== TAB KPIs ==================== -->
     <div id="tab-kpis" class="panel">
 
-      <div style="margin-bottom:20px">
-        <h2 style="font-size:1.1rem;font-weight:600;color:var(--samsung-black);letter-spacing:-.01em">Indicadores de
-          Desempenho</h2>
-        <p style="font-size:.82rem;color:var(--samsung-gray-4);margin-top:4px">Rankings filtráveis por período, cliente
-          e técnico</p>
+      <div class="u-mb20">
+        <h2 class="u-title-kpi">Indicadores de Desempenho</h2>
+        <p class="u-sub-kpi">Rankings filtráveis por período, cliente e técnico</p>
       </div>
 
       <!-- FILTROS KPI -->
-      <div class="block" style="padding:20px 24px;margin-bottom:24px">
+      <div class="block u-p-20-24-mb24">
         <div class="block-title u-mb16-pb12">Filtros</div>
-        <div class="controls-grid" style="margin-bottom:16px">
+        <div class="controls-grid u-mb16">
           <div class="control-group">
             <label>Cidade (Estoque)</label>
             <div class="ms-wrap" id="ms-wrap-kpi-cidade">
@@ -2995,11 +3018,10 @@
           </div>
           <div class="control-group">
             <label>Patrimônio</label>
-            <div style="position:relative">
-              <span class="material-symbols-outlined"
-                style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:.9rem;color:var(--outline);pointer-events:none">search</span>
+            <div class="u-relative">
+              <span class="material-symbols-outlined u-absolute-cy u-search-icon">search</span>
               <input type="text" id="kpi-patrimonio" placeholder="Digite o nº do patrimônio..."
-                style="padding-left:36px" oninput="renderKpisVisuais()">
+                class="u-pl-36" oninput="renderKpisVisuais()">
             </div>
           </div>
           <div class="control-group">
@@ -3039,7 +3061,7 @@
             </div>
           </div>
         </div>
-        <div class="btn-row" style="margin-top:16px;margin-bottom:0">
+        <div class="btn-row u-mt16-mb0">
           <button type="button" class="btn btn-secondary" onclick="limparFiltrosKpi()">Limpar filtros</button>
         </div>
       </div>
@@ -3104,17 +3126,15 @@
 
     <!-- ==================== TAB ESTOQUE ==================== -->
     <div id="tab-estoque" class="panel">
-      <div style="margin-bottom:20px">
-        <h2 style="font-size:1.1rem;font-weight:600;color:var(--samsung-black);letter-spacing:-.01em">Saldo por Cidade
-        </h2>
-        <p style="font-size:.82rem;color:var(--samsung-gray-4);margin-top:4px">Estoque recebido × distribuições
-          realizadas via OS</p>
+      <div class="u-mb20">
+        <h2 class="u-title-kpi">Saldo por Cidade</h2>
+        <p class="u-sub-kpi">Estoque recebido × distribuições realizadas via OS</p>
       </div>
 
       <!-- FILTRO DATA ESTOQUE -->
-      <div class="block" style="padding:20px 24px;margin-bottom:20px">
+      <div class="block u-p-20-24-mb20">
         <div class="block-title u-mb16-pb12">Filtrar por Data de Entrada</div>
-        <div style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap">
+        <div class="u-flex-center-wrap u-gap-16 u-items-end">
           <div class="control-group" style="min-width:160px">
             <label>Início</label>
             <input type="date" id="est-data-ini" onchange="renderEstoque()">
@@ -3125,12 +3145,12 @@
           </div>
           <button type="button" class="btn btn-secondary u-mb0" onclick="limparFiltroEstoque()">Limpar</button>
         </div>
-        <div id="est-periodo-label" style="margin-top:10px;font-size:.78rem;color:var(--samsung-gray-4);display:none">
+        <div id="est-periodo-label" class="u-mt10 u-fs-078 u-samsung-gray-4 u-hidden">
         </div>
       </div>
 
       <div id="estoque-grid" class="estoque-grid">
-        <div style="grid-column:1/-1">
+        <div class="u-grid-full">
           <div class="empty">
             <div class="empty-icon">📦</div>
             <p>Nenhum dado carregado</p>
@@ -3443,14 +3463,14 @@
                 <input type="checkbox" id="ms-all-export-ana" checked onclick="msToggleAll('export-ana', event)">
                 Selecionar Todos
               </label>
-              <label class="ms-option ms-item-wrap" style="opacity:0.6;pointer-events:none">
+              <label class="ms-option ms-item-wrap u-opacity-06 u-pointer-none">
                 <input type="checkbox" class="ms-item" value="kpis" checked disabled> Total e Média (Obrigatório)
               </label>
               <label class="ms-option ms-item-wrap"><input type="checkbox" class="ms-item" value="volume" checked
                   onchange="msOnItem('export-ana')"> Volume por Dia de Criação</label>
               <label class="ms-option ms-item-wrap"><input type="checkbox" class="ms-item" value="tipo" checked
                   onchange="msOnItem('export-ana')"> Distribuição por Tipo</label>
-              <label class="ms-option ms-item-wrap" style="padding-left:1.8rem;opacity:.8"><input type="checkbox"
+              <label class="ms-option ms-item-wrap u-pl-18-op-08"><input type="checkbox"
                   class="ms-item" value="add-resmas" onchange="msOnItem('export-ana')"> + Incluir Total de
                 Resmas</label>
               <label class="ms-option ms-item-wrap"><input type="checkbox" class="ms-item" value="status" checked
@@ -3604,11 +3624,11 @@
               <div class="an-rank-export-group">
                 <button type="button" class="an-rank-export-btn excel" onclick="exportarRankingPatr('excel')"
                   title="Exportar Ranking para Excel">
-                  <span class="material-symbols-outlined" style="font-size:1.2rem">description</span>
+                  <span class="material-symbols-outlined u-fs-12">description</span>
                 </button>
                 <button type="button" class="an-rank-export-btn pdf" onclick="exportarRankingPatr('pdf')"
                   title="Exportar Ranking para PDF">
-                  <span class="material-symbols-outlined" style="font-size:1.2rem">picture_as_pdf</span>
+                  <span class="material-symbols-outlined u-fs-12">picture_as_pdf</span>
                 </button>
               </div>
             </div>
@@ -3624,12 +3644,11 @@
             <table>
               <thead>
                 <tr>
-                   <th style="width:36px">#</th>
-                   <th style="cursor:pointer" onclick="sortAnPatr('patr')">Patrimônio</th>
-                   <th style="cursor:pointer" onclick="sortAnPatr('cliente')">Cliente</th>
-                   <th class="td-center" style="cursor:pointer" onclick="sortAnPatr('chamados')">Chamados</th>
-                   <th class="td-center" style="cursor:pointer" onclick="sortAnPatr('resmas')">Resmas</th>
-                   <th class="td-center" style="cursor:pointer" onclick="sortAnPatr('prod')">Prod. Contador</th>
+                   <th class="u-w-36">#</th>
+                   <th class="u-pointer" onclick="sortAnPatr('patr')">Patrimônio</th>
+                   <th class="u-pointer" onclick="sortAnPatr('cliente')">Cliente</th>
+                   <th class="td-center u-pointer" onclick="sortAnPatr('chamados')">Chamados</th>
+                   <th class="td-center u-pointer" onclick="sortAnPatr('resmas')">Resmas</th>
                    <th class="td-center u-pointer" onclick="sortAnPatr('prod')">Prod. Contador</th>
                    <th class="td-center u-pointer" onclick="sortAnPatr('folha')">Folha</th>
                    <th class="td-center u-pointer" onclick="sortAnPatr('auditoria')">Dif. Auditoria</th>
@@ -3740,7 +3759,7 @@
               <table>
                 <thead>
                   <tr>
-                    <th style="width:36px">#</th>
+                    <th class="u-w-36">#</th>
                     <th>Patrimônio</th>
                     <th>Cliente</th>
                     <th class="td-center">Chamados</th>
@@ -3752,7 +3771,7 @@
               </table>
             </div>
           </div>
-          <div class="analise-rank-wrap" style="margin-bottom:0">
+          <div class="analise-rank-wrap u-mb0">
             <div class="analise-rank-head">
               <span class="analise-rank-head-title">Top Clientes — Maior Tempo</span>
             </div>
@@ -3760,7 +3779,7 @@
               <table>
                 <thead>
                   <tr>
-                    <th style="width:36px">#</th>
+                    <th class="u-w-36">#</th>
                     <th>Cliente</th>
                     <th class="td-center">Chamados</th>
                     <th class="td-center">Média (dias úteis)</th>
@@ -3784,11 +3803,10 @@
       <!-- UPLOADS COMPARAÇÃO -->
       <div class="block">
         <div class="block-title">Carregar Arquivos para Comparação</div>
-        <div class="uploads-row" style="grid-template-columns:repeat(4,1fr)">
+        <div class="uploads-row u-grid-4-fr">
 
           <div>
-            <div class="section-label" style="margin-bottom:8px">Período 1 <span
-                style="color:var(--error);font-size:.65rem">*obrigatório</span></div>
+            <div class="section-label u-mb8">Período 1 <span class="u-error u-fs-065">*obrigatório</span></div>
             <div class="upload-zone" id="cmp-zone-1">
               <input type="file" id="cmp-file-1" accept=".csv">
               <div class="upload-icon">📋</div>
@@ -3800,8 +3818,7 @@
           </div>
 
           <div>
-            <div class="section-label" style="margin-bottom:8px">Período 2 <span
-                style="color:var(--outline);font-size:.65rem">opcional</span></div>
+            <div class="section-label u-mb8">Período 2 <span class="u-outline u-fs-065">opcional</span></div>
             <div class="upload-zone" id="cmp-zone-2">
               <input type="file" id="cmp-file-2" accept=".csv">
               <div class="upload-icon">📋</div>
@@ -3813,8 +3830,7 @@
           </div>
 
           <div>
-            <div class="section-label" style="margin-bottom:8px">Período 3 <span
-                style="color:var(--outline);font-size:.65rem">opcional</span></div>
+            <div class="section-label u-mb8">Período 3 <span class="u-outline u-fs-065">opcional</span></div>
             <div class="upload-zone" id="cmp-zone-3">
               <input type="file" id="cmp-file-3" accept=".csv">
               <div class="upload-icon">📋</div>
@@ -3826,8 +3842,7 @@
           </div>
 
           <div>
-            <div class="section-label" style="margin-bottom:8px">Período 4 <span
-                style="color:var(--outline);font-size:.65rem">opcional</span></div>
+            <div class="section-label u-mb8">Período 4 <span class="u-outline u-fs-065">opcional</span></div>
             <div class="upload-zone" id="cmp-zone-4">
               <input type="file" id="cmp-file-4" accept=".csv">
               <div class="upload-icon">📋</div>
@@ -3942,36 +3957,36 @@
 
             <div class="control-group">
               <label>Data Criação</label>
-              <div style="display:flex;gap:6px;align-items:center">
+              <div class="u-flex-gap-6">
                 <input type="date" id="cmp-cri-ini" class="date-input-cmp" placeholder="De">
-                <span style="color:var(--outline);font-size:.7rem">—</span>
+                <span class="u-c-outline-fs-07">—</span>
                 <input type="date" id="cmp-cri-fim" class="date-input-cmp" placeholder="Até">
               </div>
             </div>
 
             <div class="control-group">
               <label>Data Fechamento</label>
-              <div style="display:flex;gap:6px;align-items:center">
+              <div class="u-flex-gap-6">
                 <input type="date" id="cmp-enc-ini" class="date-input-cmp" placeholder="De">
-                <span style="color:var(--outline);font-size:.7rem">—</span>
+                <span class="u-c-outline-fs-07">—</span>
                 <input type="date" id="cmp-enc-fim" class="date-input-cmp" placeholder="Até">
               </div>
             </div>
 
             <div class="control-group">
               <label>Início Programado</label>
-              <div style="display:flex;gap:6px;align-items:center">
+              <div class="u-flex-gap-6">
                 <input type="date" id="cmp-iprog-ini" class="date-input-cmp" placeholder="De">
-                <span style="color:var(--outline);font-size:.7rem">—</span>
+                <span class="u-c-outline-fs-07">—</span>
                 <input type="date" id="cmp-iprog-fim" class="date-input-cmp" placeholder="Até">
               </div>
             </div>
 
             <div class="control-group">
               <label>Término Programado</label>
-              <div style="display:flex;gap:6px;align-items:center">
+              <div class="u-flex-gap-6">
                 <input type="date" id="cmp-tprog-ini" class="date-input-cmp" placeholder="De">
-                <span style="color:var(--outline);font-size:.7rem">—</span>
+                <span class="u-c-outline-fs-07">—</span>
                 <input type="date" id="cmp-tprog-fim" class="date-input-cmp" placeholder="Até">
               </div>
             </div>
@@ -3979,7 +3994,7 @@
           </div>
         </div>
 
-        <div class="btn-row" style="margin-bottom:0">
+        <div class="btn-row u-mb0">
           <button type="button" class="btn btn-primary" onclick="renderComparacao()">Aplicar filtros</button>
           <button type="button" class="btn btn-secondary" onclick="limparFiltrosCmp()">Limpar</button>
         </div>
@@ -3992,7 +4007,7 @@
         <div class="export-row" id="cmp-export-row">
           <div class="export-field">
             <label>Relatórios</label>
-            <div class="ms-wrap" id="ms-wrap-export-tipo" style="min-width: 200px;">
+            <div class="ms-wrap u-min-w-200" id="ms-wrap-export-tipo">
               <button class="ms-trigger" type="button" onclick="toggleMs('export-tipo')" id="ms-btn-export-tipo">
                 <span class="ms-trigger-label" id="ms-label-export-tipo">Todos os relatórios</span>
                 <span class="ms-trigger-arrow">▼</span>
@@ -4042,19 +4057,17 @@
         </div>
 
         <!-- SUB-ABAS -->
-        <div class="analise-submenu" style="margin-bottom:20px">
+        <!-- SUB-ABAS -->
+        <div class="analise-submenu u-mb20">
           <button type="button" class="analise-subtab active" onclick="trocarSubtabCmp('comparativo',this)">Comparativo</button>
           <button type="button" class="analise-subtab" onclick="trocarSubtabCmp('analise',this)">
-            <span
-              style="background:var(--primary-container);color:#fff;border-radius:4px;padding:1px 6px;font-size:.58rem;font-weight:700;margin-right:4px">IA</span>Análise
+            <span class="u-badge-ia-small">IA</span>Análise
           </button>
           <button type="button" class="analise-subtab" onclick="trocarSubtabCmp('previsao',this)">
-            <span
-              style="background:#007861;color:#fff;border-radius:4px;padding:1px 6px;font-size:.58rem;font-weight:700;margin-right:4px">IA</span>Previsão
+            <span class="u-badge-ia-green">IA</span>Previsão
           </button>
           <button type="button" class="analise-subtab" onclick="trocarSubtabCmp('recorrentes',this)">
-            <span class="material-symbols-outlined"
-              style="font-size:.85rem;vertical-align:middle;margin-right:3px">autorenew</span>Recorrentes
+            <span class="material-symbols-outlined u-icon-085-vm u-mr-4">autorenew</span>Recorrentes
           </button>
         </div>
 
@@ -4070,7 +4083,7 @@
             <div class="analise-rank-head"><span class="analise-rank-head-title">Comparativo por Tipo de Chamado</span>
             </div>
             <div class="table-wrap analise-rank-table">
-              <table style="width:100%;border-collapse:collapse;table-layout:fixed">
+              <table class="u-table-fixed">
                 <thead>
                   <tr id="cmp-thead-tipo"></tr>
                 </thead>
@@ -4082,7 +4095,7 @@
           <div class="analise-rank-wrap u-mb14">
             <div class="analise-rank-head"><span class="analise-rank-head-title">Comparativo por Motivo</span></div>
             <div class="table-wrap analise-rank-table">
-              <table style="width:100%;border-collapse:collapse;table-layout:fixed">
+              <table class="u-table-fixed">
                 <thead>
                   <tr id="cmp-thead-motivo"></tr>
                 </thead>
@@ -4091,11 +4104,11 @@
             </div>
           </div>
 
-          <div class="analise-rank-wrap" style="margin-bottom:0">
+          <div class="analise-rank-wrap u-mb0">
             <div class="analise-rank-head"><span class="analise-rank-head-title">Comparativo de SLA — Dias Úteis</span>
             </div>
             <div class="table-wrap analise-rank-table">
-              <table style="width:100%;border-collapse:collapse;table-layout:fixed">
+              <table class="u-table-fixed">
                 <thead>
                   <tr id="cmp-thead-sla"></tr>
                 </thead>
@@ -4111,13 +4124,13 @@
 
           <div class="analise-chart-wrap u-mb14">
             <div class="analise-chart-title">Chamados por Dia do Mês — Comparação entre Períodos</div>
-            <div style="height:220px;position:relative">
+            <div class="u-h-220-relative">
               <canvas id="cmp-chart-dias"></canvas>
             </div>
           </div>
 
           <div class="analise-chart-wrap u-mb0">
-            <div class="analise-chart-title u-flex u-gap-6">
+            <div class="analise-chart-title u-flex-center u-gap-6">
               <span class="u-badge-ia">IA</span>
               Análise dos Padrões de Movimentação
             </div>
@@ -4132,32 +4145,28 @@
         <div id="cmp-subpanel-previsao" class="analise-subpanel">
 
           <!-- CARDS TOTAIS -->
-          <div id="cmp-prev-cards" style="display:none;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px">
-          </div>
+          <div id="cmp-prev-cards" class="u-grid-4-fr u-gap-14 u-mb14 u-hidden"></div>
 
           <div class="analise-chart-wrap u-mb14">
-            <div class="analise-chart-title" style="display:flex;align-items:center;gap:8px">
-              <span
-                style="background:#007861;color:#fff;border-radius:6px;padding:2px 8px;font-size:.6rem;font-weight:700;letter-spacing:.06em">IA</span>
+            <div class="analise-chart-title u-flex-center u-gap-8">
+              <span class="u-badge-ia-green">IA</span>
               Previsão para o Próximo Período
             </div>
-            <div id="cmp-prev-resumo"
-              style="font-size:.8rem;color:var(--on-surface-variant);line-height:1.7;padding:4px 0 12px">
-              <span style="color:var(--outline)">Carregue ao menos 2 períodos para gerar a previsão.</span>
+            <div id="cmp-prev-resumo" class="u-c-variant-lh-17-p-4-0-12">
+              <span class="u-outline">Carregue ao menos 2 períodos para gerar a previsão.</span>
             </div>
-            <div style="height:220px;position:relative;display:none" id="cmp-prev-chart-wrap">
+            <div id="cmp-prev-chart-wrap" class="u-h-220-relative u-hidden">
               <canvas id="cmp-chart-previsao"></canvas>
             </div>
           </div>
 
-          <div class="analise-rank-wrap" style="margin-bottom:0" id="cmp-prev-table-wrap" style="display:none">
+          <div class="analise-rank-wrap u-mb0 u-hidden" id="cmp-prev-table-wrap">
             <div class="analise-rank-head">
               <span class="analise-rank-head-title">Estimativa por Dia do Mês</span>
-              <span style="font-size:.65rem;color:var(--outline);font-weight:400">baseado na média dos períodos
-                anteriores</span>
+              <span class="u-outline u-fs-065 u-font-400">baseado na média dos períodos anteriores</span>
             </div>
             <div class="table-wrap analise-rank-table">
-              <table style="min-width:400px">
+              <table class="u-min-w-400">
                 <thead>
                   <tr>
                     <th>Dia</th>
@@ -4213,41 +4222,24 @@
         </div><!-- /recorrentes -->
 
         <!-- Modal recorrentes -->
-        <div id="cmp-rec-modal-overlay" onclick="fecharRecModal(event)"
-          style="display:none;position:fixed;inset:0;background:rgba(25,28,29,.45);z-index:1000;align-items:center;justify-content:center">
-          <div onclick="event.stopPropagation()"
-            style="background:var(--surface-lowest);border-radius:var(--radius);box-shadow:0 8px 40px rgba(0,0,0,.18);width:min(900px,96vw);max-height:85vh;display:flex;flex-direction:column">
-            <div
-              style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(196,198,207,.2)">
+        <div id="cmp-rec-modal-overlay" onclick="fecharRecModal(event)" class="u-modal-overlay-custom u-hidden">
+          <div onclick="event.stopPropagation()" class="u-modal-content-custom">
+            <div class="u-modal-header-custom">
               <div>
-                <div
-                  style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--outline)"
-                  id="cmp-rec-modal-sub"></div>
-                <div style="font-size:1rem;font-weight:700;color:var(--on-surface)" id="cmp-rec-modal-title">Chamados do
-                  Patrimônio</div>
+                <div class="u-outline u-fs-065 u-font-700 u-ls-01 u-ttu" id="cmp-rec-modal-sub"></div>
+                <div class="u-font-700 u-c-surface" id="cmp-rec-modal-title">Chamados do Patrimônio</div>
               </div>
-              <button type="button" onclick="fecharRecModal()"
-                style="border:none;background:transparent;cursor:pointer;color:var(--outline);font-size:1.2rem;padding:4px">✕</button>
+              <button type="button" onclick="fecharRecModal()" class="u-modal-close-custom">✕</button>
             </div>
-            <div style="overflow:auto;flex:1;padding:4px 0">
-              <table style="width:100%;border-collapse:collapse;min-width:600px">
-                <thead style="position:sticky;top:0;background:var(--surface-low)">
+            <div class="u-modal-body-custom">
+              <table class="u-table-fixed u-min-w-600">
+                <thead class="u-sticky-top u-bg-surface-low">
                   <tr>
-                    <th
-                      style="padding:10px 16px;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--outline);text-align:left">
-                      #</th>
-                    <th
-                      style="padding:10px 16px;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--outline);text-align:left">
-                      OS</th>
-                    <th
-                      style="padding:10px 16px;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--outline);text-align:left">
-                      Data</th>
-                    <th
-                      style="padding:10px 16px;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--outline);text-align:left">
-                      Tipo</th>
-                    <th
-                      style="padding:10px 16px;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--outline);text-align:left">
-                      Motivo</th>
+                    <th class="u-p-10-16 u-fs-06 u-ls-01 u-ttu u-outline u-text-left">#</th>
+                    <th class="u-p-10-16 u-fs-06 u-ls-01 u-ttu u-outline u-text-left">OS</th>
+                    <th class="u-p-10-16 u-fs-06 u-ls-01 u-ttu u-outline u-text-left">Data</th>
+                    <th class="u-p-10-16 u-fs-06 u-ls-01 u-ttu u-outline u-text-left">Tipo</th>
+                    <th class="u-p-10-16 u-fs-06 u-ls-01 u-ttu u-outline u-text-left">Motivo</th>
                     <th
                       class="u-p-10-16 u-fs-06 u-ls-01 u-ttu u-outline u-text-left">
                       Status</th>
@@ -4336,7 +4328,7 @@
                 <span class="ms-trigger-arrow">▼</span>
               </button>
               <div class="ms-dropdown" id="ms-drop-export-km">
-                <label class="ms-option ms-item-wrap" style="opacity:0.6;pointer-events:none">
+                <label class="ms-option ms-item-wrap u-opacity-06 u-pointer-none">
                   <input type="checkbox" class="ms-item" value="km" checked disabled> Comparativo de KM (Obrigatório)
                 </label>
               </div>
@@ -4422,7 +4414,7 @@
       </div>
       <div class="donut-modal-body">
         <!-- Resumo de Produção (aparece apenas para patrimônio) -->
-        <div id="donut-modal-stats-wrap" class="modal-stats-row" style="display:none"></div>
+        <div id="donut-modal-stats-wrap" class="modal-stats-row u-hidden"></div>
 
         <div class="table-wrap u-br0-bs-none">
           <table>
