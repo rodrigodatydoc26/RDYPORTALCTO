@@ -2612,6 +2612,34 @@
   .u-fs-08 { font-size: .8rem !important; }
   .u-lh-17 { line-height: 1.7 !important; }
   .u-badge-ia { background: var(--primary-container) !important; color: #fff !important; border-radius: 6px !important; padding: 2px 8px !important; font-size: .6rem !important; font-weight: 700 !important; letter-spacing: .06em !important; }
+  .u-accent-red { background: #CC0000 !important; }
+  .u-accent-gold { background: #FFD700 !important; }
+  .u-accent-pink { background: #FF007A !important; }
+  .u-accent-blue { background: #0066FF !important; }
+  .u-clock-style { font-family: 'Outfit', monospace !important; font-weight: 700 !important; font-size: 12px !important; color: var(--text-dim) !important; margin-left: 4px !important; }
+  .u-grid-1-auto { display: grid !important; grid-template-columns: 1fr auto !important; align-items: start !important; }
+  .u-grid-6-fr { display: grid !important; grid-template-columns: repeat(6, 1fr) !important; }
+  .u-bl-sla-ok { border-left: 3px solid #007861 !important; }
+  .u-bl-sla-warn { border-left: 3px solid #b07800 !important; }
+  .u-bl-sla-alert { border-left: 3px solid #BA1A1A !important; }
+  .u-bl-sla-critical { border-left: 3px solid #7B0000 !important; }
+  .u-bl-sla-gray { border-left: 3px solid #74777F !important; }
+  .u-c-sla-critical { color: #7B0000 !important; }
+  .u-c-sla-gray { color: #74777F !important; }
+  .u-min-w-280 { min-width: 280px !important; }
+  .u-min-w-780 { min-width: 780px !important; }
+  .u-pointer { cursor: pointer !important; }
+  .u-fs-065 { font-size: .65rem !important; }
+  .u-w-36 { width: 36px !important; }
+  .u-p-24 { padding: 24px !important; }
+  .u-mb20 { margin-bottom: 20px !important; }
+  .u-mb10 { margin-bottom: 10px !important; }
+  .u-mb12 { margin-bottom: 12px !important; }
+  .u-mt-60 { margin-top: 60px !important; }
+  .u-mt-80 { margin-top: 80px !important; }
+  .u-br0-bs-none { border-radius: 0 !important; box-shadow: none !important; }
+  .u-h-32 { height: 32px !important; }
+  .u-fs-07 { font-size: .7rem !important; }
   </style>
 </head>
 
@@ -2661,14 +2689,14 @@
     <div class="topbar-right">
       <div class="theme-picker">
         <div class="accent-pill">
-          <div class="color-dot active" style="background:#CC0000" onclick="setAccent('#CC0000',this)"></div>
-          <div class="color-dot" style="background:#FFD700" onclick="setAccent('#FFD700',this)"></div>
-          <div class="color-dot" style="background:#FF007A" onclick="setAccent('#FF007A',this)"></div>
-          <div class="color-dot" style="background:#0066FF" onclick="setAccent('#0066FF',this)"></div>
+          <div class="color-dot active u-accent-red" onclick="setAccent('#CC0000',this)"></div>
+          <div class="color-dot u-accent-gold" onclick="setAccent('#FFD700',this)"></div>
+          <div class="color-dot u-accent-pink" onclick="setAccent('#FF007A',this)"></div>
+          <div class="color-dot u-accent-blue" onclick="setAccent('#0066FF',this)"></div>
         </div>
         <div class="mode-toggle" id="btnTheme"><i data-lucide="moon" id="themeIcon"></i></div>
       </div>
-      <span id="resmas-clock" style="font-family:'Outfit',monospace;font-weight:700;font-size:12px;color:var(--text-dim);margin-left:4px">--:--</span>
+      <span id="resmas-clock" class="u-clock-style">--:--</span>
     </div>
   </div>
 
@@ -2681,7 +2709,7 @@
     </div>
 
     <!-- TABS (hidden — navegação pela sidebar) -->
-    <div class="tabs-wrap" style="display:none">
+    <div class="tabs-wrap u-hidden">
       <button type="button" class="tab active" onclick="trocarTab('entregas')">KPIS LOC1</button>
       <button type="button" class="tab" onclick="trocarTab('kpis')">KPIs</button>
       <button type="button" class="tab" onclick="trocarTab('estoque')">Estoque por Cidade</button>
@@ -2737,7 +2765,7 @@
               </div>
             </div>
             <!-- hidden select mantido para compatibilidade com filtrar() -->
-            <select id="sel-cidade" style="display:none"></select>
+            <select id="sel-cidade" class="u-hidden"></select>
           </div>
           <div class="control-group">
             <label>Cliente</label>
@@ -3602,9 +3630,10 @@
                    <th class="td-center" style="cursor:pointer" onclick="sortAnPatr('chamados')">Chamados</th>
                    <th class="td-center" style="cursor:pointer" onclick="sortAnPatr('resmas')">Resmas</th>
                    <th class="td-center" style="cursor:pointer" onclick="sortAnPatr('prod')">Prod. Contador</th>
-                   <th class="td-center" style="cursor:pointer" onclick="sortAnPatr('folha')">Folha</th>
-                   <th class="td-center" style="cursor:pointer" onclick="sortAnPatr('auditoria')">Dif. Auditoria</th>
-                   <th class="td-center" id="an-patr-col-label" style="cursor:pointer" onclick="sortAnPatr('metric')">% Chamados</th>
+                   <th class="td-center u-pointer" onclick="sortAnPatr('prod')">Prod. Contador</th>
+                   <th class="td-center u-pointer" onclick="sortAnPatr('folha')">Folha</th>
+                   <th class="td-center u-pointer" onclick="sortAnPatr('auditoria')">Dif. Auditoria</th>
+                   <th class="td-center u-pointer" id="an-patr-col-label" onclick="sortAnPatr('metric')">% Chamados</th>
                   <th class="u-w100" aria-label="Barra de distribuição"></th>
                 </tr>
               </thead>
@@ -3620,53 +3649,53 @@
       <div id="subpanel-sla" class="analise-subpanel">
 
         <!-- KPIs SLA + DONUT -->
-        <div style="display:grid;grid-template-columns:1fr auto;gap:16px;margin-bottom:20px;align-items:start">
+        <div class="u-grid-1-auto u-gap-16 u-mb20">
 
           <!-- Cards clicáveis -->
-          <div class="sla-kpis" style="margin-bottom:0;grid-template-columns:repeat(6,1fr)">
-            <div class="sla-kpi" style="cursor:pointer" onclick="abrirModalSla('media')"
+          <div class="sla-kpis u-mb0 u-grid-6-fr">
+            <div class="sla-kpi u-pointer" onclick="abrirModalSla('media')"
               title="Ver todos os chamados encerrados">
               <div class="sla-kpi-label">Média de Dias p/ Encerrar</div>
               <div class="sla-kpi-value" id="sla-kpi-media">—</div>
               <div class="sla-kpi-sub" id="sla-kpi-media-sub">—</div>
             </div>
-            <div class="sla-kpi" style="cursor:pointer;border-left:3px solid #007861" onclick="abrirModalSla('dia0')"
+            <div class="sla-kpi u-pointer u-bl-sla-ok" onclick="abrirModalSla('dia0')"
               title="Ver chamados encerrados no mesmo dia">
               <div class="sla-kpi-label">Mesmo Dia</div>
               <div class="sla-kpi-value ok" id="sla-kpi-dia0">—</div>
               <div class="sla-kpi-sub" id="sla-kpi-dia0-sub">—</div>
             </div>
-            <div class="sla-kpi" style="cursor:pointer;border-left:3px solid #b07800" onclick="abrirModalSla('dia3')"
+            <div class="sla-kpi u-pointer u-bl-sla-warn" onclick="abrirModalSla('dia3')"
               title="Ver chamados encerrados em 1–3 dias">
               <div class="sla-kpi-label">1–2 Dias</div>
               <div class="sla-kpi-value warn" id="sla-kpi-dia3">—</div>
               <div class="sla-kpi-sub" id="sla-kpi-dia3-sub">—</div>
             </div>
-            <div class="sla-kpi" style="cursor:pointer;border-left:3px solid #BA1A1A" onclick="abrirModalSla('dia4')"
+            <div class="sla-kpi u-pointer u-bl-sla-alert" onclick="abrirModalSla('dia4')"
               title="Ver chamados que levaram 4+ dias">
               <div class="sla-kpi-label">3–4 Dias</div>
               <div class="sla-kpi-value alert" id="sla-kpi-dia4">—</div>
               <div class="sla-kpi-sub" id="sla-kpi-dia4-sub">—</div>
             </div>
-            <div class="sla-kpi" style="cursor:pointer;border-left:3px solid #7B0000" onclick="abrirModalSla('dia5')"
+            <div class="sla-kpi u-pointer u-bl-sla-critical" onclick="abrirModalSla('dia5')"
               title="Ver chamados que levaram 5+ dias">
               <div class="sla-kpi-label">5+ Dias</div>
-              <div class="sla-kpi-value" style="color:#7B0000" id="sla-kpi-dia5">—</div>
+              <div class="sla-kpi-value u-c-sla-critical" id="sla-kpi-dia5">—</div>
               <div class="sla-kpi-sub" id="sla-kpi-dia5-sub">—</div>
             </div>
-            <div class="sla-kpi" style="cursor:pointer;border-left:3px solid #74777F" onclick="abrirModalSla('aberto')"
+            <div class="sla-kpi u-pointer u-bl-sla-gray" onclick="abrirModalSla('aberto')"
               title="Ver chamados sem término programado">
               <div class="sla-kpi-label">Sem Programação</div>
-              <div class="sla-kpi-value" style="color:#74777F" id="sla-kpi-aberto">—</div>
+              <div class="sla-kpi-value u-c-sla-gray" id="sla-kpi-aberto">—</div>
               <div class="sla-kpi-sub" id="sla-kpi-aberto-sub">sem término</div>
             </div>
           </div>
 
           <!-- Donut SLA -->
-          <div class="analise-chart-wrap" style="margin-bottom:0;min-width:280px">
+          <div class="analise-chart-wrap u-mb0 u-min-w-280">
             <div class="analise-chart-title">Distribuição por Faixa de Atendimento</div>
             <div class="donut-flex">
-              <canvas id="sla-chart-donut" width="110" height="110" style="flex-shrink:0;cursor:pointer"
+              <canvas id="sla-chart-donut" width="110" height="110" class="u-donut-canvas u-pointer"
                 title="Clique numa fatia para ver os chamados"></canvas>
               <div class="donut-legend" id="sla-donut-legend"></div>
             </div>
@@ -3678,13 +3707,13 @@
         <div class="analise-rank-wrap u-mb14">
           <div class="analise-rank-head">
             <span class="analise-rank-head-title">Chamados — Período de Atendimento</span>
-            <span id="sla-total-label" style="font-size:.65rem;color:var(--outline);font-weight:600"></span>
+            <span id="sla-total-label" class="u-fs-065 u-outline u-font-600"></span>
           </div>
           <div class="table-wrap analise-rank-table">
-            <table style="min-width:780px">
+            <table class="u-min-w-780">
               <thead>
                 <tr>
-                  <th style="width:36px">#</th>
+                  <th class="u-w-36">#</th>
                   <th>OS</th>
                   <th>Cliente</th>
                   <th>Motivo</th>
@@ -4220,13 +4249,13 @@
                       style="padding:10px 16px;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--outline);text-align:left">
                       Motivo</th>
                     <th
-                      style="padding:10px 16px;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--outline);text-align:left">
+                      class="u-p-10-16 u-fs-06 u-ls-01 u-ttu u-outline u-text-left">
                       Status</th>
                     <th
-                      style="padding:10px 16px;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--outline);text-align:left">
+                      class="u-p-10-16 u-fs-06 u-ls-01 u-ttu u-outline u-text-left">
                       Técnico</th>
                     <th
-                      style="padding:10px 16px;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--outline);text-align:center">
+                      class="u-p-10-16 u-fs-06 u-ls-01 u-ttu u-outline u-text-center">
                       Intervalo</th>
                   </tr>
                 </thead>
@@ -4239,7 +4268,7 @@
       </div><!-- /cmp-resultado -->
 
       <!-- Empty state -->
-      <div id="cmp-empty" class="empty" style="margin-top:60px">
+      <div id="cmp-empty" class="empty u-mt-60">
         <div class="empty-icon">📊</div>
         <p>Carregue ao menos 1 arquivo CSV para começar</p>
         <small>Os arquivos devem ter o mesmo formato do CSV de chamados</small>
@@ -4251,14 +4280,14 @@
     <div id="tab-km" class="panel">
 
       <!-- INPUTS -->
-      <div class="block" style="padding:24px;margin-bottom:20px">
-        <div class="block-title" style="margin-bottom:20px;padding-bottom:12px">Inserir KM para Comparação</div>
+      <div class="block u-p-24 u-mb20">
+        <div class="block-title u-mb20 u-pb-12">Inserir KM para Comparação</div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;align-items:end">
+        <div class="u-grid-3 u-gap-24 u-items-end">
 
           <!-- KM 1 -->
           <div>
-            <div class="control-group" style="margin-bottom:10px">
+            <div class="control-group u-mb10">
               <label>Label — KM 1</label>
               <input type="text" id="km1-label" placeholder="Ex: Janeiro 2026" oninput="calcularKM()">
             </div>
@@ -4270,7 +4299,7 @@
 
           <!-- KM 2 -->
           <div>
-            <div class="control-group" style="margin-bottom:10px">
+            <div class="control-group u-mb10">
               <label>Label — KM 2</label>
               <input type="text" id="km2-label" placeholder="Ex: Fevereiro 2026" oninput="calcularKM()">
             </div>
@@ -4282,8 +4311,6 @@
 
           <!-- KM 3 (opcional) -->
           <div>
-            <div class="control-group" style="margin-bottom:10px">
-              <label>Label — KM 3 <span
                   style="color:var(--outline);font-size:.65rem;font-weight:400">(opcional)</span></label>
               <input type="text" id="km3-label" placeholder="Ex: Março 2026" oninput="calcularKM()">
             </div>
@@ -4300,12 +4327,11 @@
       <div id="km-resultado" style="display:none">
 
         <!-- EXPORT TOOLBAR -->
-        <div class="export-row" id="export-row-km" style="margin-top: 14px; margin-bottom: 24px;">
+        <div class="export-row u-mt-14 u-mb24" id="export-row-km">
           <div class="export-field">
             <label>Relatórios Selecionados</label>
             <div class="ms-wrap" id="ms-wrap-export-km">
-              <button class="ms-trigger" type="button" onclick="toggleMs('export-km')" id="ms-btn-export-km"
-                style="min-width: 200px;">
+              <button class="ms-trigger u-min-w-200" type="button" onclick="toggleMs('export-km')" id="ms-btn-export-km">
                 <span class="ms-trigger-label" id="ms-label-export-km">Comparativo de KM</span>
                 <span class="ms-trigger-arrow">▼</span>
               </button>
@@ -4339,15 +4365,14 @@
               </select>
             </div>
           </div>
-          <button type="button" class="btn btn-primary" onclick="executarExportacaoKM()"
-            style="align-self: flex-end; height: 36px; padding: 0 20px;">
-            <span class="material-symbols-outlined" style="font-size: 1.1rem;">download</span>
+          <button type="button" class="btn btn-primary u-btn-export" onclick="executarExportacaoKM()">
+            <span class="material-symbols-outlined u-icon-1-1">download</span>
             Exportar
           </button>
         </div>
 
         <!-- Cards lado a lado -->
-        <div id="km-cards" style="display:grid;gap:14px;margin-bottom:20px"></div>
+        <div id="km-cards" class="u-grid u-gap-14 u-mb20"></div>
 
         <!-- Tabela comparativa -->
         <div class="analise-rank-wrap u-mb14">
@@ -4367,7 +4392,7 @@
       </div>
 
       <!-- Empty state -->
-      <div id="km-empty" class="empty" style="margin-top:80px">
+      <div id="km-empty" class="empty u-mt-80">
         <div class="empty-icon">🛣️</div>
         <p>Preencha ao menos 2 campos de KM para comparar</p>
       </div>
@@ -4384,16 +4409,14 @@
           <div class="donut-modal-sub" id="donut-modal-sub">—</div>
         </div>
         <div class="donut-modal-actions">
-          <button type="button" class="btn btn-secondary" onclick="exportarModalExcel()"
-            style="padding:4px 12px; height:32px; font-size:.7rem; border-color:#217346; color:#217346">
-            <span class="material-symbols-outlined" style="font-size:1.1rem;margin-right:4px">download</span> Excel
+          <button type="button" class="btn btn-secondary u-btn-excel u-h-32 u-fs-07" onclick="exportarModalExcel()">
+            <span class="material-symbols-outlined u-icon-1-1 u-mr-4">download</span> Excel
           </button>
-          <button type="button" class="btn btn-secondary" onclick="exportarModalPDF()"
-            style="padding:4px 12px; height:32px; font-size:.7rem; border-color:#BA1A1A; color:#BA1A1A">
-            <span class="material-symbols-outlined" style="font-size:1.1rem;margin-right:4px">picture_as_pdf</span> PDF
+          <button type="button" class="btn btn-secondary u-btn-pdf u-h-32 u-fs-07" onclick="exportarModalPDF()">
+            <span class="material-symbols-outlined u-icon-1-1 u-mr-4">picture_as_pdf</span> PDF
           </button>
           <button type="button" class="donut-modal-close" onclick="fecharModalDonut(null)">
-            <span class="material-symbols-outlined" style="font-size:1.1rem">close</span>
+            <span class="material-symbols-outlined u-icon-1-1">close</span>
           </button>
         </div>
       </div>
@@ -4401,7 +4424,7 @@
         <!-- Resumo de Produção (aparece apenas para patrimônio) -->
         <div id="donut-modal-stats-wrap" class="modal-stats-row" style="display:none"></div>
 
-        <div class="table-wrap" style="border-radius:0;box-shadow:none">
+        <div class="table-wrap u-br0-bs-none">
           <table>
             <thead>
               <tr>
