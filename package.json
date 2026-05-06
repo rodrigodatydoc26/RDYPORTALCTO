@@ -1,0 +1,13 @@
+{
+  "name": "portal-cto",
+  "version": "1.0.0",
+  "description": "Portal CTO - SPA de Alta Performance",
+  "main": "index.html",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.43.1",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-latest/xlsx-latest.tgz"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
