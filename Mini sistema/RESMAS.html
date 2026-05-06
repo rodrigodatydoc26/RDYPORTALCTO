@@ -2574,6 +2574,44 @@
   [data-theme="light"] .topbar { background: rgba(255,255,255,0.95) !important; border-bottom: 1px solid rgba(0,0,0,0.08) !important; }
   [data-theme="light"] .color-dot.active { border-color: #000 !important; }
   [data-theme="light"] .accent-pill { background: rgba(0,0,0,0.04) !important; border-color: rgba(0,0,0,0.1) !important; }
+
+  /* ── UTILITIES ── */
+  .u-pt-24 { padding-top: 24px !important; }
+  .u-mt-4 { margin-top: 4px !important; }
+  .u-icon-14 { width: 14px !important; height: 14px !important; }
+  .u-hidden { display: none !important; }
+  .u-relative { position: relative !important; }
+  .u-absolute-cy { position: absolute !important; top: 50% !important; transform: translateY(-50%) !important; }
+  .u-search-icon { left: 10px; font-size: 1rem; color: var(--outline); pointer-events: none; }
+  .u-input-search { padding: 10px 14px 10px 34px !important; background: var(--surface-highest) !important; border: none !important; border-radius: var(--radius-sm) !important; color: var(--on-surface) !important; font-family: var(--font) !important; font-size: .82rem !important; font-weight: 500 !important; outline: none !important; transition: background .15s, box-shadow .15s !important; width: 100% !important; }
+  .u-grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr !important; }
+  .u-min-w-200 { min-width: 200px !important; }
+  .u-disabled-ui { opacity: 0.6 !important; pointer-events: none !important; }
+  .u-btn-export { align-self: flex-end !important; height: 36px !important; padding: 0 20px !important; }
+  .u-icon-1-1 { font-size: 1.1rem !important; }
+  .u-mb14 { margin-bottom: 14px !important; }
+  .u-mt-14 { margin-top: 14px !important; }
+  .u-mb0 { margin-bottom: 0 !important; }
+  .u-mt-20 { margin-top: 20px !important; }
+  .u-mb20 { margin-bottom: 20px !important; }
+  .u-min-w-250 { min-width: 250px !important; }
+  .u-h-200 { height: 200px !important; }
+  .u-flex-center-wrap { display: flex !important; gap: 6px !important; margin-bottom: 16px !important; align-items: center !important; flex-wrap: wrap !important; }
+  .u-label-inline { font-size: .65rem !important; font-weight: 700 !important; letter-spacing: .08em !important; text-transform: uppercase !important; color: var(--outline) !important; margin-right: 4px !important; }
+  .u-hist-btn-active { font-family: var(--font) !important; font-size: .72rem !important; font-weight: 700 !important; padding: 6px 14px !important; border-radius: 8px !important; border: 1.5px solid var(--primary-container) !important; background: var(--primary-container) !important; color: #fff !important; cursor: pointer !important; transition: all .15s !important; }
+  .u-donut-canvas { flex-shrink: 0 !important; width: 110px !important; height: 110px !important; }
+  .u-gap-6 { gap: 6px !important; }
+  .u-gap-16 { gap: 16px !important; }
+  .u-gap-24 { gap: 24px !important; }
+  .u-bt { border-top: 1px solid var(--outline-variant) !important; }
+  .u-p-14-0 { padding: 14px 0 !important; }
+  .u-btn-excel { border-color: #217346 !important; color: #217346 !important; }
+  .u-btn-pdf { border-color: #BA1A1A !important; color: #BA1A1A !important; }
+  .u-grid-3 { grid-template-columns: 1fr 1fr 1fr !important; }
+  .u-grid-4-gap-16 { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 16px !important; }
+  .u-fs-08 { font-size: .8rem !important; }
+  .u-lh-17 { line-height: 1.7 !important; }
+  .u-badge-ia { background: var(--primary-container) !important; color: #fff !important; border-radius: 6px !important; padding: 2px 8px !important; font-size: .6rem !important; font-weight: 700 !important; letter-spacing: .06em !important; }
   </style>
 </head>
 
@@ -2581,7 +2619,7 @@
 
   <!-- ── SIDEBAR ── -->
   <aside class="sidebar" id="sidebar">
-    <nav class="sidebar-nav" style="padding-top: 24px;">
+    <nav class="sidebar-nav u-pt-24">
 
       <div class="sidebar-label">Menu</div>
       <div class="sidebar-link active" onclick="trocarTab('analise')" id="nav-analise"><i data-lucide="bar-chart-3"></i> <span>Análise</span></div>
@@ -2590,7 +2628,7 @@
       <div class="sidebar-link" onclick="trocarTab('historico')" id="nav-historico"><i data-lucide="history"></i> <span>Histórico</span></div>
 
       <!-- Grupo: Comparativos -->
-      <div class="sidebar-group" style="margin-top:4px">
+      <div class="sidebar-group u-mt-4">
         <button type="button" class="sidebar-group-header open" id="grp-comparativos" onclick="toggleGrupo('comparativos')">
           <i data-lucide="arrow-left-right"></i>
           <span>Comparativos</span>
@@ -2598,10 +2636,10 @@
         </button>
         <div class="sidebar-submenu open" id="sub-comparativos">
           <button type="button" class="sidebar-sublink" onclick="trocarTab('comparacao')" id="nav-comparacao">
-            <i data-lucide="file-text" style="width:14px;height:14px"></i> Comparação
+            <i data-lucide="file-text" class="u-icon-14"></i> Comparação
           </button>
           <button type="button" class="sidebar-sublink" onclick="trocarTab('km')" id="nav-km">
-            <i data-lucide="route" style="width:14px;height:14px"></i> Comparação KM
+            <i data-lucide="route" class="u-icon-14"></i> Comparação KM
           </button>
         </div>
       </div>
@@ -2617,7 +2655,7 @@
     <div class="topbar-left">
       <h1 class="topbar-title">DOC <span>RESMAS</span></h1>
       <a href="javascript:void(0)" onclick="if(window.history.length > 1) { history.back(); } setTimeout(() => { window.close(); window.location.href = '../portal.html'; }, 200);" class="btn-back">
-        <i data-lucide="layout-grid" style="width:14px"></i> VOLTA PARA PORTAL
+        <i data-lucide="layout-grid" class="u-icon-14"></i> VOLTA PARA PORTAL
       </a>
     </div>
     <div class="topbar-right">
@@ -2733,16 +2771,15 @@
           </div>
           <div class="control-group">
             <label>Patrimônio</label>
-            <div style="position:relative">
-              <span class="material-symbols-outlined"
-                style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:1rem;color:var(--outline);pointer-events:none">search</span>
+            <div class="u-relative">
+              <span class="material-symbols-outlined u-absolute-cy u-search-icon">search</span>
               <input type="text" id="filtro-patrimonio" placeholder="Digite o nº do patrimônio..." oninput="filtrar()"
-                style="padding-left:34px;background:var(--surface-highest);border:none;border-radius:var(--radius-sm);color:var(--on-surface);font-family:var(--font);font-size:.82rem;font-weight:500;padding-top:10px;padding-bottom:10px;padding-right:14px;outline:none;transition:background .15s,box-shadow .15s;width:100%">
+                class="u-input-search">
             </div>
           </div>
         </div>
 
-        <div class="dates-block" style="grid-template-columns:1fr 1fr 1fr 1fr">
+        <div class="dates-block u-grid-4">
           <div class="dates-row">
             <div class="dates-row-title">Data de Criação</div>
             <div class="dates-inner">
@@ -2794,17 +2831,16 @@
       </div>
 
       <!-- EXPORT TOOLBAR -->
-      <div class="export-row" id="export-row-entregas" style="margin-top: 24px;">
+      <div class="export-row u-mt-24" id="export-row-entregas">
         <div class="export-field">
           <label>Relatórios Selecionados</label>
           <div class="ms-wrap" id="ms-wrap-export-ent">
-            <button class="ms-trigger" type="button" onclick="toggleMs('export-ent')" id="ms-btn-export-ent"
-              style="min-width: 200px;">
+            <button class="ms-trigger u-min-w-200" type="button" onclick="toggleMs('export-ent')" id="ms-btn-export-ent">
               <span class="ms-trigger-label" id="ms-label-export-ent">Lista de Produção</span>
               <span class="ms-trigger-arrow">▼</span>
             </button>
             <div class="ms-dropdown" id="ms-drop-export-ent">
-              <label class="ms-option ms-item-wrap" style="opacity:0.6;pointer-events:none">
+              <label class="ms-option ms-item-wrap u-disabled-ui">
                 <input type="checkbox" class="ms-item" value="lista" checked disabled> Lista de Produção (Obrigatório)
               </label>
             </div>
@@ -2833,9 +2869,8 @@
             </select>
           </div>
         </div>
-        <button type="button" class="btn btn-primary" onclick="executarExportacaoEntregas()"
-          style="align-self: flex-end; height: 36px; padding: 0 20px;">
-          <span class="material-symbols-outlined" style="font-size: 1.1rem;">download</span>
+        <button type="button" class="btn btn-primary u-btn-export" onclick="executarExportacaoEntregas()">
+          <span class="material-symbols-outlined u-icon-1-1">download</span>
           Exportar
         </button>
       </div>
@@ -3149,11 +3184,10 @@
 
           <div class="control-group">
             <label>Patrimônio</label>
-            <div style="position:relative">
-              <span class="material-symbols-outlined"
-                style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:.9rem;color:var(--outline);pointer-events:none">search</span>
+            <div class="u-relative">
+              <span class="material-symbols-outlined u-absolute-cy u-search-icon">search</span>
               <input type="text" id="hist-patrimonio" placeholder="Digite o nº do patrimônio..."
-                style="padding-left:36px" oninput="renderHistorico()">
+                class="u-input-search" oninput="renderHistorico()">
             </div>
           </div>
           <div class="control-group">
@@ -3181,17 +3215,15 @@
             </div>
           </div>
         </div>
-        <div class="btn-row" style="margin-top:14px;margin-bottom:0">
+        <div class="btn-row u-mt-14 u-mb0">
           <button type="button" class="btn btn-secondary" onclick="limparFiltrosHistorico()">Limpar filtros</button>
         </div>
       </div>
 
       <!-- TOGGLE VISUALIZAÇÃO -->
-      <div style="display:flex;gap:6px;margin-bottom:16px;align-items:center;flex-wrap:wrap">
-        <span
-          style="font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--outline);margin-right:4px">Exibir:</span>
-        <button type="button" class="hist-view-btn active" id="hist-btn-tudo" onclick="setHistView('tudo')"
-          style="font-family:var(--font);font-size:.72rem;font-weight:700;padding:6px 14px;border-radius:8px;border:1.5px solid var(--primary-container);background:var(--primary-container);color:#fff;cursor:pointer;transition:all .15s">Tudo</button>
+      <div class="u-flex-center-wrap">
+        <span class="u-label-inline">Exibir:</span>
+        <button type="button" class="hist-view-btn active u-hist-btn-active" id="hist-btn-tudo" onclick="setHistView('tudo')">Tudo</button>
         <button type="button" class="hist-view-btn u-btn-outline-sm" id="hist-btn-entregas" onclick="setHistView('entregas')">Só
           Entregas</button>
         <button type="button" class="hist-view-btn u-btn-outline-sm" id="hist-btn-chamados" onclick="setHistView('chamados')">Só
@@ -3218,7 +3250,7 @@
         <div class="block-title">Carregar Arquivos</div>
         <div class="uploads-row">
           <div>
-            <div class="section-label" style="margin-bottom:8px">CSV de Chamados (OS)</div>
+            <div class="section-label u-mb14">CSV de Chamados (OS)</div>
             <div class="upload-zone" id="zone-os">
               <input type="file" id="fileOS" accept=".csv" aria-label="Carregar CSV de Chamados (OS)">
               <div class="upload-icon">📋</div>
@@ -3229,7 +3261,7 @@
             </div>
           </div>
           <div>
-            <div class="section-label" style="margin-bottom:8px">CSV de Estoque (ESTOQUE_GERAL)</div>
+            <div class="section-label u-mb14">CSV de Estoque (ESTOQUE_GERAL)</div>
             <div class="upload-zone" id="zone-est">
               <input type="file" id="fileEstoque" accept=".csv" aria-label="Carregar CSV de Estoque (ESTOQUE_GERAL)">
               <div class="upload-icon">📦</div>
@@ -3243,7 +3275,7 @@
       </div>
 
       <!-- FILTROS (compartilhados entre sub-abas) -->
-      <div class="analise-chart-wrap" style="margin-bottom:20px">
+      <div class="analise-chart-wrap u-mb20">
         <div class="analise-chart-title">Filtros da Análise</div>
         <div class="controls-grid u-mb14">
           <div class="control-group">
@@ -3354,10 +3386,9 @@
           </div>
           <div class="control-group">
             <label>Patrimônio</label>
-            <div style="position:relative">
-              <span class="material-symbols-outlined"
-                style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:.9rem;color:var(--outline);pointer-events:none">search</span>
-              <input type="text" id="an-patrimonio" placeholder="Digite o nº do patrimônio..." style="padding-left:36px"
+            <div class="u-relative">
+              <span class="material-symbols-outlined u-absolute-cy u-search-icon">search</span>
+              <input type="text" id="an-patrimonio" placeholder="Digite o nº do patrimônio..." class="u-input-search"
                 oninput="renderAnalise()" title="Buscar por patrimônio">
             </div>
           </div>
@@ -3371,10 +3402,10 @@
       </div>
 
       <!-- EXPORTAÇÃO ANÁLISE -->
-      <div class="export-row" id="ana-export-row" style="margin-top:20px">
+      <div class="export-row u-mt-20" id="ana-export-row">
         <div class="export-field">
           <label>Relatórios Selecionados</label>
-          <div class="ms-wrap" id="ms-wrap-export-ana" style="min-width: 250px;">
+          <div class="ms-wrap u-min-w-250" id="ms-wrap-export-ana">
             <button class="ms-trigger" type="button" onclick="toggleMs('export-ana')" id="ms-btn-export-ana">
               <span class="ms-trigger-label" id="ms-label-export-ana">Relatórios da Análise</span>
               <span class="ms-trigger-arrow">▼</span>
@@ -3460,7 +3491,7 @@
         <!-- GRÁFICO VOLUME POR DIA -->
         <div class="analise-chart-wrap">
           <div class="analise-chart-title">Volume por Dia de Criação</div>
-          <div style="height:200px;position:relative">
+          <div class="u-h-200 u-relative">
             <canvas id="an-chart-dia"></canvas>
           </div>
         </div>
@@ -3470,14 +3501,14 @@
           <div class="analise-chart-wrap u-mb0">
             <div class="analise-chart-title">Distribuição por Tipo</div>
             <div class="donut-flex">
-              <canvas id="an-chart-tipo" width="110" height="110" style="flex-shrink:0"></canvas>
+              <canvas id="an-chart-tipo" class="u-donut-canvas"></canvas>
               <div class="donut-legend" id="an-legend-tipo"></div>
             </div>
           </div>
           <div class="analise-chart-wrap u-mb0">
             <div class="analise-chart-title">Distribuição por Status</div>
             <div class="donut-flex">
-              <canvas id="an-chart-status" width="110" height="110" style="flex-shrink:0"></canvas>
+              <canvas id="an-chart-status" class="u-donut-canvas"></canvas>
               <div class="donut-legend" id="an-legend-status"></div>
             </div>
           </div>
@@ -3782,7 +3813,7 @@
       </div>
 
       <!-- FILTROS -->
-      <div class="block" id="cmp-filtros-wrap" style="display:none">
+      <div class="block u-hidden" id="cmp-filtros-wrap">
         <div class="block-title u-mb16-pb12">Filtros</div>
         <div class="controls-grid u-mb14">
 
@@ -3868,20 +3899,17 @@
 
           <div class="control-group">
             <label>Patrimônio</label>
-            <div style="position:relative">
-              <span class="material-symbols-outlined"
-                style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:.9rem;color:var(--outline);pointer-events:none">search</span>
-              <input type="text" id="cmp-patrimonio" placeholder="Buscar patrimônio..." style="padding-left:36px">
+            <div class="u-relative">
+              <span class="material-symbols-outlined u-absolute-cy u-search-icon">search</span>
+              <input type="text" id="cmp-patrimonio" placeholder="Buscar patrimônio..." class="u-input-search">
             </div>
           </div>
 
         </div>
         <!-- Filtros de Data -->
-        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--outline-variant)">
-          <div
-            style="font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--outline);margin-bottom:12px">
-            Filtros de Data</div>
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:14px">
+        <div class="u-bt u-mt-14 u-pt-14">
+          <div class="u-label-inline u-mb14">Filtros de Data</div>
+          <div class="u-grid-4-gap-16 u-mb14">
 
             <div class="control-group">
               <label>Data Criação</label>
@@ -4060,14 +4088,12 @@
           </div>
 
           <div class="analise-chart-wrap u-mb0">
-            <div class="analise-chart-title" style="display:flex;align-items:center;gap:8px">
-              <span
-                style="background:var(--primary-container);color:#fff;border-radius:6px;padding:2px 8px;font-size:.6rem;font-weight:700;letter-spacing:.06em">IA</span>
+            <div class="analise-chart-title u-flex u-gap-6">
+              <span class="u-badge-ia">IA</span>
               Análise dos Padrões de Movimentação
             </div>
-            <div id="cmp-ia-texto"
-              style="font-size:.8rem;color:var(--on-surface-variant);line-height:1.7;padding:4px 0">
-              <span style="color:var(--outline)">Carregue ao menos 2 períodos para gerar a análise.</span>
+            <div id="cmp-ia-texto" class="u-fs-08 u-lh-17 u-p-14-0">
+              <span class="u-outline">Carregue ao menos 2 períodos para gerar a análise.</span>
             </div>
           </div>
 
