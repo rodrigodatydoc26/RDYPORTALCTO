@@ -2665,6 +2665,13 @@
   .u-modal-close-custom { border: none !important; background: transparent !important; cursor: pointer !important; color: var(--outline) !important; font-size: 1.2rem !important; padding: 4px !important; }
   .u-p-20-24-mb20 { padding: 20px 24px !important; margin-bottom: 20px !important; }
   .u-badge-ia-red { background: var(--error) !important; color: #fff !important; border-radius: 4px !important; padding: 1px 6px !important; font-size: .58rem !important; font-weight: 700 !important; margin-right: 4px !important; }
+  .u-p-20-24-mb18 { padding: 20px 24px !important; margin-bottom: 18px !important; }
+  .u-min-w-160 { min-width: 160px !important; }
+  .u-w-36 { width: 36px !important; }
+  .u-w-32 { width: 32px !important; }
+  .u-min-w-400 { min-width: 400px !important; }
+  .u-min-w-600 { min-width: 600px !important; }
+  .u-w-32 { width: 32px !important; }
   </style>
 </head>
 
@@ -3135,11 +3142,11 @@
       <div class="block u-p-20-24-mb20">
         <div class="block-title u-mb16-pb12">Filtrar por Data de Entrada</div>
         <div class="u-flex-center-wrap u-gap-16 u-items-end">
-          <div class="control-group" style="min-width:160px">
+          <div class="control-group u-min-w-160">
             <label>Início</label>
             <input type="date" id="est-data-ini" onchange="renderEstoque()">
           </div>
-          <div class="control-group" style="min-width:160px">
+          <div class="control-group u-min-w-160">
             <label>Fim</label>
             <input type="date" id="est-data-fim" onchange="renderEstoque()">
           </div>
@@ -3164,7 +3171,7 @@
     <div id="tab-historico" class="panel">
 
       <!-- FILTROS -->
-      <div class="block" style="padding:20px 24px;margin-bottom:18px">
+      <div class="block u-p-20-24-mb18">
         <div class="block-title u-mb16-pb12">Filtros</div>
         <div class="controls-grid u-mb14">
           <div class="control-group">
@@ -3751,7 +3758,7 @@
 
         <!-- RANKING: MÁQUINAS COM MAIOR TEMPO -->
         <div class="analise-two">
-          <div class="analise-rank-wrap" style="margin-bottom:0">
+          <div class="analise-rank-wrap u-mb0">
             <div class="analise-rank-head">
               <span class="analise-rank-head-title">Top Patrimônios — Maior Tempo</span>
             </div>
@@ -4001,7 +4008,7 @@
       </div>
 
       <!-- RESULTADO -->
-      <div id="cmp-resultado" style="display:none">
+      <div id="cmp-resultado" class="u-hidden">
 
         <!-- EXPORTAÇÃO -->
         <div class="export-row" id="cmp-export-row">
@@ -4189,21 +4196,21 @@
         <div id="cmp-subpanel-recorrentes" class="analise-subpanel">
 
           <!-- KPIs do painel -->
-          <div id="cmp-rec-kpis" style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
+          <div id="cmp-rec-kpis" class="u-grid-4-fr u-gap-14 u-mb20">
           </div>
 
           <!-- Tabela de equipamentos recorrentes -->
-          <div class="analise-rank-wrap" style="margin-bottom:0">
+          <div class="analise-rank-wrap u-mb0">
             <div class="analise-rank-head">
               <span class="analise-rank-head-title">Equipamentos Recorrentes</span>
-              <span style="font-size:.65rem;color:var(--outline);font-weight:400">clique num patrimônio para ver os
+              <span class="u-fs-065 u-outline u-font-400">clique num patrimônio para ver os
                 chamados</span>
             </div>
             <div class="table-wrap analise-rank-table">
-              <table style="min-width:600px">
+              <table class="u-min-w-600">
                 <thead>
                   <tr>
-                    <th style="width:32px">#</th>
+                    <th class="u-w-32">#</th>
                     <th>Patrimônio</th>
                     <th>Cliente</th>
                     <th class="td-center">Períodos</th>
@@ -4303,7 +4310,8 @@
 
           <!-- KM 3 (opcional) -->
           <div>
-                  style="color:var(--outline);font-size:.65rem;font-weight:400">(opcional)</span></label>
+            <div class="control-group u-mb10">
+              <label>Label — KM 3 <span class="u-outline u-fs-065 u-font-400">(opcional)</span></label>
               <input type="text" id="km3-label" placeholder="Ex: Março 2026" oninput="calcularKM()">
             </div>
             <div class="control-group">
@@ -4316,7 +4324,7 @@
       </div>
 
       <!-- RESULTADO -->
-      <div id="km-resultado" style="display:none">
+      <div id="km-resultado" class="u-hidden">
 
         <!-- EXPORT TOOLBAR -->
         <div class="export-row u-mt-14 u-mb24" id="export-row-km">
@@ -4372,7 +4380,7 @@
             <span class="analise-rank-head-title">Comparativo de KM</span>
           </div>
           <div class="table-wrap analise-rank-table">
-            <table style="min-width:400px">
+            <table class="u-min-w-400">
               <thead>
                 <tr id="km-thead"></tr>
               </thead>
